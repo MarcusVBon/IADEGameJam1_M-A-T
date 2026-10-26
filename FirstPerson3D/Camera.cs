@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 
 namespace FirstPersonGameExample
 {
@@ -57,5 +58,16 @@ namespace FirstPersonGameExample
 
             UpdateLookAt();
         }
+
+        /*public void rotate(double rSpeed)
+        {
+			//both camera direction and camera plane must be rotated
+			double oldDirX = dir.X;
+			dir.X = (float)(dir.X * Math.Cos(rSpeed) - dir.Y * Math.Sin(rSpeed));
+			dir.Y = (float)(oldDirX * Math.Sin(rSpeed) + dir.Y * Math.Cos(rSpeed));
+			double oldPlaneX = plane.X;
+			plane.X = (float)(plane.X * Math.Cos(rSpeed) - plane.Y * Math.Sin(rSpeed));
+			plane.Y = (float)(oldPlaneX * Math.Sin(rSpeed) + plane.Y * Math.Cos(rSpeed));
+        } */
     }
 }

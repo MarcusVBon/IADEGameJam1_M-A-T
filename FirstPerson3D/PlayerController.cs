@@ -17,6 +17,7 @@ namespace FirstPersonGameExample
         private Camera camera;
         private List<Block> worldMeshes;
         private MouseState previousMouseState;
+        private float totalMouseIdleTime;
         private Vector3 mouseRotationBuffer;
 
         private float playerSpeed;
@@ -65,31 +66,45 @@ namespace FirstPersonGameExample
 
             float deltaX;
             float deltaY;
+		    float rotSpeed = 0.03f;
+            
+            Vector3 rotateVector = Vector3.Zero;
             if (ms != previousMouseState)
-            {
-                deltaX = ms.X - (Game.GraphicsDevice.Viewport.Width / 2);
-                deltaY = ms.Y - (Game.GraphicsDevice.Viewport.Height / 2);
+            {                
+                deltaX = ms.X - previousMouseState.X;
+                deltaY = ms.Y - previousMouseState.Y;
 
-                mouseRotationBuffer.X -= 0.1f * deltaX * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                mouseRotationBuffer.Y -= 0.1f * deltaY * (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-                if (mouseRotationBuffer.Y < MathHelper.ToRadians(-75.0f))
-                {
-                    mouseRotationBuffer.Y = mouseRotationBuffer.Y - (mouseRotationBuffer.Y - MathHelper.ToRadians(-75.0f));
-                }
-
-                if (mouseRotationBuffer.Y > MathHelper.ToRadians(75.0f))
-                {
-                    mouseRotationBuffer.Y = mouseRotationBuffer.Y - (mouseRotationBuffer.Y - MathHelper.ToRadians(75.0f));
-                }
+                mouseRotationBuffer.X -= 0.1f * (deltaX * 1920/Game.GraphicsDevice.Viewport.Width) * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                mouseRotationBuffer.Y -= 0.1f * (deltaY * 1080/Game.GraphicsDevice.Viewport.Height) * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
                 camera.SetRotation(new Vector3(-MathHelper.Clamp(mouseRotationBuffer.Y, MathHelper.ToRadians(-75.0f), MathHelper.ToRadians(75.0f)),
-                    MathHelper.WrapAngle(mouseRotationBuffer.X), 0));
+                    MathHelper.WrapAngle(mouseRotationBuffer.X), 0)); 
+
+                previousMouseState = ms ;
+
+                if (ms.X >= Game.GraphicsDevice.Viewport.Width || ms.X >= Game.GraphicsDevice.Viewport.Height || ms.X == 0 || ms.Y == 0)
+                {
+                    Mouse.SetPosition(Game.GraphicsDevice.Viewport.Width / 2, Game.GraphicsDevice.Viewport.Height / 2);
+                    previousMouseState = Mouse.GetState(); 
+                }
+
+                
+
+            } else
+            { 
+                previousMouseState = ms ;
+
+                totalMouseIdleTime += (float)gameTime.ElapsedGameTime.TotalSeconds ;
+                if (totalMouseIdleTime >= 2 && ms.X != Game.GraphicsDevice.Viewport.Width / 2 && ms.Y != Game.GraphicsDevice.Viewport.Height / 2)
+                {
+                    totalMouseIdleTime = 0 ; 
+                    Mouse.SetPosition(Game.GraphicsDevice.Viewport.Width / 2, Game.GraphicsDevice.Viewport.Height / 2);
+                    previousMouseState = Mouse.GetState();
+                }
             }
 
-            Mouse.SetPosition(Game.GraphicsDevice.Viewport.Width / 2, Game.GraphicsDevice.Viewport.Height / 2);
+            //Mouse.SetPosition(Game.GraphicsDevice.Viewport.Width / 2, Game.GraphicsDevice.Viewport.Height / 2);
 
-            previousMouseState = ms;
 
             base.Update(gameTime);
         }
