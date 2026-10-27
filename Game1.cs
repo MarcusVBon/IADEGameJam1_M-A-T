@@ -7,11 +7,21 @@ using Microsoft.Xna.Framework.Input;
 
 namespace _3dgame;
 
+public class GameTextures
+{
+
+    public Texture2D enemyTexture1 ;
+    public Texture2D crossHair ;
+    public Texture2D pixel;
+    
+}
+
 public class Game1 : Game {
     private GraphicsDeviceManager graphics;
     private GameObject ground;
 
-    //MY STUFF
+    private GameTextures textures = new GameTextures() ;
+
     private GameObject test;
     
     private readonly Matrix testWorld = Matrix.CreateScale(25f) * Matrix.CreateTranslation(30, 2.5f, 100);
@@ -21,7 +31,9 @@ public class Game1 : Game {
     private KeyboardState currentKeyboardState = new KeyboardState();
     private MouseState currentMouseState = new MouseState();
     private MouseState previousMouseState = new MouseState();
+    private SpriteBatch spriteBatch;
 
+    private List<Enemy> enemyList = new();
     private bool mouseCentered = false;
     private int screenCenterX;
     private int screenCenterY;
@@ -42,11 +54,19 @@ public class Game1 : Game {
         graphics.ApplyChanges();
         IsMouseVisible = false;
     }
-
+    
     protected override void Initialize() {
         ground = new GameObject();
 
+        spriteBatch = new SpriteBatch(GraphicsDevice);
+
         test = new GameObject();
+
+        // Create an enemy & texture
+
+        textures.enemyTexture1 = Content.Load<Texture2D>("Models/enemy");
+
+        enemyList.Add(new Enemy(GraphicsDevice, textures.enemyTexture1 , new Vector3(50f, 0f, 75f), 9f, 11f));
 
         gameCamera = new Camera();
         player = new Player();
@@ -61,6 +81,8 @@ public class Game1 : Game {
     protected override void LoadContent() {
         ChangeRasterizerState(FillMode.Solid);
         ground.Model = Content.Load<Model>("Models/ground");
+
+        textures.pixel = Content.Load<Texture2D>("Models/White");
 
         test.Model = Content.Load<Model>("Models/test");
 
@@ -144,6 +166,28 @@ public class Game1 : Game {
         base.Update(gameTime);
     }
 
+    private void DrawHud()
+    {
+        int w = graphics.GraphicsDevice.Viewport.Width;
+        int h = graphics.GraphicsDevice.Viewport.Height;
+
+        // NonPremultiplied matches PNGs loaded with Texture2D.FromStream (soft edges look right).
+        spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp,
+                            DepthStencilState.None, RasterizerState.CullNone);
+
+
+        // Crosshair
+        const int len = 8, gap = 4, thick = 2;
+        int cx = w / 2, cy = h / 2;
+        spriteBatch.Draw(textures.pixel, new Rectangle(cx - gap - len, cy - thick / 2, len, thick), Color.White);
+        spriteBatch.Draw(textures.pixel, new Rectangle(cx + gap, cy - thick / 2, len, thick), Color.White);
+        spriteBatch.Draw(textures.pixel, new Rectangle(cx - thick / 2, cy - gap - len, thick, len), Color.White);
+        spriteBatch.Draw(textures.pixel, new Rectangle(cx - thick / 2, cy + gap, thick, len), Color.White);
+
+        spriteBatch.End();
+    }
+
+
     private void DrawTerrain(Model model) {
         foreach (ModelMesh mesh in model.Meshes) {
             foreach (BasicEffect effect in mesh.Effects) {
@@ -181,6 +225,10 @@ public class Game1 : Game {
         DrawTerrain(ground.Model);
 
         DrawTextures(test.Model, testWorld);
+
+        foreach (Enemy enemy in enemyList)
+            enemy.Draw(GraphicsDevice, gameCamera.ViewMatrix, gameCamera.ProjectionMatrix, player.Position);
+        DrawHud();
 
         base.Draw(gameTime);
     }

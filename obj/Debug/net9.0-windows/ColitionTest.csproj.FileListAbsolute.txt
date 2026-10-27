@@ -34,3 +34,5 @@ C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\obj\Debug\net9
 C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\obj\Debug\net9.0-windows\ColitionTest.pdb
 C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\obj\Debug\net9.0-windows\ColitionTest.genruntimeconfig.cache
 C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\obj\Debug\net9.0-windows\ref\ColitionTest.dll
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\obj\Debug\net9.0-windows\ColitionTest.sourcelink.json
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Models\enemy.xnb

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ColitionTest")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d5afc08fd3c16097b54f987a770c587979ad4567")]
 [assembly: System.Reflection.AssemblyProductAttribute("ColitionTest")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ColitionTest")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
