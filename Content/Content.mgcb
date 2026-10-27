@@ -25,18 +25,6 @@
 /processorParam:TextureFormat=Color
 /build:Models/ground.png
 
-#begin Models/enemy.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Models/enemy.png
-
 #begin Models/ground.x
 /importer:XImporter
 /processor:ModelProcessor
@@ -55,6 +43,18 @@
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
 /build:Models/ground.x
+
+#begin Models/enemy.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=False
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=False
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Models/enemy.png
 
 #begin Models/house.fbx
 /importer:FbxImporter
@@ -143,3 +143,8 @@
 /processorParam:Scale=0.1
 /processorParam:ResizeTexturesToPowerOfTwo=True
 /build:Models/test.fbx
+#begin Models/corridor.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:Scale=0.01
+/build:Models/corridor.fbx

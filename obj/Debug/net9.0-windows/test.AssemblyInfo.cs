@@ -10,12 +10,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("ColitionTest")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("test")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1749d0b4f3a818e6d11f37df91a0497c2ce65546")]
-[assembly: System.Reflection.AssemblyProductAttribute("ColitionTest")]
-[assembly: System.Reflection.AssemblyTitleAttribute("ColitionTest")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f8fb7a0f5c36720b13e17fdd3f0a40a449d0f538")]
+[assembly: System.Reflection.AssemblyProductAttribute("test")]
+[assembly: System.Reflection.AssemblyTitleAttribute("test")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 [assembly: System.Runtime.Versioning.TargetPlatformAttribute("Windows7.0")]
 [assembly: System.Runtime.Versioning.SupportedOSPlatformAttribute("Windows7.0")]

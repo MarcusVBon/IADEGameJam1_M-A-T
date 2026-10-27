@@ -19,22 +19,24 @@ public class GameTextures
 public class Game1 : Game {
     private GraphicsDeviceManager graphics;
     private GameObject ground;
-    private GameObject corridor;
-    private GameTextures textures = new GameTextures() ;
-    private readonly Matrix levelMatrix = Matrix.CreateTranslation(30, 0, 100);
 
+    //MY STUFF
     private GameObject test;
     
-    private readonly Matrix testWorld = Matrix.CreateScale(25f) * Matrix.CreateTranslation(30, 2.5f, 100);
+    private readonly Matrix testWorld = Matrix.CreateScale(25f) * Matrix.CreateTranslation(60, 2.5f, 100);
+    private GameObject corridor;
+    // corridor runs along Z, entrance 5 units in front of the player's start (30, 2, 125)
+
+    private GameTextures textures = new GameTextures() ;
+    private List<Enemy> enemyList = new();
+
+    private readonly Matrix levelMatrix = Matrix.CreateTranslation(30, 0, 100);
     private Camera gameCamera;
     private Player player;
     private readonly List<BoundingBox> colliders = new List<BoundingBox>();
     private KeyboardState currentKeyboardState = new KeyboardState();
     private MouseState currentMouseState = new MouseState();
     private MouseState previousMouseState = new MouseState();
-    private SpriteBatch spriteBatch;
-
-    private List<Enemy> enemyList = new();
     private bool mouseCentered = false;
     private int screenCenterX;
     private int screenCenterY;
@@ -42,34 +44,29 @@ public class Game1 : Game {
     private float cameraPitch;
     private double logTimer = 0d;
     private double totalMouseIdleTime = 0  ;
+    private SpriteBatch spriteBatch;
+
 
     public Game1() {
         graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         graphics.SynchronizeWithVerticalRetrace = true;
-    
+
         graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
         graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-
         graphics.ToggleFullScreen();
+
         graphics.ApplyChanges();
         IsMouseVisible = false;
     }
-    
+
     protected override void Initialize() {
         ground = new GameObject();
 
         spriteBatch = new SpriteBatch(GraphicsDevice);
 
         test = new GameObject();
-
         corridor = new GameObject();
-
-        // Create an enemy & texture
-
-        textures.enemyTexture1 = Content.Load<Texture2D>("Models/enemy");
-
-        enemyList.Add(new Enemy(GraphicsDevice, textures.enemyTexture1 , new Vector3(50f, 0f, 75f), 9f, 11f));
 
         gameCamera = new Camera();
         player = new Player();
@@ -78,6 +75,10 @@ public class Game1 : Game {
         Mouse.SetPosition(screenCenterX, screenCenterY);
         previousMouseState = Mouse.GetState();
 
+        textures.enemyTexture1 = Content.Load<Texture2D>("Models/enemy");
+
+        enemyList.Add(new Enemy(GraphicsDevice, textures.enemyTexture1 , new Vector3(50f, 0f, 75f), 9f, 11f));
+
         base.Initialize();
     }
 
@@ -85,16 +86,13 @@ public class Game1 : Game {
         ChangeRasterizerState(FillMode.Solid);
         ground.Model = Content.Load<Model>("Models/ground");
 
+        test.Model = Content.Load<Model>("Models/test");
+
         textures.pixel = Content.Load<Texture2D>("Models/White");
 
         colliders.AddRange(ModelCollision.Build(test.Model, testWorld));
         corridor.Model = Content.Load<Model>("Models/corridor");
-
         colliders.AddRange(ModelCollision.Build(corridor.Model, levelMatrix, perMesh: true));
-
-        test.Model = Content.Load<Model>("Models/test");
-
-        colliders.AddRange(ModelCollision.Build(test.Model, testWorld));
         player.Model = Content.Load<Model>("Models/player");
         player.CalculateBoundingSphere();
     }
@@ -160,6 +158,9 @@ public class Game1 : Game {
 
         gameCamera.Update(cameraYaw, cameraPitch, player.Position, graphics.GraphicsDevice.Viewport.AspectRatio);
 
+
+        gameCamera.Update(cameraYaw, cameraPitch, player.Position, graphics.GraphicsDevice.Viewport.AspectRatio);
+
         if (currentKeyboardState.IsKeyDown(Keys.Escape)) {
             Exit();
         }
@@ -173,28 +174,6 @@ public class Game1 : Game {
         
         base.Update(gameTime);
     }
-
-    private void DrawHud()
-    {
-        int w = graphics.GraphicsDevice.Viewport.Width;
-        int h = graphics.GraphicsDevice.Viewport.Height;
-
-        // NonPremultiplied matches PNGs loaded with Texture2D.FromStream (soft edges look right).
-        spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp,
-                            DepthStencilState.None, RasterizerState.CullNone);
-
-
-        // Crosshair
-        const int len = 8, gap = 4, thick = 2;
-        int cx = w / 2, cy = h / 2;
-        spriteBatch.Draw(textures.pixel, new Rectangle(cx - gap - len, cy - thick / 2, len, thick), Color.White);
-        spriteBatch.Draw(textures.pixel, new Rectangle(cx + gap, cy - thick / 2, len, thick), Color.White);
-        spriteBatch.Draw(textures.pixel, new Rectangle(cx - thick / 2, cy - gap - len, thick, len), Color.White);
-        spriteBatch.Draw(textures.pixel, new Rectangle(cx - thick / 2, cy + gap, thick, len), Color.White);
-
-        spriteBatch.End();
-    }
-
 
     private void DrawTerrain(Model model) {
         foreach (ModelMesh mesh in model.Meshes) {
@@ -227,16 +206,39 @@ public class Game1 : Game {
             mesh.Draw();
         }
     }
+
+    private void DrawHud()
+    {
+        int w = graphics.GraphicsDevice.Viewport.Width;
+        int h = graphics.GraphicsDevice.Viewport.Height;
+
+        // NonPremultiplied matches PNGs loaded with Texture2D.FromStream (soft edges look right).
+        spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp,
+                            DepthStencilState.None, RasterizerState.CullNone);
+
+
+        // Crosshair
+        const int len = 8, gap = 4, thick = 2;
+        int cx = w / 2, cy = h / 2;
+        spriteBatch.Draw(textures.pixel, new Rectangle(cx - gap - len, cy - thick / 2, len, thick), Color.White);
+        spriteBatch.Draw(textures.pixel, new Rectangle(cx + gap, cy - thick / 2, len, thick), Color.White);
+        spriteBatch.Draw(textures.pixel, new Rectangle(cx - thick / 2, cy - gap - len, thick, len), Color.White);
+        spriteBatch.Draw(textures.pixel, new Rectangle(cx - thick / 2, cy + gap, thick, len), Color.White);
+
+        spriteBatch.End();
+    }
     
     protected override void Draw(GameTime gameTime) {
         GraphicsDevice.Clear(Color.WhiteSmoke);
         DrawTerrain(ground.Model);
 
         DrawTextures(test.Model, testWorld);
+        DrawTextures(corridor.Model, levelMatrix);
 
         foreach (Enemy enemy in enemyList)
-            enemy.Draw(GraphicsDevice, gameCamera.ViewMatrix, gameCamera.ProjectionMatrix, player.Position);
-        DrawHud();
+            //enemy.Draw(GraphicsDevice, gameCamera.ViewMatrix, gameCamera.ProjectionMatrix, player.Position);
+
+        //DrawHud();
 
         base.Draw(gameTime);
     }

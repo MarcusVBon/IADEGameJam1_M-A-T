@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
       {
-        "name": "C#: ColitionTest Debug",
+        "name": "C#: test Debug",
         "type": "dotnet",
         "request": "launch",
-        "projectPath": "${workspaceFolder}/ColitionTest.csproj"
+        "projectPath": "${workspaceFolder}/test.csproj"
       }
     ],
   }

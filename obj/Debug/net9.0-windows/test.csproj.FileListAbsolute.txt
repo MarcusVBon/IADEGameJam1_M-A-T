@@ -1,0 +1,81 @@
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\Content\Models\corridor.xnb
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\Content\Models\ground.xnb
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\Content\Models\ground_0.xnb
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\Content\Models\house.xnb
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\Content\Models\Plaster_11-128x128_0.xnb
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\Content\Models\player.xnb
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\Content\Models\sphere1uR.xnb
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\Content\Models\test.xnb
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\Content\Models\White.xnb
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\Content\Models\White_0.xnb
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\Content\Models\Wood_18-512x512_0.xnb
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\Content\Textures\22ku6htw4u0c1_0.xnb
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\Content\Textures\cottage_base_color.xnb
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\Content\Textures\cottage_base_color_0.xnb
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\test.exe
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\test.deps.json
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\test.runtimeconfig.json
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\test.dll
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\test.pdb
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\MonoGame.Framework.dll
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\SharpDX.dll
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\SharpDX.Direct2D1.dll
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\SharpDX.Direct3D11.dll
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\SharpDX.DXGI.dll
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\SharpDX.MediaFoundation.dll
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\SharpDX.XAudio2.dll
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\SharpDX.XInput.dll
+C:\Users\marcu\Downloads\gameInAgoodState\test\obj\Debug\net9.0-windows\mgcb.tool.restore
+C:\Users\marcu\Downloads\gameInAgoodState\test\obj\Debug\net9.0-windows\test.csproj.AssemblyReference.cache
+C:\Users\marcu\Downloads\gameInAgoodState\test\obj\Debug\net9.0-windows\test.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\marcu\Downloads\gameInAgoodState\test\obj\Debug\net9.0-windows\test.AssemblyInfoInputs.cache
+C:\Users\marcu\Downloads\gameInAgoodState\test\obj\Debug\net9.0-windows\test.AssemblyInfo.cs
+C:\Users\marcu\Downloads\gameInAgoodState\test\obj\Debug\net9.0-windows\test.csproj.CoreCompileInputs.cache
+C:\Users\marcu\Downloads\gameInAgoodState\test\obj\Debug\net9.0-windows\test.csproj.Up2Date
+C:\Users\marcu\Downloads\gameInAgoodState\test\obj\Debug\net9.0-windows\test.dll
+C:\Users\marcu\Downloads\gameInAgoodState\test\obj\Debug\net9.0-windows\refint\test.dll
+C:\Users\marcu\Downloads\gameInAgoodState\test\obj\Debug\net9.0-windows\test.pdb
+C:\Users\marcu\Downloads\gameInAgoodState\test\obj\Debug\net9.0-windows\test.genruntimeconfig.cache
+C:\Users\marcu\Downloads\gameInAgoodState\test\obj\Debug\net9.0-windows\ref\test.dll
+C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\Content\Models\enemy.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Models\corridor.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Models\enemy.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Models\ground.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Models\ground_0.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Models\house.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Models\Plaster_11-128x128_0.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Models\player.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Models\sphere1uR.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Models\test.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Models\White.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Models\White_0.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Models\Wood_18-512x512_0.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Textures\22ku6htw4u0c1_0.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Textures\cottage_base_color.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Textures\cottage_base_color_0.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\test.exe
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\test.deps.json
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\test.runtimeconfig.json
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\test.dll
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\test.pdb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\MonoGame.Framework.dll
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\SharpDX.dll
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\SharpDX.Direct2D1.dll
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\SharpDX.Direct3D11.dll
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\SharpDX.DXGI.dll
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\SharpDX.MediaFoundation.dll
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\SharpDX.XAudio2.dll
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\SharpDX.XInput.dll
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\obj\Debug\net9.0-windows\mgcb.tool.restore
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\obj\Debug\net9.0-windows\test.csproj.AssemblyReference.cache
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\obj\Debug\net9.0-windows\test.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\obj\Debug\net9.0-windows\test.AssemblyInfoInputs.cache
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\obj\Debug\net9.0-windows\test.AssemblyInfo.cs
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\obj\Debug\net9.0-windows\test.csproj.CoreCompileInputs.cache
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\obj\Debug\net9.0-windows\test.sourcelink.json
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\obj\Debug\net9.0-windows\test.csproj.Up2Date
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\obj\Debug\net9.0-windows\test.dll
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\obj\Debug\net9.0-windows\refint\test.dll
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\obj\Debug\net9.0-windows\test.pdb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\obj\Debug\net9.0-windows\test.genruntimeconfig.cache
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\obj\Debug\net9.0-windows\ref\test.dll

@@ -1,15 +1,15 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\marcu\\Downloads\\3dgame-main (1)\\3dgame-main\\ColitionTest\\ColitionTest.csproj": {}
+    "C:\\Users\\marcu\\Downloads\\3dgame-main (1)\\3dgame-main\\ColitionTest\\test.csproj": {}
   },
   "projects": {
-    "C:\\Users\\marcu\\Downloads\\3dgame-main (1)\\3dgame-main\\ColitionTest\\ColitionTest.csproj": {
+    "C:\\Users\\marcu\\Downloads\\3dgame-main (1)\\3dgame-main\\ColitionTest\\test.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\marcu\\Downloads\\3dgame-main (1)\\3dgame-main\\ColitionTest\\ColitionTest.csproj",
-        "projectName": "ColitionTest",
-        "projectPath": "C:\\Users\\marcu\\Downloads\\3dgame-main (1)\\3dgame-main\\ColitionTest\\ColitionTest.csproj",
+        "projectUniqueName": "C:\\Users\\marcu\\Downloads\\3dgame-main (1)\\3dgame-main\\ColitionTest\\test.csproj",
+        "projectName": "test",
+        "projectPath": "C:\\Users\\marcu\\Downloads\\3dgame-main (1)\\3dgame-main\\ColitionTest\\test.csproj",
         "packagesPath": "C:\\Users\\marcu\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\marcu\\Downloads\\3dgame-main (1)\\3dgame-main\\ColitionTest\\obj\\",
         "projectStyle": "PackageReference",

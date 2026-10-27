@@ -33,6 +33,8 @@ public static class ModelCollision
     }
 
     /// <summary>Collision boxes for a model placed in the world with the given matrix.</summary>
+    /// <param name="perMesh">With no "col_" objects, give every mesh its own box instead of one merged box.
+    /// Use for models built from box-shaped pieces you can walk between (walls, corridors).</param>
     public static List<BoundingBox> Build(Model model, Matrix world, bool perMesh = false)
     {
         var colliders = new List<BoundingBox>();

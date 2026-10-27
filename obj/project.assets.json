@@ -4923,11 +4923,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "c:\\Users\\marcu\\Downloads\\3dgame-main (1)\\3dgame-main\\ColitionTest\\ColitionTest.csproj",
-      "projectName": "ColitionTest",
-      "projectPath": "c:\\Users\\marcu\\Downloads\\3dgame-main (1)\\3dgame-main\\ColitionTest\\ColitionTest.csproj",
+      "projectUniqueName": "C:\\Users\\marcu\\Downloads\\3dgame-main (1)\\3dgame-main\\ColitionTest\\test.csproj",
+      "projectName": "test",
+      "projectPath": "C:\\Users\\marcu\\Downloads\\3dgame-main (1)\\3dgame-main\\ColitionTest\\test.csproj",
       "packagesPath": "C:\\Users\\marcu\\.nuget\\packages\\",
-      "outputPath": "c:\\Users\\marcu\\Downloads\\3dgame-main (1)\\3dgame-main\\ColitionTest\\obj\\",
+      "outputPath": "C:\\Users\\marcu\\Downloads\\3dgame-main (1)\\3dgame-main\\ColitionTest\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\marcu\\AppData\\Roaming\\NuGet\\NuGet.Config"

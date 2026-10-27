@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "27RSt8nfS80=",
+  "dgSpecHash": "/hSxl8G0gT8=",
   "success": true,
-  "projectFilePath": "C:\\Users\\marcu\\Downloads\\3dgame-main (1)\\3dgame-main\\ColitionTest\\ColitionTest.csproj",
+  "projectFilePath": "C:\\Users\\marcu\\Downloads\\3dgame-main (1)\\3dgame-main\\ColitionTest\\test.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\marcu\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
     "C:\\Users\\marcu\\.nuget\\packages\\microsoft.netcore.targets\\1.1.0\\microsoft.netcore.targets.1.1.0.nupkg.sha512",

@@ -5,16 +5,18 @@
   <Config />
   <SourceFiles>
     <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Models/ground.png</File>
-    <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Models/enemy.png</File>
     <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Models/ground.x</File>
+    <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Models/enemy.png</File>
     <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Models/house.fbx</File>
     <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Models/player.fbx</File>
     <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Models/sphere1uR.x</File>
     <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Models/White.png</File>
     <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Textures/cottage_base_color.png</File>
     <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Models/test.fbx</File>
+    <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Models/corridor.fbx</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
