@@ -19,8 +19,9 @@ public class GameTextures
 public class Game1 : Game {
     private GraphicsDeviceManager graphics;
     private GameObject ground;
-
+    private GameObject corridor;
     private GameTextures textures = new GameTextures() ;
+    private readonly Matrix levelMatrix = Matrix.CreateTranslation(30, 0, 100);
 
     private GameObject test;
     
@@ -62,6 +63,8 @@ public class Game1 : Game {
 
         test = new GameObject();
 
+        corridor = new GameObject();
+
         // Create an enemy & texture
 
         textures.enemyTexture1 = Content.Load<Texture2D>("Models/enemy");
@@ -83,6 +86,11 @@ public class Game1 : Game {
         ground.Model = Content.Load<Model>("Models/ground");
 
         textures.pixel = Content.Load<Texture2D>("Models/White");
+
+        colliders.AddRange(ModelCollision.Build(test.Model, testWorld));
+        corridor.Model = Content.Load<Model>("Models/corridor");
+
+        colliders.AddRange(ModelCollision.Build(corridor.Model, levelMatrix, perMesh: true));
 
         test.Model = Content.Load<Model>("Models/test");
 

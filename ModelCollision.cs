@@ -33,7 +33,7 @@ public static class ModelCollision
     }
 
     /// <summary>Collision boxes for a model placed in the world with the given matrix.</summary>
-    public static List<BoundingBox> Build(Model model, Matrix world)
+    public static List<BoundingBox> Build(Model model, Matrix world, bool perMesh = false)
     {
         var colliders = new List<BoundingBox>();
         var everything = new List<BoundingBox>();
@@ -50,6 +50,8 @@ public static class ModelCollision
 
         if (colliders.Count > 0)
             return colliders;
+        if (perMesh)
+            return everything;
 
         var result = new List<BoundingBox>();
         if (everything.Count > 0)
