@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/dicet/OneDrive/Desktop/shame/3dgame-main/3dgame-main/Content/Models/test.fbx</SourceFile>
+  <SourceTime>2026-10-27T12:01:01.0796538+00:00</SourceTime>
+  <DestFile>C:/Users/dicet/OneDrive/Desktop/shame/3dgame-main/3dgame-main/Content/bin/DesktopGL/Content/Models/test.xnb</DestFile>
+  <DestTime>2026-10-27T12:01:14.6775189+00:00</DestTime>
+  <Importer>FbxImporter</Importer>
+  <ImporterTime>2025-10-20T15:25:32+01:00</ImporterTime>
+  <Processor>ModelProcessor</Processor>
+  <ProcessorTime>2025-10-20T15:25:32+01:00</ProcessorTime>
+  <Parameters>
+    <Key>Scale</Key>
+    <Value>0.1</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeTexturesToPowerOfTwo</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset>
+    <string>C:/Users/dicet/OneDrive/Desktop/shame/3dgame-main/3dgame-main/Content/bin/DesktopGL/Content/Textures/22ku6htw4u0c1_0.xnb</string>
+  </BuildAsset>
+  <BuildOutput />
+</PipelineBuildEvent>
