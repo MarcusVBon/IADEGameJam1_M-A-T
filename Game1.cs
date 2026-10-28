@@ -80,7 +80,8 @@ public class Game1 : Game {
 
         textures.enemyTexture1 = Content.Load<Texture2D>("Models/enemy");
 
-        enemyList.Add(new Enemy(GraphicsDevice, textures.enemyTexture1 , new Vector3(50f, 0f, 75f), 9f, 11f));
+        enemyList.Add(new Enemy(GraphicsDevice, textures.enemyTexture1 , new Vector3(50f, 0f, 75f), 9f, 11f, true));
+        enemyList.Add(new Enemy(GraphicsDevice, textures.enemyTexture1 , new Vector3(120f, 0f, 120f), 9f, 11f, false));
 
         base.Initialize();
     }
@@ -172,7 +173,7 @@ public class Game1 : Game {
                 continue ;
 
             //Console.WriteLine("Distance: " + Vector3.Distance(enemy.Position, player.Position)) ;
-            if (!enemy.startAttack && Vector3.Distance(enemy.Position, player.Position) < 70 && Vector3.Distance(enemy.Position, player.Position) > 7)
+            if (enemy.chaser && !enemy.startAttack && Vector3.Distance(enemy.Position, player.Position) < 70 && Vector3.Distance(enemy.Position, player.Position) > 7)
             {
                 Vector3 futurePosition = enemy.Position;
 

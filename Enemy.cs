@@ -21,8 +21,13 @@ public class Enemy : GameObject
     public bool startAttack = true;
     public bool isAttacking = true;
     public bool chaser = true ;
+
+    private Matrix lastWorldMatrix ;
+    private Matrix lastViewMatrix ;
+    private Matrix lastProjectionMatrix ;
+
     
-    public Enemy(GraphicsDevice device, Texture2D nTexture, Vector3 position, float nWidth, float nHeight = 2f, bool chaser = true, bool nEnemyDead = false)
+    public Enemy(GraphicsDevice device, Texture2D nTexture, Vector3 position, float nWidth, float nHeight = 2f, bool nChaser = true, bool nEnemyDead = false)
     {
         texture = nTexture;
         Position = position;
@@ -31,7 +36,7 @@ public class Enemy : GameObject
         enemyDead = nEnemyDead ;
         startAttack = false ;
         isAttacking = false ;
-        chaser = true ;
+        chaser = nChaser ;
 
         // AlphaTestEffect = hard cut-out transparency (pixels below the threshold are discarded).
         // Needs no draw sorting and writes depth correctly. Ideal for sprites.
@@ -55,7 +60,8 @@ public class Enemy : GameObject
 
     public void Update(float dt, Player player)
     {
-        if (!startAttack && Vector3.Distance(Position, player.Position) < 8)
+        if ((chaser && !startAttack && Vector3.Distance(Position, player.Position) < 8) 
+            || (!chaser && !startAttack && Vector3.Distance(Position, player.Position) < 9 * 3))
         {
             startAttack = true ;
         } 
@@ -63,27 +69,27 @@ public class Enemy : GameObject
         if (startAttack)
         {
             attackTimer += dt ;
-            Console.WriteLine("attackTimer: " + attackTimer +"/" + attackStartup) ;
+            Console.WriteLine("attackTimer: " + attackTimer +"/" + attackStartup * (!chaser ? 2 : 1)) ;
 
-            if (attackTimer >= attackStartup)
+            if (attackTimer >= attackStartup * (!chaser ? 1.75 : 1))
             {
 
-                if (Vector3.Distance(Position, player.Position) < 9)
+                if (Vector3.Distance(Position, player.Position) < 9 * (!chaser ? 3 : 1))
                 {
                     player.Position = new Vector3 (900, 0, 900) ;
                 } 
                 startAttack = false ;
                 attackTimer = 0 ;
             }
-        } else if (isAttacking)
+        } else if (true /*isAttacking && chaser*/)
         {
             durationTimer += dt ;
-            Console.WriteLine("durationTimer: " + attackTimer +"/" + attackStartup) ;
+            Console.WriteLine("durationTimer: " + attackTimer +"/" + attackStartup* (!chaser ? 1.5 : 1)) ;
 
             if (attackTimer >= attackStartup)
             {
 
-                if (Vector3.Distance(Position, player.Position) < 9)
+                if (Vector3.Distance(Position, player.Position) < 9 * (!chaser ? 3 : 1))
                 {
                     player.Position = new Vector3 (900, 0, 900) ;
                 } 
@@ -156,18 +162,41 @@ public class Enemy : GameObject
         // (sin(yaw), cos(yaw)), so yaw = atan2(dx, dz). Only this one axis is ever rotated.
         float yaw = MathF.Atan2(dx, dz);
 
-        _effect.World = Matrix.CreateRotationY(yaw) * Matrix.CreateTranslation(Position);
-        _effect.View = view;
-        _effect.Projection = projection;
-        _effect.Texture = texture;
-
-        // PointClamp = crisp pixel art. Use SamplerState.LinearClamp for smooth/hi-res sprites.
-        device.SamplerStates[0] = SamplerState.PointClamp;
-
-        foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
+        if (true || (!startAttack && !isAttacking))
         {
-            pass.Apply();
-            device.DrawUserPrimitives(PrimitiveType.TriangleList, quad, 0, 2);
+            _effect.World = Matrix.CreateRotationY(yaw) * Matrix.CreateTranslation(Position);
+            _effect.View = view;
+            _effect.Projection = projection;
+            _effect.Texture = texture;
+
+            
+            lastWorldMatrix = _effect.World ;
+            lastViewMatrix = _effect.View ;
+            lastProjectionMatrix = _effect.Projection;
+
+            // PointClamp = crisp pixel art. Use SamplerState.LinearClamp for smooth/hi-res sprites.
+            device.SamplerStates[0] = SamplerState.PointClamp;
+
+            foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                device.DrawUserPrimitives(PrimitiveType.TriangleList, quad, 0, 2);
+            }
+        } else
+        { 
+            _effect.World = lastWorldMatrix;
+            _effect.View = view;
+            _effect.Projection = lastProjectionMatrix;
+            _effect.Texture = texture;
+
+            // PointClamp = crisp pixel art. Use SamplerState.LinearClamp for smooth/hi-res sprites.
+            device.SamplerStates[0] = SamplerState.PointClamp;
+
+            foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                device.DrawUserPrimitives(PrimitiveType.TriangleList, quad, 0, 2);
+            }
         }
     }
 }
