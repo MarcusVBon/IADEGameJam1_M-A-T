@@ -64,5 +64,5 @@ monodroid*.msi
 
 artifacts/
 bin/
-obj/
+obj/Debug/net9.0-windows/
 Content/obj
