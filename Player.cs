@@ -77,6 +77,7 @@ namespace _3dgame {
             }
             Position = futurePosition;
             BoundingSphere = new BoundingSphere(Position, 1f);
+
         }
 
         private bool ValidateMovement(Vector3 futurePosition, IReadOnlyList<BoundingBox> colliders) {

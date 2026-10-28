@@ -39,7 +39,6 @@ C:\Users\marcu\Downloads\gameInAgoodState\test\obj\Debug\net9.0-windows\test.gen
 C:\Users\marcu\Downloads\gameInAgoodState\test\obj\Debug\net9.0-windows\ref\test.dll
 C:\Users\marcu\Downloads\gameInAgoodState\test\bin\Debug\net9.0-windows\Content\Models\enemy.xnb
 C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Models\corridor.xnb
-C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Models\enemy.xnb
 C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Models\ground.xnb
 C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Models\ground_0.xnb
 C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Models\house.xnb
@@ -79,3 +78,4 @@ C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\obj\Debug\net9
 C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\obj\Debug\net9.0-windows\test.pdb
 C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\obj\Debug\net9.0-windows\test.genruntimeconfig.cache
 C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\obj\Debug\net9.0-windows\ref\test.dll
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Models\enemy.xnb

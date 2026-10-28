@@ -22,6 +22,9 @@ public class Game1 : Game {
 
     //MY STUFF
     private GameObject test;
+
+    private float shootDelay ;
+    private const float FireDelay = 0.25f;     // seconds between shots
     
     private readonly Matrix testWorld = Matrix.CreateScale(25f) * Matrix.CreateTranslation(60, 2.5f, 100);
     private GameObject corridor;
@@ -154,7 +157,47 @@ public class Game1 : Game {
             }
         }
 
+        
+        // Gun
+        shootDelay = MathF.Max(0f, shootDelay - gameTime.ElapsedGameTime.Seconds);
+
+        Shoot() ;
+
         player.Update(currentKeyboardState, cameraYaw, colliders);
+
+        
+        foreach (Enemy enemy in enemyList)
+        {
+            if (enemy.enemyDead)
+                continue ;
+
+            //Console.WriteLine("Distance: " + Vector3.Distance(enemy.Position, player.Position)) ;
+            if (!enemy.startAttack && Vector3.Distance(enemy.Position, player.Position) < 70 && Vector3.Distance(enemy.Position, player.Position) > 7)
+            {
+                Vector3 futurePosition = enemy.Position;
+
+                Vector3 movementDir = player.Position - enemy.Position ;
+
+                movementDir.Normalize() ;
+
+                futurePosition.Y += movementDir.Y * 0.45f ;
+
+                Vector3 futureX = enemy.Position + new Vector3(movementDir.X * 0.45f, 0, 0);
+                if (enemy.ValidateMovement(futureX, colliders)) {
+                    futurePosition.X = futureX.X;
+                }
+
+                Vector3 futureZ = futurePosition + new Vector3(0, 0, movementDir.Z * 0.45f);
+                if (enemy.ValidateMovement(futureZ, colliders)) {
+                    futurePosition.Z = futureZ.Z;
+                }
+
+                enemy.Position = futurePosition;
+                
+
+            }
+            enemy.Update((float)gameTime.ElapsedGameTime.TotalSeconds, player) ;
+        }
 
         gameCamera.Update(cameraYaw, cameraPitch, player.Position, graphics.GraphicsDevice.Viewport.AspectRatio);
 
@@ -173,6 +216,45 @@ public class Game1 : Game {
         }
         
         base.Update(gameTime);
+    }
+
+    private void Shoot()
+    {
+        if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+        {
+            shootDelay = FireDelay;
+
+            float cp = MathF.Cos(cameraPitch);
+            var ray = new Ray(player.Position, new Vector3(-MathF.Sin(cameraYaw) * cp, MathF.Sin(cameraPitch), -MathF.Cos(cameraYaw) * cp));
+
+            Enemy closest = null;
+            float closestDistance = float.MaxValue;
+
+            foreach (Enemy enemy in enemyList)
+            {
+                float? distance = enemy.rayIntersect(ray);
+                if (distance.HasValue && distance.Value < closestDistance)
+                {
+                    closestDistance = distance.Value;
+                    closest = enemy;
+                }
+            }
+
+            float closestDistanceCollider = float.MaxValue;
+            foreach (BoundingBox collider in colliders)
+            {
+                float? distance = ray.Intersects(collider) ;
+                if (distance.HasValue && distance.Value < closestDistance)
+                    closestDistanceCollider = distance.Value;
+            }
+
+            // NOTE: the room is one closed convex box, so a wall can never be between you and an enemy.
+            // Once you add interior walls/obstacles, also ray-test them and ignore enemies that are farther away.
+            
+            if (closest == null|| closestDistanceCollider < closestDistance)
+                return ;
+            closest.enemyDead = true;
+        }
     }
 
     private void DrawTerrain(Model model) {
@@ -213,7 +295,7 @@ public class Game1 : Game {
         int h = graphics.GraphicsDevice.Viewport.Height;
 
         // NonPremultiplied matches PNGs loaded with Texture2D.FromStream (soft edges look right).
-        spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp,
+        spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied, SamplerState.PointClamp,
                             DepthStencilState.None, RasterizerState.CullNone);
 
 
@@ -229,16 +311,24 @@ public class Game1 : Game {
     }
     
     protected override void Draw(GameTime gameTime) {
+
         GraphicsDevice.Clear(Color.WhiteSmoke);
+
+        GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+        GraphicsDevice.BlendState = BlendState.Opaque;
+        GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+        GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
+
+
         DrawTerrain(ground.Model);
 
         DrawTextures(test.Model, testWorld);
         DrawTextures(corridor.Model, levelMatrix);
 
         foreach (Enemy enemy in enemyList)
-            //enemy.Draw(GraphicsDevice, gameCamera.ViewMatrix, gameCamera.ProjectionMatrix, player.Position);
+            enemy.Draw(GraphicsDevice, gameCamera.ViewMatrix, gameCamera.ProjectionMatrix, player.Position);
 
-        //DrawHud();
+        DrawHud();
 
         base.Draw(gameTime);
     }

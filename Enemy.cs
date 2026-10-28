@@ -1,10 +1,11 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 
 namespace _3dgame;
 
-public class Enemy
+public class Enemy : GameObject
 {
     public Vector3 Position;                 // position of the enemy's FEET
     private  Texture2D texture;
@@ -12,13 +13,25 @@ public class Enemy
     private  VertexPositionTexture[] quad;
     private  float Width;
     private  float height;
+    public bool enemyDead = false;
+    public float attackTimer = 00.0f;
+    public float durationTimer = 00.0f;
+    private const float attackStartup = 0.75f;
+    private const float attackDuration = 0.5f;
+    public bool startAttack = true;
+    public bool isAttacking = true;
+    public bool chaser = true ;
     
-    public Enemy(GraphicsDevice device, Texture2D nTexture, Vector3 position, float nWidth, float nHeight = 2f)
+    public Enemy(GraphicsDevice device, Texture2D nTexture, Vector3 position, float nWidth, float nHeight = 2f, bool chaser = true, bool nEnemyDead = false)
     {
         texture = nTexture;
         Position = position;
         height = nHeight;
         Width = nWidth;
+        enemyDead = nEnemyDead ;
+        startAttack = false ;
+        isAttacking = false ;
+        chaser = true ;
 
         // AlphaTestEffect = hard cut-out transparency (pixels below the threshold are discarded).
         // Needs no draw sorting and writes depth correctly. Ideal for sprites.
@@ -40,13 +53,48 @@ public class Enemy
     /// <summary>Radius used for blocking the player and (roughly) for hit detection.</summary>
     public float Radius => Width * 0.4f;
 
-    public void Update(float dt)
+    public void Update(float dt, Player player)
     {
-        
+        if (!startAttack && Vector3.Distance(Position, player.Position) < 8)
+        {
+            startAttack = true ;
+        } 
+
+        if (startAttack)
+        {
+            attackTimer += dt ;
+            Console.WriteLine("attackTimer: " + attackTimer +"/" + attackStartup) ;
+
+            if (attackTimer >= attackStartup)
+            {
+
+                if (Vector3.Distance(Position, player.Position) < 9)
+                {
+                    player.Position = new Vector3 (900, 0, 900) ;
+                } 
+                startAttack = false ;
+                attackTimer = 0 ;
+            }
+        } else if (isAttacking)
+        {
+            durationTimer += dt ;
+            Console.WriteLine("durationTimer: " + attackTimer +"/" + attackStartup) ;
+
+            if (attackTimer >= attackStartup)
+            {
+
+                if (Vector3.Distance(Position, player.Position) < 9)
+                {
+                    player.Position = new Vector3 (900, 0, 900) ;
+                } 
+                startAttack = false ;
+                attackTimer = 0 ;
+            }
+        }
     }
 
     /// <summary>Ray vs. an axis-aligned box around the enemy. Returns distance along the ray, or null on a miss.</summary>
-    public float? Intersect(Ray ray)
+    public float? rayIntersect(Ray ray)
     {
         float r = Radius;
         var box = new BoundingBox(
@@ -54,6 +102,25 @@ public class Enemy
             new Vector3(Position.X + r, Position.Y + height, Position.Z + r));
 
         return ray.Intersects(box);
+    }
+
+    public bool ValidateMovement(Vector3 futurePosition, IReadOnlyList<BoundingBox> colliders) {
+        // do not allow off-terrain movement
+        if ((Math.Abs(futurePosition.X) > GameConstants.MaxRange) || (Math.Abs(futurePosition.Z) > GameConstants.MaxRange)) {
+            return false;
+        }
+
+        // future bounding sphere
+        BoundingSphere futureSphere = new BoundingSphere(futurePosition,  BoundingSphere.Radius);
+
+        // collision with every box (houses, walls, ...)
+        foreach (BoundingBox box in colliders) {
+            if (futureSphere.Intersects(box)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /// <summary>Stops a circle (the player) from walking through this enemy.</summary>
@@ -75,6 +142,11 @@ public class Enemy
 
     public void Draw(GraphicsDevice device, Matrix view, Matrix projection, Vector3 cameraPosition)
     {
+        if (enemyDead)
+        {
+            Console.WriteLine("EnemyDead") ;
+            return ;
+        }
 
         // Direction from the enemy to the camera, flattened onto the ground plane.
         float dx = cameraPosition.X - Position.X;
