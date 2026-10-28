@@ -7,7 +7,19 @@
     <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Models/ground.png</File>
     <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Models/ground.x</File>
     <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Models/enemy.png</File>
+    <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Models/Splat.png</File>
+    <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Models/boss.png</File>
+    <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Models/shooterAttack.png</File>
+    <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Models/ChaseAttack.png</File>
+    <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Models/ChaseChase.png</File>
+    <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Models/ChaseIdle.png</File>
+    <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Textures/LeftHandBase.png</File>
+    <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Textures/LeftHandBlue.png</File>
+    <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Textures/LeftHandRed.png</File>
+    <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Textures/LeftHandPurple.png</File>
     <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Textures/Gunidle540.png</File>
+    <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Textures/boot.png</File>
+    <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Textures/GunFire.png</File>
     <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Models/house.fbx</File>
     <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Models/player.fbx</File>
     <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Models/sphere1uR.x</File>
@@ -17,6 +29,18 @@
     <File>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Models/corridor.fbx</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

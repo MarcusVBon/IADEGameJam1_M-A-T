@@ -80,3 +80,15 @@ C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\obj\Debug\net9
 C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\obj\Debug\net9.0-windows\ref\test.dll
 C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Models\enemy.xnb
 C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Textures\Gunidle540.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Textures\LeftHandBase.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Textures\LeftHandBlue.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Textures\LeftHandPurple.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Textures\LeftHandRed.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Textures\GunFire.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Models\shooterAttack.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Textures\boot.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Models\ChaseAttack.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Models\ChaseChase.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Models\ChaseIdle.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Models\boss.xnb
+C:\Users\marcu\Downloads\3dgame-main (1)\3dgame-main\ColitionTest\bin\Debug\net9.0-windows\Content\Models\Splat.xnb
