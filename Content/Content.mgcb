@@ -156,10 +156,71 @@
 /processor:TextureProcessor
 /build:Models/enemy.png
 
+#begin Models/Splat.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Models/Splat.png
+
+#begin Models/boss.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Models/boss.png
+
+#begin Models/shooterAttack.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Models/shooterAttack.png
+
+#begin Models/ChaseAttack.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Models/ChaseAttack.png
+
+#begin Models/ChaseChase.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Models/ChaseChase.png
+
+#begin Models/ChaseIdle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Models/ChaseIdle.png
+
+
+#begin Textures/LeftHandBase.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Textures/LeftHandBase.png
+
+#begin Textures/LeftHandBlue.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Textures/LeftHandBlue.png
+
+#begin Textures/LeftHandRed.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Textures/LeftHandRed.png
+
+#begin Textures/LeftHandPurple.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Textures/LeftHandPurple.png
+
 #begin Textures/Gunidle540.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /build:Textures/Gunidle540.png
+
+#begin Textures/boot.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Textures/boot.png
+
+#begin Textures/GunFire.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Textures/GunFire.png
 
 #begin Models/house.fbx
 /importer:FbxImporter

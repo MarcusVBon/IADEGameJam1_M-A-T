@@ -8,7 +8,7 @@ namespace _3dgame;
 public class Enemy : GameObject
 {
     public Vector3 Position;                 // position of the enemy's FEET
-    private  Texture2D texture;
+    public  Texture2D texture;
     private  AlphaTestEffect _effect;
     private  VertexPositionTexture[] quad;
     private  float Width;
@@ -21,6 +21,7 @@ public class Enemy : GameObject
     public bool startAttack = true;
     public bool isAttacking = true;
     public bool chaser = true ;
+    public bool billionare = false ;
 
     private Matrix lastWorldMatrix ;
     private Matrix lastViewMatrix ;
@@ -29,9 +30,16 @@ public class Enemy : GameObject
     public readonly float attackDmg = 5 ;
 
     
-    public Enemy(GraphicsDevice device, Texture2D nTexture, Vector3 position, float nWidth, float nHeight = 2f, bool nChaser = true, bool nEnemyDead = false)
+    public Enemy(GraphicsDevice device, GameTextures textures, Vector3 position, float nWidth, float nHeight = 2f, bool nChaser = true, bool nBillionare = false, bool nEnemyDead = false)
     {
-        texture = nTexture;
+        if (chaser)
+        {
+            texture = textures.enemyTexture1 ;
+        } else
+        {
+            texture = textures.enemyChaseIdle ;
+        }
+
         Position = position;
         height = nHeight;
         Width = nWidth;
@@ -39,6 +47,12 @@ public class Enemy : GameObject
         startAttack = false ;
         isAttacking = false ;
         chaser = nChaser ;
+        billionare = nBillionare ;
+        
+        if (billionare)
+        {
+            texture = textures.billinare ;
+        }
 
         // AlphaTestEffect = hard cut-out transparency (pixels below the threshold are discarded).
         // Needs no draw sorting and writes depth correctly. Ideal for sprites.
@@ -81,13 +95,23 @@ public class Enemy : GameObject
         return !wallBlocked ;
     }
 
-    public void Update(float dt, Player player, List<BoundingBox> colliders)
+    public void Update(float dt, Player player, List<BoundingBox> colliders, GameTextures textures)
     {
+        if (billionare)
+            return ;
+
         // check if enemy can start attacking the player
         if ((chaser && !startAttack && Vector3.Distance(Position, player.Position) < 8) 
             || (!chaser && !startAttack && Vector3.Distance(Position, player.Position) < 9 * 3 && canSeePlayer(player, colliders)))
         {
             startAttack = true ;
+            if (chaser)
+            {
+                texture = textures.enemyChaseAttack ;
+            } else
+            {
+                texture = textures.enemyShoot ;
+            }
         } 
 
         if (startAttack)
@@ -102,23 +126,31 @@ public class Enemy : GameObject
                 {
                     player.healthTimer -= attackDmg ;
                 } 
-                startAttack = false ;
-                attackTimer = 0 ;
+                if (!chaser)
+                { 
+                    texture = textures.enemyTexture1 ;
+                    startAttack = false ;
+                    attackTimer = 0 ;
+                } else
+                {
+                    startAttack = false ;
+                    isAttacking = true ;
+                }
+               
             }
-        } else if (true /*isAttacking && chaser*/)
+        } else if (isAttacking && chaser)
         {
             // unused?
             durationTimer += dt ;
             //Console.WriteLine("durationTimer: " + attackTimer +"/" + attackStartup* (!chaser ? 1.5 : 1)) ;
 
-            if (attackTimer >= attackStartup)
+            if (durationTimer >= attackStartup * 1.15)
             {
-                if (Vector3.Distance(Position, player.Position) < 9 * (!chaser ? 3 : 1) && (chaser || canSeePlayer(player, colliders)))
-                {
-                    player.healthTimer -= attackDmg ;
-                } 
                 startAttack = false ;
                 attackTimer = 0 ;
+                durationTimer = 0 ;
+                texture = textures.enemyChase ;
+
             }
         }
     }
@@ -182,11 +214,12 @@ public class Enemy : GameObject
 
     public void Draw(GraphicsDevice device, Matrix view, Matrix projection, Vector3 cameraPosition)
     {
-        if (enemyDead)
+        /*if (enemyDead)
         {
+
             Console.WriteLine("EnemyDead") ;
             return ;
-        }
+        }*/
 
         // Direction from the enemy to the camera, flattened onto the ground plane.
         float dx = cameraPosition.X - Position.X;

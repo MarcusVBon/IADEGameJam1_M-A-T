@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Runtime.Serialization;
 using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -13,9 +15,25 @@ public class GameTextures
 {
 
     public Texture2D enemyTexture1 ;
+    public Texture2D enemyShoot ;
+    public Texture2D enemyBash ;
+
+    public Texture2D enemyChaseIdle ;
+    public Texture2D enemyChase ;
+    public Texture2D enemyChaseAttack ;
+
+    public Texture2D billinare;
+    public Texture2D bloodSplat;
+
     public Texture2D crossHair ;
     public Texture2D pixel;
-    
+    public Texture2D gunUI;
+    public Texture2D gunShootUI;
+    public Texture2D kickUI;
+    public Texture2D handEmpty;
+    public Texture2D handRed;
+    public Texture2D handBlue;
+    public Texture2D handPurple;
 }
 
 public class Game1 : Game {
@@ -59,14 +77,18 @@ public class Game1 : Game {
     //MY STUFF
     private GameObject test;
 
-    private float shootDelay ;
-    private const float FireDelay = 0.25f;     // seconds between shots
+    private float shootCooldown ;
+    private float kickCooldown ;
+    private const float FireDelay = 0.5f;     // seconds between shots
+    private const float KickDelay = 0.5f;     // seconds between shots
+    private bool blockshoot = false ;
+    private bool blockKick = false ;
     
     private readonly Matrix testWorld = Matrix.CreateScale(25f) * Matrix.CreateTranslation(60, 2.5f, 100);
     private GameObject corridor;
     // corridor runs along Z, entrance 5 units in front of the player's start (30, 2, 125)
 
-    private GameTextures textures = new GameTextures() ;
+    public GameTextures textures = new GameTextures() ;
     private List<Enemy> enemyList = new();
 
     private readonly Matrix levelMatrix = Matrix.CreateTranslation(30, 0, 100);
@@ -115,9 +137,33 @@ public class Game1 : Game {
         previousMouseState = Mouse.GetState();
 
         textures.enemyTexture1 = Content.Load<Texture2D>("Models/enemy");
+        textures.enemyShoot = Content.Load<Texture2D>("Models/ShooterAttack");
 
-        enemyList.Add(new Enemy(GraphicsDevice, textures.enemyTexture1 , new Vector3(50f, 0f, 75f), 9f, 11f, true));
-        enemyList.Add(new Enemy(GraphicsDevice, textures.enemyTexture1 , new Vector3(120f, 0f, 120f), 9f, 11f, false));
+        textures.enemyChaseAttack = Content.Load<Texture2D>("Models/ChaseAttack");
+        textures.enemyChase = Content.Load<Texture2D>("Models/ChaseChase");
+        textures.enemyChaseIdle = Content.Load<Texture2D>("Models/ChaseIdle");
+
+        textures.billinare = Content.Load<Texture2D>("Models/boss");
+        textures.bloodSplat = Content.Load<Texture2D>("Models/Splat");
+
+
+        textures.gunUI = Content.Load<Texture2D>("Textures/GunIdle540") ;
+        textures.gunShootUI = Content.Load<Texture2D>("Textures/GunFire") ;
+        textures.kickUI = Content.Load<Texture2D>("Textures/boot") ;
+        textures.handEmpty = Content.Load<Texture2D>("Textures/LeftHandBase") ;
+        textures.handBlue = Content.Load<Texture2D>("Textures/LeftHandBlue") ;
+        textures.handRed = Content.Load<Texture2D>("Textures/LeftHandRed") ;
+        textures.handPurple = Content.Load<Texture2D>("Textures/LeftHandPurple") ;
+
+        enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(0f, 0f, 0f), 9f, 11f, true, true));
+
+        enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(50f, 0f, 75f), 9f, 11f, true));
+
+        enemyList.Add(new Enemy(GraphicsDevice, textures , new Vector3(75f, 0f, 75f), 9f, 11f, true));
+
+        enemyList.Add(new Enemy(GraphicsDevice, textures , new Vector3(30f, 0f, 75f), 9f, 11f, true));
+
+        enemyList.Add(new Enemy(GraphicsDevice, textures , new Vector3(120f, 0f, 120f), 9f, 11f, false));
 
         base.Initialize();
     }
@@ -222,7 +268,13 @@ public class Game1 : Game {
 
         
         // Gun
-        shootDelay = MathF.Max(0f, shootDelay - gameTime.ElapsedGameTime.Seconds);
+        shootCooldown -= (float) gameTime.ElapsedGameTime.TotalSeconds ;
+        if (shootCooldown < 0) 
+            shootCooldown = 0 ;
+
+        kickCooldown -= (float) gameTime.ElapsedGameTime.TotalSeconds ;
+        if (kickCooldown < 0) 
+            kickCooldown = 0 ;
 
         Shoot() ;
 
@@ -231,7 +283,7 @@ public class Game1 : Game {
         
         foreach (Enemy enemy in enemyList)
         {
-            if (enemy.enemyDead)
+            if (enemy.enemyDead || enemy.billionare)
                 continue ;
 
             //Console.WriteLine("Distance: " + Vector3.Distance(enemy.Position, player.Position)) ;
@@ -256,10 +308,13 @@ public class Game1 : Game {
                 }
 
                 enemy.Position = futurePosition;
-                
-
+                enemy.texture = textures.enemyChase ;
+            } else if (enemy.chaser && enemy.durationTimer == 0 )
+            {
+                enemy.texture = textures.enemyChaseIdle ;
             }
-            enemy.Update((float)gameTime.ElapsedGameTime.TotalSeconds, player, colliders) ;
+
+            enemy.Update((float)gameTime.ElapsedGameTime.TotalSeconds, player, colliders, textures) ;
         }
 
         gameCamera.Update(cameraYaw, cameraPitch, player.Position, graphics.GraphicsDevice.Viewport.AspectRatio);
@@ -283,9 +338,21 @@ public class Game1 : Game {
 
     private void Shoot()
     {
-        if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+        if (Mouse.GetState().LeftButton == ButtonState.Released) 
         {
-            shootDelay = FireDelay;
+            blockshoot = false ;
+        } 
+        if (Mouse.GetState().RightButton == ButtonState.Released)
+        {
+            blockKick = false ;
+        }
+
+        Console.WriteLine("GUN COOLDOWN : " + shootCooldown + " KICK COOLDOWN: " + kickCooldown) ;
+        if (Mouse.GetState().LeftButton == ButtonState.Pressed && shootCooldown == 0 && !blockshoot)
+        {
+            blockshoot = true ;
+            Console.WriteLine("shoooottt") ;
+            shootCooldown = FireDelay;
 
             float cp = MathF.Cos(cameraPitch);
             var ray = new Ray(player.Position, new Vector3(-MathF.Sin(cameraYaw) * cp, MathF.Sin(cameraPitch), -MathF.Cos(cameraYaw) * cp));
@@ -317,6 +384,48 @@ public class Game1 : Game {
             if (closest == null|| closestDistanceCollider < closestDistance)
                 return ;
             closest.enemyDead = true;
+            closest.texture = textures.bloodSplat;
+
+            player.switchHandState(1) ;
+        } else if (Mouse.GetState().RightButton == ButtonState.Pressed && kickCooldown == 0 && !blockKick)
+        {
+            blockKick = true ;
+            Console.WriteLine("KILLLLLLLLLLLLL") ;
+            kickCooldown = FireDelay;
+            float cp = MathF.Cos(cameraPitch);
+            var ray = new Ray(player.Position, new Vector3(-MathF.Sin(cameraYaw) * cp, MathF.Sin(cameraPitch), -MathF.Cos(cameraYaw) * cp));
+
+            Enemy closest = null;
+            float closestDistance = float.MaxValue;
+
+            foreach (Enemy enemy in enemyList)
+            {
+                if (Vector3.Distance(player.Position, enemy.Position) > 12)
+                    continue ;
+                
+
+                float? distance = enemy.rayIntersect(ray);
+                if (distance.HasValue && distance.Value < closestDistance)
+                {
+                    closestDistance = distance.Value;
+                    closest = enemy;
+                }
+            }
+
+            float closestDistanceCollider = float.MaxValue;
+            foreach (BoundingBox collider in colliders)
+            {
+                float? distance = ray.Intersects(collider) ;
+                if (distance.HasValue && distance.Value < closestDistance)
+                    closestDistanceCollider = distance.Value;
+            }
+            
+            if (closest == null|| closestDistanceCollider < closestDistance)
+                return ;
+
+            closest.enemyDead = true;
+            closest.texture = textures.bloodSplat;
+            player.switchHandState(2) ;
         }
     }
 
@@ -352,7 +461,31 @@ public class Game1 : Game {
         }
     }
 
-    private void DrawHud()
+    private Texture2D getCharacterHand()
+    {
+        if (player.handState == 0)
+        {
+            return textures.handEmpty ;
+        } else if (player.handState == 4)
+        {
+            return textures.handPurple ;
+        }
+        return  textures.handEmpty ;
+    }
+
+    private Texture2D getCharacterHandItem()
+    {
+        if (player.handState == 1)
+        {
+            return textures.handRed ;
+        } else if (player.handState == 2)
+        {
+            return textures.handBlue ;
+        }
+        return null ;
+    }
+
+    private void DrawHud(Player player)
     {
         int w = graphics.GraphicsDevice.Viewport.Width;
         int h = graphics.GraphicsDevice.Viewport.Height;
@@ -369,6 +502,40 @@ public class Game1 : Game {
         spriteBatch.Draw(textures.pixel, new Rectangle(cx + gap, cy - thick / 2, len, thick), Color.White);
         spriteBatch.Draw(textures.pixel, new Rectangle(cx - thick / 2, cy - gap - len, thick, len), Color.White);
         spriteBatch.Draw(textures.pixel, new Rectangle(cx - thick / 2, cy + gap, thick, len), Color.White);
+
+        // PURPLE BARRRRRRRRRRRRRRRRRRRR
+        
+        cx = w/ 40 ;
+        cy =  h / 30;
+        const int thickPurple = 50;
+        const int LengthMax = 300;
+        spriteBatch.Draw(textures.pixel, new Rectangle(cx, cy, (int) (LengthMax * (player.healthTimer / player.maxHealthTimer)) , thickPurple), Color.Purple);
+
+        spriteBatch.Draw(textures.pixel, new Rectangle(cx, cy, (int) (LengthMax * (player.healthTimer / player.maxHealthTimer)) , thickPurple), Color.Purple);
+
+        // gun
+
+        Rectangle gunRect = new Rectangle(w - (w/1920 * 1250), h - (h/1080 * 1000), w/1920 * 1250, h/1080 * 1000) ;
+
+        spriteBatch.Draw(shootCooldown < 0.3 ? textures.gunUI : textures.gunShootUI, gunRect, Color.White) ;
+
+        // kick
+
+        if (kickCooldown > 0.15) 
+        {
+            Rectangle kickRect = new Rectangle(w - (w/1920 * 1500), h - (h/1080 * 1000), w/1920 * 1250, h/1080 * 1000) ;
+
+            spriteBatch.Draw(textures.kickUI, kickRect, Color.White) ;
+        }
+
+        // hand
+        gunRect = new Rectangle(0, h - (h/1080 * 1000), w/1920 * 1250, h/1080 * 1000) ;
+
+        spriteBatch.Draw(getCharacterHand(), gunRect, Color.White) ;
+        if (getCharacterHandItem() != null)
+            spriteBatch.Draw(getCharacterHandItem(), gunRect, Color.White) ;
+
+        //0,28125
 
         spriteBatch.End();
     }
@@ -413,7 +580,7 @@ public class Game1 : Game {
     spriteBatch.End();
 
     //HUD with no shader
-    DrawHud();
+    DrawHud(player);
 
     base.Draw(gameTime);
 }

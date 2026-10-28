@@ -14,6 +14,8 @@ namespace _3dgame {
         private bool reachedBottom = true;
         private Vector3 startPosition = new Vector3(30, GameConstants.HeightOffset, 125);
         public readonly double maxHealthTimer = 20 ;
+        public readonly double crunchTime = 0.75 ;
+        public double handCrunchTimer = -1 ;
         public readonly double healthRegen = 5 ;
         public double healthTimer = 15;
         public int handState = 0 ;
@@ -22,19 +24,27 @@ namespace _3dgame {
             ForwardDirection = 0.0f;
             Position = startPosition;
             healthTimer = maxHealthTimer ;
+            handCrunchTimer = -1 ;
             handState = 0 ;
         }
 
         public void switchHandState(int newState)
         {
-            if (newState == 1 && handState == 2 || newState == 2 && handState == 1)
+            if(handState == 4)
             {
-                handState = 0 ;
+                handCrunchTimer = -1 ;
+                handState = newState ;
                 healthTimer += healthRegen ;
                 if (maxHealthTimer < healthTimer)
                 {
                     healthTimer =  maxHealthTimer ;
                 }
+            }
+
+            if (newState == 1 && handState == 2 || newState == 2 && handState == 1)
+            {
+                handState = 4 ;
+                handCrunchTimer = crunchTime ;
             } else
             {
                 handState = newState ;
@@ -44,6 +54,22 @@ namespace _3dgame {
         public void Update(double dt, KeyboardState keyboardState, float cameraYaw, IReadOnlyList<BoundingBox> colliders) {
             healthTimer = healthTimer - dt ;
             //Console.WriteLine("HandState: " + handState) ;
+            if (handCrunchTimer != -1)
+            {
+                Console.WriteLine("CRUNCH TIME: " + handCrunchTimer) ;
+                handCrunchTimer = handCrunchTimer - dt ;
+                if (handCrunchTimer < 0)
+                {
+                    handCrunchTimer = -1 ;
+                    handState = 0 ;
+                    healthTimer += healthRegen ;
+                    if (maxHealthTimer < healthTimer)
+                    {
+                        healthTimer =  maxHealthTimer ;
+                    }
+                }
+
+            }
 
             if (healthTimer < 0)
             {
