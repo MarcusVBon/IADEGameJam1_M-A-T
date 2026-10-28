@@ -78,6 +78,7 @@ public class Game1 : Game {
     private GameObject test;
 
     private float shootCooldown ;
+    private int untilReload;
     private float kickCooldown ;
     private const float FireDelay = 0.5f;     // seconds between shots
     private const float KickDelay = 0.5f;     // seconds between shots
@@ -350,8 +351,9 @@ public class Game1 : Game {
         Console.WriteLine("GUN COOLDOWN : " + shootCooldown + " KICK COOLDOWN: " + kickCooldown) ;
         if (Mouse.GetState().LeftButton == ButtonState.Pressed && shootCooldown == 0 && !blockshoot)
         {
+            
             blockshoot = true ;
-            Console.WriteLine("shoooottt") ;
+            shooting.Play();
             shootCooldown = FireDelay;
 
             float cp = MathF.Cos(cameraPitch);
@@ -390,7 +392,6 @@ public class Game1 : Game {
         } else if (Mouse.GetState().RightButton == ButtonState.Pressed && kickCooldown == 0 && !blockKick)
         {
             blockKick = true ;
-            Console.WriteLine("KILLLLLLLLLLLLL") ;
             kickCooldown = FireDelay;
             float cp = MathF.Cos(cameraPitch);
             var ray = new Ray(player.Position, new Vector3(-MathF.Sin(cameraYaw) * cp, MathF.Sin(cameraPitch), -MathF.Cos(cameraYaw) * cp));
@@ -421,9 +422,11 @@ public class Game1 : Game {
             }
             
             if (closest == null|| closestDistanceCollider < closestDistance)
+                //ADD WOOSH SOUND WHEN MISSING ENEMY
                 return ;
 
             closest.enemyDead = true;
+            playerHit.Play();
             closest.texture = textures.bloodSplat;
             player.switchHandState(2) ;
         }
@@ -569,15 +572,25 @@ public class Game1 : Game {
     spriteBatch.Draw(sceneTarget, GraphicsDevice.Viewport.Bounds, Color.White);
     spriteBatch.End();
 
+
     GraphicsDevice.SetRenderTarget(null);
     GraphicsDevice.Clear(Color.Black);
+
+    if(shootCooldown > 0.25f)
+    {
     _grayscaleEffect.Parameters["Saturation"].SetValue(_saturation);
     _grayscaleEffect.Parameters["Contrast"].SetValue(_contrast);
     _grayscaleEffect.Parameters["Brightness"].SetValue(_brightness);
-
     spriteBatch.Begin(samplerState: SamplerState.PointClamp, effect: _grayscaleEffect);
+    }
+
+    else
+    {
+         spriteBatch.Begin(samplerState: SamplerState.PointClamp);   
+    }
     spriteBatch.Draw(pixelTarget, GraphicsDevice.Viewport.Bounds, Color.White);
     spriteBatch.End();
+    
 
     //HUD with no shader
     DrawHud(player);

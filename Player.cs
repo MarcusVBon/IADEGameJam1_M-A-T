@@ -30,6 +30,10 @@ namespace _3dgame {
 
         public void switchHandState(int newState)
         {
+            if(handState == 1)
+            {
+                
+            }
             if(handState == 4)
             {
                 handCrunchTimer = -1 ;
