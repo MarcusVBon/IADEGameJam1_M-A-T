@@ -13,6 +13,111 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Audio/LiquidsMixing.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/processorParam:Version=3.8.6.0
+/build:Audio/LiquidsMixing.wav
+
+#begin Audio/PlayerDeath.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/processorParam:Version=3.8.6.0
+/build:Audio/PlayerDeath.wav
+
+#begin Audio/PlayerGetsHit.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/processorParam:Version=3.8.6.0
+/build:Audio/PlayerGetsHit.wav
+
+#begin Audio/Reloading.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/processorParam:Version=3.8.6.0
+/build:Audio/Reloading.wav
+
+#begin Audio/Shooting.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/processorParam:Version=3.8.6.0
+/build:Audio/Shooting.wav
+
+#begin Audio/SparrowSong.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/processorParam:Version=3.8.6.0
+/build:Audio/SparrowSong.wav
+
+#begin Audio/SpineCrush.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/processorParam:Version=3.8.6.0
+/build:Audio/SpineCrush.wav
+
+#begin Audio/SpinePull.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/processorParam:Version=3.8.6.0
+/build:Audio/SpinePull.wav
+
+#begin Effects/FlashShader.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/processorParam:Defines=
+/processorParam:Version=3.8.6.0
+/build:Effects/FlashShader.fx
+
+#begin Effects/MainShader.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/processorParam:Defines=
+/processorParam:Version=3.8.6.0
+/build:Effects/MainShader.fx
+
+#begin Models/corridor.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=0.01
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/processorParam:Version=3.8.6.0
+/build:Models/corridor.fbx
+
+#begin Models/enemy.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.0
+/build:Models/enemy.png
+
 #begin Models/ground.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -23,6 +128,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.0
 /build:Models/ground.png
 
 #begin Models/ground.x
@@ -42,6 +148,7 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
+/processorParam:Version=3.8.6.0
 /build:Models/ground.x
 
 #begin Models/enemy.png
@@ -71,6 +178,7 @@
 /processorParam:Scale=0.1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
+/processorParam:Version=3.8.6.0
 /build:Models/house.fbx
 
 #begin Models/player.fbx
@@ -90,6 +198,7 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
+/processorParam:Version=3.8.6.0
 /build:Models/player.fbx
 
 #begin Models/sphere1uR.x
@@ -109,7 +218,28 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
+/processorParam:Version=3.8.6.0
 /build:Models/sphere1uR.x
+
+#begin Models/test.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=True
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=0.1
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/processorParam:Version=3.8.6.0
+/build:Models/test.fbx
 
 #begin Models/White.png
 /importer:TextureImporter
@@ -121,6 +251,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.0
 /build:Models/White.png
 
 #begin Textures/cottage_base_color.png
@@ -133,16 +264,6 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.0
 /build:Textures/cottage_base_color.png
 
-#begin Models/test.fbx
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:Scale=0.1
-/processorParam:ResizeTexturesToPowerOfTwo=True
-/build:Models/test.fbx
-#begin Models/corridor.fbx
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:Scale=0.01
-/build:Models/corridor.fbx

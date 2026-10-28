@@ -63,4 +63,9 @@ monodroid*.msi
 *.VC.opendb
 
 artifacts/
-bin/
+bin/bin/
+obj/
+Content/obj
+obj/Debug/net9.0-windows/test.pdb
+obj/Debug/net9.0-windows/test.pdb
+obj/Debug/net9.0-windows/test.dll
