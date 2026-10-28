@@ -26,6 +26,8 @@ public class Enemy : GameObject
     private Matrix lastViewMatrix ;
     private Matrix lastProjectionMatrix ;
 
+    public readonly float attackDmg = 5 ;
+
     
     public Enemy(GraphicsDevice device, Texture2D nTexture, Vector3 position, float nWidth, float nHeight = 2f, bool nChaser = true, bool nEnemyDead = false)
     {
@@ -58,10 +60,32 @@ public class Enemy : GameObject
     /// <summary>Radius used for blocking the player and (roughly) for hit detection.</summary>
     public float Radius => Width * 0.4f;
 
-    public void Update(float dt, Player player)
+    public bool canSeePlayer(Player player,List<BoundingBox> colliders)
     {
+        // check if enemy can see the player with rays
+        Vector3 movementDir = player.Position - Position ;
+        movementDir.Normalize() ;
+        Ray enemyToPlayer = new Ray (Position, movementDir) ;
+        float? closestDistance = rayIntersectPlayer(enemyToPlayer, player) ;
+        bool wallBlocked = false ;
+
+        foreach (BoundingBox collider in colliders) 
+        {
+            float? distance = enemyToPlayer.Intersects(collider) ;
+            if (distance.HasValue && distance.Value < closestDistance)
+            {
+                wallBlocked = true ;
+                break ;
+            }
+        }
+        return !wallBlocked ;
+    }
+
+    public void Update(float dt, Player player, List<BoundingBox> colliders)
+    {
+        // check if enemy can start attacking the player
         if ((chaser && !startAttack && Vector3.Distance(Position, player.Position) < 8) 
-            || (!chaser && !startAttack && Vector3.Distance(Position, player.Position) < 9 * 3))
+            || (!chaser && !startAttack && Vector3.Distance(Position, player.Position) < 9 * 3 && canSeePlayer(player, colliders)))
         {
             startAttack = true ;
         } 
@@ -69,29 +93,29 @@ public class Enemy : GameObject
         if (startAttack)
         {
             attackTimer += dt ;
-            Console.WriteLine("attackTimer: " + attackTimer +"/" + attackStartup * (!chaser ? 2 : 1)) ;
+
+            //Console.WriteLine("ATTACK TIMER: " + attackTimer) ;
 
             if (attackTimer >= attackStartup * (!chaser ? 1.75 : 1))
             {
-
-                if (Vector3.Distance(Position, player.Position) < 9 * (!chaser ? 3 : 1))
+                if (Vector3.Distance(Position, player.Position) < 9 * (!chaser ? 3 : 1) && (chaser || canSeePlayer(player, colliders)))
                 {
-                    player.Position = new Vector3 (900, 0, 900) ;
+                    player.healthTimer -= attackDmg ;
                 } 
                 startAttack = false ;
                 attackTimer = 0 ;
             }
         } else if (true /*isAttacking && chaser*/)
         {
+            // unused?
             durationTimer += dt ;
-            Console.WriteLine("durationTimer: " + attackTimer +"/" + attackStartup* (!chaser ? 1.5 : 1)) ;
+            //Console.WriteLine("durationTimer: " + attackTimer +"/" + attackStartup* (!chaser ? 1.5 : 1)) ;
 
             if (attackTimer >= attackStartup)
             {
-
-                if (Vector3.Distance(Position, player.Position) < 9 * (!chaser ? 3 : 1))
+                if (Vector3.Distance(Position, player.Position) < 9 * (!chaser ? 3 : 1) && (chaser || canSeePlayer(player, colliders)))
                 {
-                    player.Position = new Vector3 (900, 0, 900) ;
+                    player.healthTimer -= attackDmg ;
                 } 
                 startAttack = false ;
                 attackTimer = 0 ;
@@ -104,8 +128,18 @@ public class Enemy : GameObject
     {
         float r = Radius;
         var box = new BoundingBox(
-            new Vector3(Position.X - r, Position.Y, Position.Z - r),
-            new Vector3(Position.X + r, Position.Y + height, Position.Z + r));
+            new Vector3(Position.X - r, Position.Y - height/2, Position.Z - r),
+            new Vector3(Position.X + r, Position.Y + height/2, Position.Z + r));
+
+        return ray.Intersects(box);
+    }
+
+    public float? rayIntersectPlayer(Ray ray, Player player)
+    {
+        float r = Radius;
+        var box = new BoundingBox(
+            new Vector3(player.Position.X - r, player.Position.Y, player.Position.Z - r),
+            new Vector3(player.Position.X + r, player.Position.Y + height, player.Position.Z + r));
 
         return ray.Intersects(box);
     }

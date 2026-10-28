@@ -13,12 +13,44 @@ namespace _3dgame {
         private bool reachedApex = false;
         private bool reachedBottom = true;
         private Vector3 startPosition = new Vector3(30, GameConstants.HeightOffset, 125);
+        public readonly double maxHealthTimer = 20 ;
+        public readonly double healthRegen = 5 ;
+        public double healthTimer = 15;
+        public int handState = 0 ;
+
         public Player() : base() {
             ForwardDirection = 0.0f;
             Position = startPosition;
+            healthTimer = maxHealthTimer ;
+            handState = 0 ;
         }
 
-        public void Update(KeyboardState keyboardState, float cameraYaw, IReadOnlyList<BoundingBox> colliders) {
+        public void switchHandState(int newState)
+        {
+            if (newState == 1 && handState == 2 || newState == 2 && handState == 1)
+            {
+                handState = 0 ;
+                healthTimer += healthRegen ;
+                if (maxHealthTimer < healthTimer)
+                {
+                    healthTimer =  maxHealthTimer ;
+                }
+            } else
+            {
+                handState = newState ;
+            }
+        }
+
+        public void Update(double dt, KeyboardState keyboardState, float cameraYaw, IReadOnlyList<BoundingBox> colliders) {
+            healthTimer = healthTimer - dt ;
+            //Console.WriteLine("HandState: " + handState) ;
+
+            if (healthTimer < 0)
+            {
+                healthTimer = 0 ;
+                Position = new Vector3 (900, 0, 900) ;
+            }
+
             Vector3 futurePosition = Position;
             Vector3 movement = Vector3.Zero;
             

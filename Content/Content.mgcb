@@ -49,6 +49,11 @@
 /processor:TextureProcessor
 /build:Models/enemy.png
 
+#begin Textures/Gunidle540.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Textures/Gunidle540.png
+
 #begin Models/house.fbx
 /importer:FbxImporter
 /processor:ModelProcessor

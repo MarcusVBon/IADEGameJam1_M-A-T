@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SharpDX.Direct2D1.Effects;
 
 namespace _3dgame;
 
@@ -13,6 +15,7 @@ public class GameTextures
     public Texture2D enemyTexture1 ;
     public Texture2D crossHair ;
     public Texture2D pixel;
+    public Texture2D gunUI;
     
 }
 
@@ -36,7 +39,7 @@ public class Game1 : Game {
     private readonly Matrix levelMatrix = Matrix.CreateTranslation(30, 0, 100);
     private Camera gameCamera;
     private Player player;
-    private readonly List<BoundingBox> colliders = new List<BoundingBox>();
+    public readonly List<BoundingBox> colliders = new List<BoundingBox>();
     private KeyboardState currentKeyboardState = new KeyboardState();
     private MouseState currentMouseState = new MouseState();
     private MouseState previousMouseState = new MouseState();
@@ -49,14 +52,19 @@ public class Game1 : Game {
     private double totalMouseIdleTime = 0  ;
     private SpriteBatch spriteBatch;
 
+    public List<BoundingBox> GetColliders()
+    {
+        return colliders ;
+    }
+
 
     public Game1() {
         graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         graphics.SynchronizeWithVerticalRetrace = true;
 
-        graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-        graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+        graphics.PreferredBackBufferHeight = (int) (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height);
+        graphics.PreferredBackBufferWidth = (int) (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width);
         graphics.ToggleFullScreen();
 
         graphics.ApplyChanges();
@@ -73,6 +81,8 @@ public class Game1 : Game {
 
         gameCamera = new Camera();
         player = new Player();
+        player.healthTimer = player.maxHealthTimer ;
+
         screenCenterX = GraphicsDevice.Viewport.Width/2;
         screenCenterY = GraphicsDevice.Viewport.Height/2;
         Mouse.SetPosition(screenCenterX, screenCenterY);
@@ -80,7 +90,14 @@ public class Game1 : Game {
 
         textures.enemyTexture1 = Content.Load<Texture2D>("Models/enemy");
 
+        textures.gunUI = Content.Load<Texture2D>("Textures/GunIdle540") ;
+
         enemyList.Add(new Enemy(GraphicsDevice, textures.enemyTexture1 , new Vector3(50f, 0f, 75f), 9f, 11f, true));
+
+        enemyList.Add(new Enemy(GraphicsDevice, textures.enemyTexture1 , new Vector3(75f, 0f, 75f), 9f, 11f, true));
+
+        enemyList.Add(new Enemy(GraphicsDevice, textures.enemyTexture1 , new Vector3(30f, 0f, 75f), 9f, 11f, true));
+
         enemyList.Add(new Enemy(GraphicsDevice, textures.enemyTexture1 , new Vector3(120f, 0f, 120f), 9f, 11f, false));
 
         base.Initialize();
@@ -164,7 +181,7 @@ public class Game1 : Game {
 
         Shoot() ;
 
-        player.Update(currentKeyboardState, cameraYaw, colliders);
+        player.Update((double)gameTime.ElapsedGameTime.TotalSeconds, currentKeyboardState, cameraYaw, colliders);
 
         
         foreach (Enemy enemy in enemyList)
@@ -197,7 +214,7 @@ public class Game1 : Game {
                 
 
             }
-            enemy.Update((float)gameTime.ElapsedGameTime.TotalSeconds, player) ;
+            enemy.Update((float)gameTime.ElapsedGameTime.TotalSeconds, player, colliders) ;
         }
 
         gameCamera.Update(cameraYaw, cameraPitch, player.Position, graphics.GraphicsDevice.Viewport.AspectRatio);
@@ -212,7 +229,7 @@ public class Game1 : Game {
         logTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
         if (logTimer >= 3) {
-            Console.WriteLine("posX: " + player.Position.X + " posY: " + player.Position.Y + " posZ: " + player.Position.Z);
+            //Console.WriteLine("posX: " + player.Position.X + " posY: " + player.Position.Y + " posZ: " + player.Position.Z);
             logTimer = 0;
         }
         
@@ -221,8 +238,10 @@ public class Game1 : Game {
 
     private void Shoot()
     {
+        Console.WriteLine("start") ;
         if (Mouse.GetState().LeftButton == ButtonState.Pressed)
         {
+            Console.WriteLine("shoooottt") ;
             shootDelay = FireDelay;
 
             float cp = MathF.Cos(cameraPitch);
@@ -233,6 +252,10 @@ public class Game1 : Game {
 
             foreach (Enemy enemy in enemyList)
             {
+                if (Vector3.Distance(player.Position, enemy.Position) > 75)
+                    continue ;
+                
+
                 float? distance = enemy.rayIntersect(ray);
                 if (distance.HasValue && distance.Value < closestDistance)
                 {
@@ -255,6 +278,45 @@ public class Game1 : Game {
             if (closest == null|| closestDistanceCollider < closestDistance)
                 return ;
             closest.enemyDead = true;
+
+            player.switchHandState(1) ;
+        } else if (Mouse.GetState().RightButton == ButtonState.Pressed)
+        {
+            Console.WriteLine("KILLLLLLLLLLLLL") ;
+            shootDelay = FireDelay;
+            float cp = MathF.Cos(cameraPitch);
+            var ray = new Ray(player.Position, new Vector3(-MathF.Sin(cameraYaw) * cp, MathF.Sin(cameraPitch), -MathF.Cos(cameraYaw) * cp));
+
+            Enemy closest = null;
+            float closestDistance = float.MaxValue;
+
+            foreach (Enemy enemy in enemyList)
+            {
+                if (Vector3.Distance(player.Position, enemy.Position) > 12)
+                    continue ;
+                
+
+                float? distance = enemy.rayIntersect(ray);
+                if (distance.HasValue && distance.Value < closestDistance)
+                {
+                    closestDistance = distance.Value;
+                    closest = enemy;
+                }
+            }
+
+            float closestDistanceCollider = float.MaxValue;
+            foreach (BoundingBox collider in colliders)
+            {
+                float? distance = ray.Intersects(collider) ;
+                if (distance.HasValue && distance.Value < closestDistance)
+                    closestDistanceCollider = distance.Value;
+            }
+            
+            if (closest == null|| closestDistanceCollider < closestDistance)
+                return ;
+
+            closest.enemyDead = true;
+            player.switchHandState(2) ;
         }
     }
 
@@ -290,7 +352,7 @@ public class Game1 : Game {
         }
     }
 
-    private void DrawHud()
+    private void DrawHud(Player player)
     {
         int w = graphics.GraphicsDevice.Viewport.Width;
         int h = graphics.GraphicsDevice.Viewport.Height;
@@ -308,7 +370,25 @@ public class Game1 : Game {
         spriteBatch.Draw(textures.pixel, new Rectangle(cx - thick / 2, cy - gap - len, thick, len), Color.White);
         spriteBatch.Draw(textures.pixel, new Rectangle(cx - thick / 2, cy + gap, thick, len), Color.White);
 
+        // PURPLE BARRRRRRRRRRRRRRRRRRRR
+        
+        cx = w/ 40 ;
+        cy =  h / 30;
+        const int thickPurple = 50;
+        const int LengthMax = 300;
+        spriteBatch.Draw(textures.pixel, new Rectangle(cx, cy, (int) (LengthMax * (player.healthTimer / player.maxHealthTimer)) , thickPurple), Color.Purple);
+
+        spriteBatch.Draw(textures.pixel, new Rectangle(cx, cy, (int) (LengthMax * (player.healthTimer / player.maxHealthTimer)) , thickPurple), Color.Purple);
+
+        Rectangle gunRect = new Rectangle(w - (w/1920 * 1250), h - (h/1080 * 1000), w/1920 * 1250, h/1080 * 1000) ;
+
+        spriteBatch.Draw(textures.gunUI, gunRect, Color.White) ;
+
+        //0,28125
+
         spriteBatch.End();
+
+
     }
     
     protected override void Draw(GameTime gameTime) {
@@ -329,7 +409,7 @@ public class Game1 : Game {
         foreach (Enemy enemy in enemyList)
             enemy.Draw(GraphicsDevice, gameCamera.ViewMatrix, gameCamera.ProjectionMatrix, player.Position);
 
-        DrawHud();
+        DrawHud(player);
 
         base.Draw(gameTime);
     }
