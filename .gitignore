@@ -64,3 +64,5 @@ monodroid*.msi
 
 artifacts/
 bin/
+obj/
+Content/obj
