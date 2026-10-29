@@ -48,6 +48,27 @@
 /processorParam:Version=3.8.6.0
 /build:Audio/Shooting.wav
 
+#begin Audio/SparrowFullSong.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/processorParam:Version=3.8.6.0
+/build:Audio/SparrowFullSong.wav
+
+#begin Audio/SparrowIntro.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/processorParam:Version=3.8.6.0
+/build:Audio/SparrowIntro.wav
+
+#begin Audio/SparrowNoIntro.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/processorParam:Version=3.8.6.0
+/build:Audio/SparrowNoIntro.wav
+
 #begin Audio/SparrowSong.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -84,6 +105,58 @@
 /processorParam:Defines=
 /processorParam:Version=3.8.6.0
 /build:Effects/MainShader.fx
+
+#begin Models/boss.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.0
+/build:Models/boss.png
+
+#begin Models/ChaseAttack.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.0
+/build:Models/ChaseAttack.png
+
+#begin Models/ChaseChase.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.0
+/build:Models/ChaseChase.png
+
+#begin Models/ChaseIdle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.0
+/build:Models/ChaseIdle.png
 
 #begin Models/corridor.fbx
 /importer:FbxImporter
@@ -151,77 +224,6 @@
 /processorParam:Version=3.8.6.0
 /build:Models/ground.x
 
-#begin Models/enemy.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Models/enemy.png
-
-#begin Models/Splat.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Models/Splat.png
-
-#begin Models/boss.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Models/boss.png
-
-#begin Models/shooterAttack.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Models/shooterAttack.png
-
-#begin Models/ChaseAttack.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Models/ChaseAttack.png
-
-#begin Models/ChaseChase.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Models/ChaseChase.png
-
-#begin Models/ChaseIdle.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Models/ChaseIdle.png
-
-
-#begin Textures/LeftHandBase.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Textures/LeftHandBase.png
-
-#begin Textures/LeftHandBlue.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Textures/LeftHandBlue.png
-
-#begin Textures/LeftHandRed.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Textures/LeftHandRed.png
-
-#begin Textures/LeftHandPurple.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Textures/LeftHandPurple.png
-
-#begin Textures/Gunidle540.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Textures/Gunidle540.png
-
-#begin Textures/boot.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Textures/boot.png
-
-#begin Textures/GunFire.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Textures/GunFire.png
-
 #begin Models/house.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
@@ -262,6 +264,19 @@
 /processorParam:Version=3.8.6.0
 /build:Models/player.fbx
 
+#begin Models/shooterAttack.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.0
+/build:Models/shooterAttack.png
+
 #begin Models/sphere1uR.x
 /importer:XImporter
 /processor:ModelProcessor
@@ -281,6 +296,19 @@
 /processorParam:TextureFormat=Compressed
 /processorParam:Version=3.8.6.0
 /build:Models/sphere1uR.x
+
+#begin Models/Splat.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.0
+/build:Models/Splat.png
 
 #begin Models/test.fbx
 /importer:FbxImporter
@@ -315,6 +343,19 @@
 /processorParam:Version=3.8.6.0
 /build:Models/White.png
 
+#begin Textures/boot.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.0
+/build:Textures/boot.png
+
 #begin Textures/cottage_base_color.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -327,4 +368,82 @@
 /processorParam:TextureFormat=Color
 /processorParam:Version=3.8.6.0
 /build:Textures/cottage_base_color.png
+
+#begin Textures/GunFire.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.0
+/build:Textures/GunFire.png
+
+#begin Textures/Gunidle540.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.0
+/build:Textures/Gunidle540.png
+
+#begin Textures/LeftHandBase.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.0
+/build:Textures/LeftHandBase.png
+
+#begin Textures/LeftHandBlue.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.0
+/build:Textures/LeftHandBlue.png
+
+#begin Textures/LeftHandPurple.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.0
+/build:Textures/LeftHandPurple.png
+
+#begin Textures/LeftHandRed.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.0
+/build:Textures/LeftHandRed.png
 

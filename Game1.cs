@@ -42,16 +42,22 @@ public class Game1 : Game {
 
     //Song & Sounds
 
-    SoundEffect gameSong;
-    SoundEffect spinePull;
+    SoundEffect introSong;
+    SoundEffectInstance introSongInstance;
+    SoundEffect noIntroSong;
+    SoundEffectInstance noIntroSongInstance;
     SoundEffect spineCrush;
+    SoundEffectInstance spineCrushInstance;
     SoundEffect playerHit;
+    SoundEffectInstance playerHitInstance;
     SoundEffect playerDeath;
+    SoundEffectInstance playerDeathInstance;
     SoundEffect reloading;
+    SoundEffectInstance reloadingInstance;
     SoundEffect shooting;
+    SoundEffectInstance shootingInstance;
     SoundEffect liquids;
-
-    SoundEffectInstance effectInstance;
+    SoundEffectInstance liquidsInstance;
 
     // The grayscale shader effect.
     private Effect _grayscaleEffect;
@@ -173,18 +179,28 @@ public class Game1 : Game {
         ChangeRasterizerState(FillMode.Solid);
         ground.Model = Content.Load<Model>("Models/ground");
 
-        gameSong = Content.Load<SoundEffect>("Audio/SparrowSong");
+        introSong = Content.Load<SoundEffect>("Audio/SparrowIntro");
+        introSongInstance = introSong.CreateInstance();
+        noIntroSong = Content.Load<SoundEffect>("Audio/SparrowNoIntro");
+        noIntroSongInstance = noIntroSong.CreateInstance();
         playerDeath = Content.Load<SoundEffect>("Audio/PlayerDeath");
+        playerDeathInstance = playerDeath.CreateInstance();
         playerHit = Content.Load<SoundEffect>("Audio/PlayerGetsHit");
+        playerHitInstance = playerHit.CreateInstance();
         reloading = Content.Load<SoundEffect>("Audio/Reloading");
+        reloadingInstance = reloading.CreateInstance();
         shooting = Content.Load<SoundEffect>("Audio/Shooting");
+        shootingInstance = shooting.CreateInstance();
         spineCrush = Content.Load<SoundEffect>("Audio/SpineCrush");
-        spinePull = Content.Load<SoundEffect>("Audio/SpinePull");
+        spineCrushInstance = spineCrush.CreateInstance();
         liquids = Content.Load<SoundEffect>("Audio/LiquidsMixing");
+        liquidsInstance = liquids.CreateInstance();
 
-        effectInstance = gameSong.CreateInstance();
+        player.SpineCrushSound = spineCrushInstance;
+        player.LiquidsSound = liquidsInstance;
+        player.PlayerDeathSound = playerDeathInstance;
 
-        effectInstance.Play();
+        introSongInstance.Play();
 
         _grayscaleEffect = Content.Load<Effect>("Effects/FlashShader");
         _pixelate = Content.Load<Effect>("Effects/MainShader");
@@ -215,6 +231,14 @@ public class Game1 : Game {
             base.Update(gameTime);
             return;
         }
+
+        //MUSIC LOOPING
+
+        if(introSongInstance.State != SoundState.Playing && noIntroSongInstance.State != SoundState.Playing)
+        {
+            noIntroSongInstance.Play();
+        }
+        
 
         
         currentKeyboardState = Keyboard.GetState();
