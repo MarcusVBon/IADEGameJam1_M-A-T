@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Models/metal2.png</SourceFile>
-  <SourceTime>2026-10-29T02:20:40.1936428+00:00</SourceTime>
-  <DestFile>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/bin/Windows/Content/Models/metal2_0.xnb</DestFile>
-  <DestTime>2026-10-29T03:04:10.9080824+00:00</DestTime>
+  <SourceFile>C:/Users/Tiago/AI Steering/IADEGameJam1_M-A-T/Content/Models/metal2.png</SourceFile>
+  <SourceTime>2026-10-29T02:19:26.0755125+00:00</SourceTime>
+  <DestFile>C:/Users/Tiago/AI Steering/IADEGameJam1_M-A-T/Content/bin/Windows/Content/Models/metal2_0.xnb</DestFile>
+  <DestTime>2026-10-29T08:17:35.1431459+00:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2026-10-08T12:48:48+01:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

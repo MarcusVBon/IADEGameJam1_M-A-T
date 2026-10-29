@@ -13,6 +13,7 @@ using SharpDX.Direct2D1.Effects;
 using SharpDX.XAudio2;
 using Microsoft.Xna.Framework.Media;
 using System.Drawing.Text;
+using SharpDX.MediaFoundation;
 
 namespace _3dgame;
 
@@ -60,12 +61,28 @@ public class Game1 : Game {
     private bool PressedOnce(Keys key) =>
     currentKeyboardState.IsKeyDown(key) && previousKeyboardState.IsKeyUp(key);
 
-    //Song & Sounds
+    //Transition Effect
+    private enum TransitionPhase { None, Closing, Closed, Opening }
+    private TransitionPhase transition = TransitionPhase.None;
+    private float transitionTime;
+    private const float TransitionDuration = 0.5f;   // seconds for each half
+    private Action onScreenClosed;
 
+    private enum ElevatorStep { None, Closing, Ding, Opening }
+    private ElevatorStep elevatorStep = ElevatorStep.None;
+    private Action elevatorAction;
+
+    //Song & Sounds
     SoundEffect introSong;
     SoundEffectInstance introSongInstance;
     SoundEffect noIntroSong;
     SoundEffectInstance noIntroSongInstance;
+    SoundEffect mainMenuSong;
+    SoundEffectInstance mainMenuSongInstance;
+    SoundEffect elevatorDing;
+    SoundEffectInstance elevatorDingInstance;
+    SoundEffect elevatorDoor;
+    SoundEffectInstance elevatorDoorInstance;
     SoundEffect spineCrush;
     SoundEffectInstance spineCrushInstance;
     SoundEffect playerHit;
@@ -87,7 +104,7 @@ public class Game1 : Game {
     // The amount of saturation to provide the grayscale shader effect.
     private float _saturation = 0.0f;
     private float _contrast = 10.0f;
-    private float _brightness = 1.0f;
+    private float _brightness = 3.0f;
 
     private float _pixelation = 8.0f;
 
@@ -170,8 +187,12 @@ public class Game1 : Game {
     }
 
     public void restartGame()
-    { 
-       
+    {
+        currentLevel = 1;
+        LoadLevel();
+        player.ResetToStart();    // check that this also resets health and playerDead
+        cameraYaw = 0f;
+        cameraPitch = 0f;
     }
 
     protected override void Initialize() {
@@ -234,6 +255,12 @@ public class Game1 : Game {
         introSongInstance = introSong.CreateInstance();
         noIntroSong = Content.Load<SoundEffect>("Audio/SparrowNoIntro");
         noIntroSongInstance = noIntroSong.CreateInstance();
+        mainMenuSong = Content.Load<SoundEffect>("Audio/SparrowMenu");
+        mainMenuSongInstance = mainMenuSong.CreateInstance();
+        elevatorDing = Content.Load<SoundEffect>("Audio/ElevatorDing");
+        elevatorDingInstance = elevatorDing.CreateInstance();
+        elevatorDoor = Content.Load<SoundEffect>("Audio/ElevatorDoor");
+        elevatorDoorInstance = elevatorDoor.CreateInstance();
         playerDeath = Content.Load<SoundEffect>("Audio/PlayerDeath");
         playerDeathInstance = playerDeath.CreateInstance();
         playerHit = Content.Load<SoundEffect>("Audio/PlayerGetsHit");
@@ -257,7 +284,6 @@ public class Game1 : Game {
 
         _grayscaleEffect = Content.Load<Effect>("Effects/FlashShader");
         _pixelate = Content.Load<Effect>("Effects/MainShader");
-        
 
         test.Model = Content.Load<Model>("Models/test");
 
@@ -338,7 +364,10 @@ public class Game1 : Game {
 
     protected override void Update(GameTime gameTime)
     {
-        if (!IsActive) {base.Update(gameTime); return; }
+        UpdateTransition(gameTime);
+        UpdateElevator();
+
+        if (!IsActive) { base.Update(gameTime); return; }
         currentKeyboardState = Keyboard.GetState();
 
         switch (state)
@@ -355,6 +384,9 @@ public class Game1 : Game {
 
     private void UpdateMainMenu()
     {
+        mainMenuSongInstance.Play();
+        mainMenuSongInstance.IsLooped = true;
+
         IsMouseVisible = true;
 
         MouseState mouse = Mouse.GetState();
@@ -368,7 +400,7 @@ public class Game1 : Game {
 
                 switch (i)
                 {
-                    case 0: StartGame();break;
+                    case 0: StartTransition(() => StartGame()); break;
                     case 1: state = GameState.Options;break;
                     case 2: Exit(); break;
                 }
@@ -380,6 +412,8 @@ public class Game1 : Game {
     private void StartGame()
     {
         restartGame();
+        gameCamera.Update(cameraYaw, cameraPitch, player.Position, GraphicsDevice.Viewport.AspectRatio);
+
         state = GameState.Playing;
         IsMouseVisible = false;
 
@@ -404,13 +438,20 @@ public class Game1 : Game {
         
     }
     protected void UpdatePlaying(GameTime gameTime) {
-        introSongInstance.Play();
+        mainMenuSongInstance.Stop();
+        noIntroSongInstance.Play();
+
+        if (elevatorStep != ElevatorStep.None)
+        {
+            previousMouseState = Mouse.GetState();   // stops the camera from jumping when play resumes
+            return;
+        }
         
         if (player.playerDead)
         {
             currentKeyboardState = Keyboard.GetState();
-            if (currentKeyboardState.IsKeyDown(Keys.Escape))
-                Exit();
+            if (PressedOnce(Keys.Escape))
+            StartTransition(() => GoToMainMenu());
             if (currentKeyboardState.IsKeyDown(Keys.Space))
             {
                 Console.WriteLine("RESTART!") ;
@@ -426,10 +467,9 @@ public class Game1 : Game {
 
         //MUSIC LOOPING
 
-        if(introSongInstance.State != SoundState.Playing && noIntroSongInstance.State != SoundState.Playing)
-        {
+        mainMenuSongInstance.Stop();
+        if (elevatorDoorInstance.State != SoundState.Playing && noIntroSongInstance.State != SoundState.Playing)
             noIntroSongInstance.Play();
-        }
         Console.WriteLine("Score:" + player.score);
         
 
@@ -546,9 +586,8 @@ public class Game1 : Game {
 
         gameCamera.Update(cameraYaw, cameraPitch, player.Position, graphics.GraphicsDevice.Viewport.AspectRatio);
 
-        if (currentKeyboardState.IsKeyDown(Keys.Escape)) {
-            Exit();
-        }
+        if (currentKeyboardState.IsKeyDown(Keys.Escape))
+        StartTransition(() => GoToMainMenu());
 
         logTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -559,6 +598,98 @@ public class Game1 : Game {
         
         base.Update(gameTime);
     }
+
+private void CloseScreen(Action whenClosed = null)
+{
+    if (transition == TransitionPhase.Closing || transition == TransitionPhase.Closed) return;
+    onScreenClosed = whenClosed;
+    transition = TransitionPhase.Closing;
+    transitionTime = 0f;
+}
+
+// Open the bars again (only works if the screen is fully closed).
+private void OpenScreen()
+{
+    if (transition != TransitionPhase.Closed) return;
+    transition = TransitionPhase.Opening;
+    transitionTime = 0f;
+}
+
+// Old behavior in one call: close, run the action, then open.
+private void StartTransition(Action whenClosed)
+{
+    if (elevatorStep != ElevatorStep.None) return;   // already running
+
+    elevatorAction = whenClosed;
+    elevatorStep = ElevatorStep.Closing;
+
+    elevatorDoorInstance.Stop();
+    elevatorDoorInstance.Play();     // door sound starts as the screen closes
+    CloseScreen();
+}
+
+private void GoToMainMenu()
+{
+    state = GameState.MainMenu;
+    IsMouseVisible = true;
+}
+
+private void UpdateElevator()
+{
+    switch (elevatorStep)
+    {
+        case ElevatorStep.Closing:
+            // wait until the door sound is finished AND the screen is fully closed
+            if (elevatorDoorInstance.State != SoundState.Playing && transition == TransitionPhase.Closed)
+            {
+                elevatorAction?.Invoke();          // swap level / start game while it's black
+                elevatorAction = null;
+
+                elevatorDingInstance.Play();
+                elevatorStep = ElevatorStep.Ding;
+
+                mainMenuSongInstance.Stop();
+                noIntroSongInstance.Stop();
+            }
+            break;
+
+        case ElevatorStep.Ding:
+            // wait until the ding is finished
+            if (elevatorDingInstance.State != SoundState.Playing)
+            {
+                elevatorDoorInstance.Play();       // door sound again
+                OpenScreen();                      // bars open at the same time
+                elevatorStep = ElevatorStep.Opening;
+            }
+            break;
+
+        case ElevatorStep.Opening:
+            if (transition == TransitionPhase.None)
+                elevatorStep = ElevatorStep.None;  // done
+            break;
+    }
+}
+
+private void UpdateTransition(GameTime gameTime)
+{
+    if (transition == TransitionPhase.None || transition == TransitionPhase.Closed) return;
+
+    transitionTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+    if (transitionTime < TransitionDuration) return;
+
+    transitionTime = 0f;
+    if (transition == TransitionPhase.Closing)
+    {
+        transition = TransitionPhase.Closed;      // set first, so the callback can call OpenScreen()
+        Action callback = onScreenClosed;
+        onScreenClosed = null;
+        callback?.Invoke();
+    }
+    else
+    {
+        transition = TransitionPhase.None;
+    }
+}
 
     private void Shoot()
     {
@@ -724,6 +855,30 @@ public class Game1 : Game {
         return null ;
     }
 
+private void DrawTransition()
+{
+    if (transition == TransitionPhase.None) return;
+
+    float t = MathHelper.Clamp(transitionTime / TransitionDuration, 0f, 1f);
+    float closed = transition switch
+    {
+        TransitionPhase.Closing => t,
+        TransitionPhase.Closed  => 1f,
+        TransitionPhase.Opening => 1f - t,
+        _ => 0f
+    };
+    closed = MathHelper.SmoothStep(0f, 1f, closed);
+
+    int w = GraphicsDevice.Viewport.Width;
+    int h = GraphicsDevice.Viewport.Height;
+    int barWidth = (int)MathF.Ceiling(w / 2f * closed);
+
+    spriteBatch.Begin();
+    spriteBatch.Draw(textures.pixel, new Rectangle(0, 0, barWidth, h), Color.Black);
+    spriteBatch.Draw(textures.pixel, new Rectangle(w - barWidth, 0, barWidth, h), Color.Black);
+    spriteBatch.End();
+}
+    
     private void DrawHud(Player player)
     {
         int w = graphics.GraphicsDevice.Viewport.Width;
@@ -837,6 +992,7 @@ public class Game1 : Game {
             renderGameOverScreen();
             break;
         }
+        DrawTransition();
         base.Draw(gameTime);
     }
     protected void DrawScene(GameTime gameTime) {
@@ -880,6 +1036,9 @@ public class Game1 : Game {
 
     if(shootCooldown > 0.25f)
     {
+    _saturation = 0.0f;
+    _contrast = 10.0f;
+    _brightness = 3.0f;
     _grayscaleEffect.Parameters["Saturation"].SetValue(_saturation);
     _grayscaleEffect.Parameters["Contrast"].SetValue(_contrast);
     _grayscaleEffect.Parameters["Brightness"].SetValue(_brightness);
@@ -888,7 +1047,13 @@ public class Game1 : Game {
 
     else
     {
-         spriteBatch.Begin(samplerState: SamplerState.PointClamp);   
+    _saturation = 1.2f;
+    _contrast = 1.0f;
+    _brightness = 0.0f;
+    _grayscaleEffect.Parameters["Saturation"].SetValue(_saturation);
+    _grayscaleEffect.Parameters["Contrast"].SetValue(_contrast);
+    _grayscaleEffect.Parameters["Brightness"].SetValue(_brightness);
+    spriteBatch.Begin(samplerState: SamplerState.PointClamp, effect: _grayscaleEffect);  
     }
     spriteBatch.Draw(pixelTarget, GraphicsDevice.Viewport.Bounds, Color.White);
     spriteBatch.End();

@@ -28,6 +28,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 {
     float2 blocks = ScreenSize / Pixelation;
 	float2 coord = (floor(input.TextureCoordinates * blocks) + 0.5) / blocks;
+	
 
 	return tex2D(SpriteTextureSampler, coord) * input.Color;
 }
