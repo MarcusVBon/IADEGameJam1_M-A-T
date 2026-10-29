@@ -465,7 +465,7 @@ public class Game1 : Game {
         {
             tutorialPage = 1 ;
             blockshoot = true ;
-        } else if (currentKeyboardState.IsKeyDown(Keys.Space) && tutorialPage == 1)
+        } else if (currentKeyboardState.IsKeyDown(Keys.Space) && tutorialPage == 1 && !blockshoot)
         {
             StartGame() ;
         }
