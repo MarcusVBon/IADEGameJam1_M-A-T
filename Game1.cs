@@ -491,8 +491,7 @@ public class Game1 : Game {
 
                 switch (i)
                 {
-                    case 0: StartTransition(() => StartGame()); break;
-                    case 1: state = GameState.tutorialExpo; tutorialPage = 0 ; break; //startGame();break;
+                    case 0: state = GameState.tutorialExpo; tutorialPage = 0 ; break; //startGame();break;
                     case 2: Exit(); break;
                 }
             }
@@ -504,6 +503,10 @@ public class Game1 : Game {
     {
         restartGame();
         gameCamera.Update(cameraYaw, cameraPitch, player.Position, GraphicsDevice.Viewport.AspectRatio);
+
+        
+        player.ResetToStart();
+        LoadLevel() ;
 
         state = GameState.Playing;
         IsMouseVisible = false;
@@ -528,7 +531,7 @@ public class Game1 : Game {
             blockshoot = true ;
         } else if (currentKeyboardState.IsKeyDown(Keys.Space) && tutorialPage == 1 && !blockshoot)
         {
-            StartGame() ;
+            StartTransition(() => StartGame());
         }
     }
 
@@ -632,7 +635,7 @@ public class Game1 : Game {
         mainMenuSongInstance.Stop();
         if (elevatorDoorInstance.State != SoundState.Playing && noIntroSongInstance.State != SoundState.Playing)
             noIntroSongInstance.Play();
-        Console.WriteLine("Score:" + player.score);
+        Console.WriteLine("playerPosX:" + player.Position.X);
         
 
         
@@ -742,9 +745,8 @@ public class Game1 : Game {
 
         enemyList.RemoveAll(enemy => enemy.enemyDead && enemy.deathTimer <= 0) ;
 
-        if (player.Position.Z <= GameConstants.LevelEndZ) {
-            CompleteLevel();
-        }
+        if (player.Position.Z <= GameConstants.LevelEndZ)
+            StartTransition(() => CompleteLevel());
 
         gameCamera.Update(cameraYaw, cameraPitch, player.Position, graphics.GraphicsDevice.Viewport.AspectRatio);
 

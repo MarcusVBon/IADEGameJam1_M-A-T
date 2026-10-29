@@ -34,6 +34,7 @@ namespace _3dgame {
         public Player() : base() {
             ForwardDirection = 0.0f;
             Position = startPosition;
+            jumpStartY = startPosition.Y;
             healthTimer = maxHealthTimer ;
             handCrunchTimer = -1 ;
             handState = 0 ;
@@ -43,6 +44,7 @@ namespace _3dgame {
 
         public void ResetToStart() {
             Position = startPosition;
+            jumpStartY = startPosition.Y;
             jumpStarted = false;
             reachedApex = false;
             reachedBottom = true;
