@@ -1,21 +1,43 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 using System;
 using System.Collections.Generic;
 using System.Net.Mime;
 
 namespace _3dgame {
     public class Player : GameObject {
+
         public float ForwardDirection { get; set; }
         private bool jumpStarted = false;
         private float jumpStartY;
         private float movementDirection = 0;
+        private Vector3 currentVelocity ;
         private bool reachedApex = false;
         private bool reachedBottom = true;
         private Vector3 startPosition = new Vector3(0, GameConstants.HeightOffset, 0);
+        public readonly double maxHealthTimer = 20 ;
+        public readonly double crunchTime = 0.75 ;
+        public double handCrunchTimer = -1 ;
+        public readonly double healthRegen = 5 ;
+        public double healthTimer = 15;
+        public int handState = 0 ;
+        public SoundEffectInstance SpineCrushSound { get; set; }
+        public SoundEffectInstance LiquidsSound {get; set; }
+        public SoundEffectInstance PlayerDeathSound {get; set; }
+        public int score = 0;
+
+        public bool isPlayerDying = false;
+
+        public bool playerDead = false ;
+
         public Player() : base() {
             ForwardDirection = 0.0f;
             Position = startPosition;
+            healthTimer = maxHealthTimer ;
+            handCrunchTimer = -1 ;
+            handState = 0 ;
+            playerDead = false ;
         }
 
         public void ResetToStart() {
@@ -27,7 +49,87 @@ namespace _3dgame {
             BoundingSphere = new BoundingSphere(Position, 1f);
         }
 
-        public void Update(KeyboardState keyboardState, float cameraYaw, IReadOnlyList<BoundingBox> colliders) {
+        public void switchHandState(int newState)
+        {
+            if(handState == 4)
+            {
+                handCrunchTimer = -1 ;
+                handState = newState ;
+                healthTimer += healthRegen ;
+                if (maxHealthTimer < healthTimer)
+                {
+                    healthTimer =  maxHealthTimer ;
+                }
+            }
+
+            if(newState == 1)
+            {
+                LiquidsSound.Play();
+                score += 5;
+            }
+
+            if(newState == 2)
+            {
+                SpineCrushSound.Play();
+                score += 5;
+            }
+
+            if (newState == 1 && handState == 2 || newState == 2 && handState == 1)
+            {
+                handState = 4 ;
+                handCrunchTimer = crunchTime ;
+            } else
+            {
+                handState = newState ;
+            }
+        }
+
+        public void Update(double dt, KeyboardState keyboardState, float cameraYaw, IReadOnlyList<BoundingBox> colliders) {
+            healthTimer = healthTimer - dt ;
+            //Console.WriteLine("HandState: " + handState) ;
+            if (handCrunchTimer != -1)
+            {
+                Console.WriteLine("CRUNCH TIME: " + handCrunchTimer) ;
+                handCrunchTimer = handCrunchTimer - dt ;
+                if (handCrunchTimer < 0)
+                {
+                    handCrunchTimer = -1 ;
+                    handState = 0 ;
+                    healthTimer += healthRegen ;
+                    if (maxHealthTimer < healthTimer)
+                    {
+                        healthTimer =  maxHealthTimer ;
+                    }
+                }
+
+            }
+
+            if (healthTimer < 0)
+            {
+                if(handState == 4)
+                {
+                    handCrunchTimer = -1 ;
+                    handState = 0 ;
+                    healthTimer += healthRegen ;
+                    if (maxHealthTimer < healthTimer)
+                    {
+                        healthTimer =  maxHealthTimer ;
+                    }
+                } else
+                {
+                    healthTimer = 0 ;
+                    playerDead = true ;
+                }
+
+                if(isPlayerDying == false)
+                {
+                    PlayerDeathSound.Play();
+                    isPlayerDying = true;
+                }
+                healthTimer = 0 ;
+                Position = new Vector3 (900, 0, 900) ;
+            }
+
             Vector3 futurePosition = Position;
             Vector3 movement = Vector3.Zero;
             
@@ -58,6 +160,21 @@ namespace _3dgame {
 
             if (horizontal != Vector2.Zero){
                 horizontal.Normalize();
+                currentVelocity.X += GameConstants.acceleration * movement.X;
+                currentVelocity.Z += GameConstants.acceleration * movement.X;
+            } else
+            {
+                currentVelocity.X -= GameConstants.acceleration * movement.X;
+                currentVelocity.Z-= GameConstants.acceleration * movement.X;
+            }
+
+            if (currentVelocity.X * movement.X > GameConstants.maxVelocity * movement.X )
+            {
+                currentVelocity.X = movement.X * GameConstants.maxVelocity ;
+            }
+            if (currentVelocity.Z * movement.Z > GameConstants.maxVelocity * movement.Z )
+            {
+                currentVelocity.Z = movement.Z * GameConstants.maxVelocity ;
             }
 
             movement.X = horizontal.X;
@@ -86,6 +203,7 @@ namespace _3dgame {
             }
             Position = futurePosition;
             BoundingSphere = new BoundingSphere(Position, 1f);
+
         }
 
         private bool ValidateMovement(Vector3 futurePosition, IReadOnlyList<BoundingBox> colliders) {

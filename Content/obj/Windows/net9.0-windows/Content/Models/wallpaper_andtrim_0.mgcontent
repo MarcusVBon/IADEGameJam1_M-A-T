@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>c:/Users/dicet/OneDrive/Desktop/futureproofin/Programing/GitHubb/HP/HolyPolarityRepo/HP/IADEGameJam1_M-A-T/Content/Models/wallpaper_andtrim.png</SourceFile>
+  <SourceFile>C:/Users/dicet/OneDrive/Desktop/futureproofin/Programing/GitHubb/HP/HolyPolarityRepo/HP/IADEGameJam1_M-A-T/Content/Models/wallpaper_andtrim.png</SourceFile>
   <SourceTime>2026-10-29T00:45:08.3710559+00:00</SourceTime>
-  <DestFile>c:/Users/dicet/OneDrive/Desktop/futureproofin/Programing/GitHubb/HP/HolyPolarityRepo/HP/IADEGameJam1_M-A-T/Content/bin/Windows/Content/Models/wallpaper_andtrim_0.xnb</DestFile>
-  <DestTime>2026-10-29T01:14:52.3928743+00:00</DestTime>
+  <DestFile>C:/Users/dicet/OneDrive/Desktop/futureproofin/Programing/GitHubb/HP/HolyPolarityRepo/HP/IADEGameJam1_M-A-T/Content/bin/Windows/Content/Models/wallpaper_andtrim_0.xnb</DestFile>
+  <DestTime>2026-10-29T02:09:10.6839035+00:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2026-10-08T12:48:48+01:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

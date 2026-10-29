@@ -1,28 +1,106 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Runtime.Serialization;
+using System.Security;
 using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SharpDX.Direct2D1.Effects;
+using SharpDX.XAudio2;
+using Microsoft.Xna.Framework.Media;
 
 namespace _3dgame;
 
 public class GameTextures
 {
 
+    enum GameState {MainMenu, Playing, Paused, GameOver}
+    private GameState state = GameState.MainMenu;
+    private KeyboardState previousKryboardState;
+
     public Texture2D enemyTexture1 ;
+    public Texture2D enemyShoot ;
+    public Texture2D enemyBash ;
+
+    public Texture2D enemyChaseIdle ;
+    public Texture2D enemyChase ;
+    public Texture2D enemyChaseAttack ;
+
+    public Texture2D billinare;
+    public Texture2D bloodSplat;
+
     public Texture2D crossHair ;
     public Texture2D pixel;
-    
+    public Texture2D gunUI;
+    public Texture2D gunShootUI;
+    public Texture2D kickUI;
+    public Texture2D handEmpty;
+    public Texture2D handRed;
+    public Texture2D handBlue;
+    public Texture2D handPurple;
+    public Texture2D GameOver;
 }
 
 public class Game1 : Game {
     private GraphicsDeviceManager graphics;
     private GameObject ground;
 
+    //Song & Sounds
+
+    SoundEffect introSong;
+    SoundEffectInstance introSongInstance;
+    SoundEffect noIntroSong;
+    SoundEffectInstance noIntroSongInstance;
+    SoundEffect spineCrush;
+    SoundEffectInstance spineCrushInstance;
+    SoundEffect playerHit;
+    SoundEffectInstance playerHitInstance;
+    SoundEffect playerDeath;
+    SoundEffectInstance playerDeathInstance;
+    SoundEffect reloading;
+    SoundEffectInstance reloadingInstance;
+    SoundEffect shooting;
+    SoundEffectInstance shootingInstance;
+    SoundEffect liquids;
+    SoundEffectInstance liquidsInstance;
+
+    // The grayscale shader effect.
+    private Effect _grayscaleEffect;
+
+    private Effect _pixelate;
+
+    // The amount of saturation to provide the grayscale shader effect.
+    private float _saturation = 0.0f;
+    private float _contrast = 10.0f;
+    private float _brightness = 1.0f;
+
+    private float _pixelation = 8.0f;
+
+    // The speed of the fade to grayscale effect.
+    private const float FADE_SPEED = 0.02f;
+
+    private RenderTarget2D sceneTarget;
+
+    private RenderTarget2D pixelTarget;
+
+    public int score = 0;
+
+
+
     //MY STUFF
     private GameObject test;
+
+    private float shootCooldown ;
+    private int untilReload;
+    private float kickCooldown ;
+    private const float FireDelay = 0.5f;     // seconds between shots
+    private const float KickDelay = 0.5f;     // seconds between shots
+    private bool blockshoot = false ;
+    private bool blockKick = false ;
     
     private readonly Matrix testWorld = Matrix.CreateScale(25f) * Matrix.CreateTranslation(60, 2.5f, 100);
     // the current room, picked in order by currentLevel -> LoadLevel()
@@ -32,7 +110,7 @@ public class Game1 : Game {
     private ContentManager levelContent;
     private readonly Random random = new Random();
 
-    private GameTextures textures = new GameTextures() ;
+    public GameTextures textures = new GameTextures() ;
     private List<Enemy> enemyList = new();
 
     // WHERE THE LEVEL SPAWNS
@@ -67,6 +145,11 @@ public class Game1 : Game {
         IsMouseVisible = false;
     }
 
+    public void restartGame()
+    { 
+       
+    }
+
     protected override void Initialize() {
         ground = new GameObject();
 
@@ -84,9 +167,36 @@ public class Game1 : Game {
         previousMouseState = Mouse.GetState();
 
         textures.enemyTexture1 = Content.Load<Texture2D>("Models/enemy");
+        textures.enemyShoot = Content.Load<Texture2D>("Models/ShooterAttack");
+
+        textures.enemyChaseAttack = Content.Load<Texture2D>("Models/ChaseAttack");
+        textures.enemyChase = Content.Load<Texture2D>("Models/ChaseChase");
+        textures.enemyChaseIdle = Content.Load<Texture2D>("Models/ChaseIdle");
+
+        textures.billinare = Content.Load<Texture2D>("Models/boss");
+        textures.bloodSplat = Content.Load<Texture2D>("Models/Splat");
+
+        
+        textures.GameOver = Content.Load<Texture2D>("Models/Gameover");
 
 
-        //enemyList.Add(new Enemy(GraphicsDevice, textures.enemyTexture1 , new Vector3(50f, 0f, 75f), 9f, 11f));
+        textures.gunUI = Content.Load<Texture2D>("Textures/GunIdle540") ;
+        textures.gunShootUI = Content.Load<Texture2D>("Textures/GunFire") ;
+        textures.kickUI = Content.Load<Texture2D>("Textures/boot") ;
+        textures.handEmpty = Content.Load<Texture2D>("Textures/LeftHandBase") ;
+        textures.handBlue = Content.Load<Texture2D>("Textures/LeftHandBlue") ;
+        textures.handRed = Content.Load<Texture2D>("Textures/LeftHandRed") ;
+        textures.handPurple = Content.Load<Texture2D>("Textures/LeftHandPurple") ;
+
+        enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(0f, 0f, 0f), 9f, 11f, true, true));
+
+        enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(50f, 0f, 75f), 9f, 11f, true));
+
+        enemyList.Add(new Enemy(GraphicsDevice, textures , new Vector3(75f, 0f, 75f), 9f, 11f, true));
+
+        enemyList.Add(new Enemy(GraphicsDevice, textures , new Vector3(30f, 0f, 75f), 9f, 11f, true));
+
+        enemyList.Add(new Enemy(GraphicsDevice, textures , new Vector3(120f, 0f, 120f), 9f, 11f, false));
 
         base.Initialize();
     }
@@ -94,6 +204,33 @@ public class Game1 : Game {
     protected override void LoadContent() {
         ChangeRasterizerState(FillMode.Solid);
         ground.Model = Content.Load<Model>("Models/ground");
+
+        introSong = Content.Load<SoundEffect>("Audio/SparrowIntro");
+        introSongInstance = introSong.CreateInstance();
+        noIntroSong = Content.Load<SoundEffect>("Audio/SparrowNoIntro");
+        noIntroSongInstance = noIntroSong.CreateInstance();
+        playerDeath = Content.Load<SoundEffect>("Audio/PlayerDeath");
+        playerDeathInstance = playerDeath.CreateInstance();
+        playerHit = Content.Load<SoundEffect>("Audio/PlayerGetsHit");
+        playerHitInstance = playerHit.CreateInstance();
+        reloading = Content.Load<SoundEffect>("Audio/Reloading");
+        reloadingInstance = reloading.CreateInstance();
+        shooting = Content.Load<SoundEffect>("Audio/Shooting");
+        shootingInstance = shooting.CreateInstance();
+        spineCrush = Content.Load<SoundEffect>("Audio/SpineCrush");
+        spineCrushInstance = spineCrush.CreateInstance();
+        liquids = Content.Load<SoundEffect>("Audio/LiquidsMixing");
+        liquidsInstance = liquids.CreateInstance();
+
+        player.SpineCrushSound = spineCrushInstance;
+        player.LiquidsSound = liquidsInstance;
+        player.PlayerDeathSound = playerDeathInstance;
+
+        introSongInstance.Play();
+
+        _grayscaleEffect = Content.Load<Effect>("Effects/FlashShader");
+        _pixelate = Content.Load<Effect>("Effects/MainShader");
+        
 
         test.Model = Content.Load<Model>("Models/test");
 
@@ -104,6 +241,15 @@ public class Game1 : Game {
         player.CalculateBoundingSphere();
 
         LoadLevel();
+
+        sceneTarget = new RenderTarget2D(GraphicsDevice,
+        GraphicsDevice.PresentationParameters.BackBufferWidth,
+        GraphicsDevice.PresentationParameters.BackBufferHeight,
+        false, SurfaceFormat.Color, DepthFormat.Depth24);
+        pixelTarget = new RenderTarget2D(GraphicsDevice,
+        GraphicsDevice.PresentationParameters.BackBufferWidth,
+        GraphicsDevice.PresentationParameters.BackBufferHeight,
+        false, SurfaceFormat.Color, DepthFormat.None);
     }
 
 //good practice bellow, not sure what it does LMAOOOO
@@ -120,7 +266,7 @@ public class Game1 : Game {
         {
         case 1:
             level.Model = levelContent.Load<Model>("Models/level1");
-            enemyList.Add(new Enemy(GraphicsDevice, textures.enemyTexture1, new Vector3(20f, 0f, 20f), 9f, 11f));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(20f, 0f, 20f), 9f, 11f));
 
             break;
         default:
@@ -145,11 +291,46 @@ public class Game1 : Game {
         cameraPitch = 0f;
     }
 
+    public void renderGameOverScreen()
+    {
+        int w = graphics.GraphicsDevice.Viewport.Width;
+        int h = graphics.GraphicsDevice.Viewport.Height;
+
+        // NonPremultiplied matches PNGs loaded with Texture2D.FromStream (soft edges look right).
+        spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied, SamplerState.PointClamp,
+                            DepthStencilState.None, RasterizerState.CullNone);
+        spriteBatch.Draw(textures.GameOver, new Rectangle(0, 0, w, h), Color.Purple);
+
+        spriteBatch.End();
+    }
+
     protected override void Update(GameTime gameTime) {
+        if (player.playerDead)
+        {
+            currentKeyboardState = Keyboard.GetState();
+            if (currentKeyboardState.IsKeyDown(Keys.Escape))
+                Exit();
+            if (currentKeyboardState.IsKeyDown(Keys.Space))
+            {
+                Console.WriteLine("RESTART!") ;
+                restartGame() ;
+            }
+            return ;
+        }
+
         if (!IsActive) {
             base.Update(gameTime);
             return;
         }
+
+        //MUSIC LOOPING
+
+        if(introSongInstance.State != SoundState.Playing && noIntroSongInstance.State != SoundState.Playing)
+        {
+            noIntroSongInstance.Play();
+        }
+        Console.WriteLine("Score:" + player.score);
+        
 
         
         currentKeyboardState = Keyboard.GetState();
@@ -202,7 +383,54 @@ public class Game1 : Game {
             }
         }
 
-        player.Update(currentKeyboardState, cameraYaw, colliders);
+        
+        // Gun
+        shootCooldown -= (float) gameTime.ElapsedGameTime.TotalSeconds ;
+        if (shootCooldown < 0) 
+            shootCooldown = 0 ;
+
+        kickCooldown -= (float) gameTime.ElapsedGameTime.TotalSeconds ;
+        if (kickCooldown < 0) 
+            kickCooldown = 0 ;
+
+        Shoot() ;
+
+        player.Update((double) gameTime.ElapsedGameTime.TotalSeconds, currentKeyboardState, cameraYaw, colliders);
+
+        
+        foreach (Enemy enemy in enemyList)
+        {
+            if (enemy.enemyDead || enemy.billionare)
+                continue ;
+
+            //Console.WriteLine("Distance: " + Vector3.Distance(enemy.Position, player.Position)) ;
+            if (enemy.chaser && !enemy.startAttack && Vector3.Distance(enemy.Position, player.Position) < 70 && Vector3.Distance(enemy.Position, player.Position) > 7)
+            {
+                Vector3 futurePosition = enemy.Position;
+
+                Vector3 movementDir = player.Position - enemy.Position ;
+
+                movementDir.Normalize() ;
+
+                Vector3 futureX = enemy.Position + new Vector3(movementDir.X * 0.45f, 0, 0);
+                if (enemy.ValidateMovement(futureX, colliders)) {
+                    futurePosition.X = futureX.X;
+                }
+
+                Vector3 futureZ = futurePosition + new Vector3(0, 0, movementDir.Z * 0.45f);
+                if (enemy.ValidateMovement(futureZ, colliders)) {
+                    futurePosition.Z = futureZ.Z;
+                }
+
+                enemy.Position = futurePosition;
+                enemy.texture = textures.enemyChase ;
+            } else if (enemy.chaser && enemy.durationTimer == 0 )
+            {
+                enemy.texture = textures.enemyChaseIdle ;
+            }
+
+            enemy.Update((float)gameTime.ElapsedGameTime.TotalSeconds, player, colliders, textures) ;
+        }
 
         if (player.Position.Z <= GameConstants.LevelEndZ) {
             CompleteLevel();
@@ -222,6 +450,101 @@ public class Game1 : Game {
         }
         
         base.Update(gameTime);
+    }
+
+    private void Shoot()
+    {
+        if (Mouse.GetState().LeftButton == ButtonState.Released) 
+        {
+            blockshoot = false ;
+        } 
+        if (Mouse.GetState().RightButton == ButtonState.Released)
+        {
+            blockKick = false ;
+        }
+
+        Console.WriteLine("GUN COOLDOWN : " + shootCooldown + " KICK COOLDOWN: " + kickCooldown) ;
+        if (Mouse.GetState().LeftButton == ButtonState.Pressed && shootCooldown == 0 && !blockshoot)
+        {
+            
+            blockshoot = true ;
+            shooting.Play();
+            shootCooldown = FireDelay;
+
+            float cp = MathF.Cos(cameraPitch);
+            var ray = new Ray(player.Position, new Vector3(-MathF.Sin(cameraYaw) * cp, MathF.Sin(cameraPitch), -MathF.Cos(cameraYaw) * cp));
+
+            Enemy closest = null;
+            float closestDistance = float.MaxValue;
+
+            foreach (Enemy enemy in enemyList)
+            {
+                float? distance = enemy.rayIntersect(ray);
+                if (distance.HasValue && distance.Value < closestDistance)
+                {
+                    closestDistance = distance.Value;
+                    closest = enemy;
+                }
+            }
+
+            float closestDistanceCollider = float.MaxValue;
+            foreach (BoundingBox collider in colliders)
+            {
+                float? distance = ray.Intersects(collider) ;
+                if (distance.HasValue && distance.Value < closestDistance)
+                    closestDistanceCollider = distance.Value;
+            }
+
+            // NOTE: the room is one closed convex box, so a wall can never be between you and an enemy.
+            // Once you add interior walls/obstacles, also ray-test them and ignore enemies that are farther away.
+            
+            if (closest == null|| closestDistanceCollider < closestDistance)
+                return ;
+            closest.enemyDead = true;
+            closest.texture = textures.bloodSplat;
+
+            player.switchHandState(1) ;
+        } else if (Mouse.GetState().RightButton == ButtonState.Pressed && kickCooldown == 0 && !blockKick)
+        {
+            blockKick = true ;
+            kickCooldown = FireDelay;
+            float cp = MathF.Cos(cameraPitch);
+            var ray = new Ray(player.Position, new Vector3(-MathF.Sin(cameraYaw) * cp, MathF.Sin(cameraPitch), -MathF.Cos(cameraYaw) * cp));
+
+            Enemy closest = null;
+            float closestDistance = float.MaxValue;
+
+            foreach (Enemy enemy in enemyList)
+            {
+                if (Vector3.Distance(player.Position, enemy.Position) > 12)
+                    continue ;
+                
+
+                float? distance = enemy.rayIntersect(ray);
+                if (distance.HasValue && distance.Value < closestDistance)
+                {
+                    closestDistance = distance.Value;
+                    closest = enemy;
+                }
+            }
+
+            float closestDistanceCollider = float.MaxValue;
+            foreach (BoundingBox collider in colliders)
+            {
+                float? distance = ray.Intersects(collider) ;
+                if (distance.HasValue && distance.Value < closestDistance)
+                    closestDistanceCollider = distance.Value;
+            }
+            
+            if (closest == null|| closestDistanceCollider < closestDistance)
+                //ADD WOOSH SOUND WHEN MISSING ENEMY
+                return ;
+
+            closest.enemyDead = true;
+            playerHit.Play();
+            closest.texture = textures.bloodSplat;
+            player.switchHandState(2) ;
+        }
     }
 
     private void DrawTerrain(Model model) {
@@ -266,13 +589,37 @@ public class Game1 : Game {
         }
     }
 
-    private void DrawHud()
+    private Texture2D getCharacterHand()
+    {
+        if (player.handState == 0)
+        {
+            return textures.handEmpty ;
+        } else if (player.handState == 4)
+        {
+            return textures.handPurple ;
+        }
+        return  textures.handEmpty ;
+    }
+
+    private Texture2D getCharacterHandItem()
+    {
+        if (player.handState == 1)
+        {
+            return textures.handRed ;
+        } else if (player.handState == 2)
+        {
+            return textures.handBlue ;
+        }
+        return null ;
+    }
+
+    private void DrawHud(Player player)
     {
         int w = graphics.GraphicsDevice.Viewport.Width;
         int h = graphics.GraphicsDevice.Viewport.Height;
 
-        // AlphaBlend matches textures from the Content Pipeline, which premultiplies alpha by default.
-        spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
+        // NonPremultiplied matches PNGs loaded with Texture2D.FromStream (soft edges look right).
+        spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied, SamplerState.PointClamp,
                             DepthStencilState.None, RasterizerState.CullNone);
 
 
@@ -287,32 +634,103 @@ public class Game1 : Game {
         string zText = "Z: " + player.Position.Z.ToString("0.0") + " / " + GameConstants.LevelEndZ; // DELETE LATER
         spriteBatch.DrawString(debugFont, zText, new Vector2(21, 21), Color.Black); // DELETE LATER (shadow)
         spriteBatch.DrawString(debugFont, zText, new Vector2(20, 20), Color.Yellow); // DELETE LATER
+        // PURPLE BARRRRRRRRRRRRRRRRRRRR
+        
+        cx = w/ 40 ;
+        cy =  h / 30;
+        const int thickPurple = 50;
+        const int LengthMax = 300;
+        spriteBatch.Draw(textures.pixel, new Rectangle(cx, cy, (int) (LengthMax * (player.healthTimer / player.maxHealthTimer)) , thickPurple), Color.Purple);
+
+        spriteBatch.Draw(textures.pixel, new Rectangle(cx, cy, (int) (LengthMax * (player.healthTimer / player.maxHealthTimer)) , thickPurple), Color.Purple);
+
+        // gun
+
+        Rectangle gunRect = new Rectangle(w - (w/1920 * 1250), h - (h/1080 * 1000), w/1920 * 1250, h/1080 * 1000) ;
+
+        spriteBatch.Draw(shootCooldown < 0.3 ? textures.gunUI : textures.gunShootUI, gunRect, Color.White) ;
+
+        // kick
+
+        if (kickCooldown > 0.15) 
+        {
+            Rectangle kickRect = new Rectangle(w - (w/1920 * 1500), h - (h/1080 * 1000), w/1920 * 1250, h/1080 * 1000) ;
+
+            spriteBatch.Draw(textures.kickUI, kickRect, Color.White) ;
+        }
+
+        // hand
+        gunRect = new Rectangle(0, h - (h/1080 * 1000), w/1920 * 1250, h/1080 * 1000) ;
+
+        spriteBatch.Draw(getCharacterHand(), gunRect, Color.White) ;
+        if (getCharacterHandItem() != null)
+            spriteBatch.Draw(getCharacterHandItem(), gunRect, Color.White) ;
+
+        //0,28125
 
         spriteBatch.End();
     }
     
     protected override void Draw(GameTime gameTime) {
-        GraphicsDevice.Clear(Color.WhiteSmoke);
-
-        GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-        GraphicsDevice.BlendState = BlendState.Opaque;
-        GraphicsDevice.RasterizerState = RasterizerState.CullNone;
-        GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
-
-        DrawTerrain(ground.Model);   // GROUND IS RENDERED HERE
-
-        DrawTextures(test.Model, testWorld);
-        DrawTextures(level.Model, levelMatrix);
-
-        foreach (Enemy enemy in enemyList) {
-            enemy.Draw(GraphicsDevice, gameCamera.ViewMatrix, gameCamera.ProjectionMatrix, player.Position);
+        if (player.playerDead)
+        {
+            GraphicsDevice.Clear(Color.Black);
+            renderGameOverScreen() ;
+            return ;
         }
 
-        // HUD last, so it draws on top of the 3D scene
-        DrawHud();
+    //Draw the 3D scene into the render target
+    GraphicsDevice.SetRenderTarget(sceneTarget);
+    GraphicsDevice.Clear(Color.WhiteSmoke);
 
-        base.Draw(gameTime);
+    GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+    GraphicsDevice.BlendState = BlendState.Opaque;
+    GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+    GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
+
+    DrawTerrain(ground.Model);   // GROUND IS RENDERED HERE
+    DrawTextures(test.Model, testWorld);
+    DrawTextures(level.Model, levelMatrix);
+
+    foreach (Enemy enemy in enemyList)
+        enemy.Draw(GraphicsDevice, gameCamera.ViewMatrix, gameCamera.ProjectionMatrix, player.Position);
+
+    //Draw that image to the screen through the shader
+    GraphicsDevice.SetRenderTarget(pixelTarget);
+    GraphicsDevice.Clear(Color.Black);
+
+    _pixelate.Parameters["Pixelation"].SetValue(_pixelation);
+    _pixelate.Parameters["ScreenSize"].SetValue(new Vector2(sceneTarget.Width, sceneTarget.Height));
+
+    spriteBatch.Begin(samplerState: SamplerState.PointClamp, effect: _pixelate);
+    spriteBatch.Draw(sceneTarget, GraphicsDevice.Viewport.Bounds, Color.White);
+    spriteBatch.End();
+
+
+    GraphicsDevice.SetRenderTarget(null);
+    GraphicsDevice.Clear(Color.Black);
+
+    if(shootCooldown > 0.25f)
+    {
+    _grayscaleEffect.Parameters["Saturation"].SetValue(_saturation);
+    _grayscaleEffect.Parameters["Contrast"].SetValue(_contrast);
+    _grayscaleEffect.Parameters["Brightness"].SetValue(_brightness);
+    spriteBatch.Begin(samplerState: SamplerState.PointClamp, effect: _grayscaleEffect);
     }
+
+    else
+    {
+         spriteBatch.Begin(samplerState: SamplerState.PointClamp);   
+    }
+    spriteBatch.Draw(pixelTarget, GraphicsDevice.Viewport.Bounds, Color.White);
+    spriteBatch.End();
+    
+
+    //HUD with no shader
+    DrawHud(player);
+
+    base.Draw(gameTime);
+}
 
     private RasterizerState ChangeRasterizerState(FillMode fillmode, CullMode cullMode = CullMode.None) {
         RasterizerState rasterizerState = new RasterizerState() { 

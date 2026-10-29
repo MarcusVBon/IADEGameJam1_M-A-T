@@ -7,7 +7,11 @@ namespace _3dgame {
         public const float ViewAngle = 45.0f;
         public const float sensitivity = 0.0025f;
         // player movement constants
-        public const float Velocity = 0.75f;
+        
+        public const float acceleration = 0.5f;
+        public const float maxAcceleration =1.25f;
+        public const float Velocity = 0.5f;
+        public const float maxVelocity = 1.25f;
         public const int MaxRange = 990;
         public const float HeightOffset = 2;
         public const float JumpHeight = 5;
