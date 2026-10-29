@@ -106,6 +106,14 @@
 /processorParam:Version=3.8.6.0
 /build:Effects/MainShader.fx
 
+#begin Fonts/Debug.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/processorParam:Version=3.8.6.0
+/build:Fonts/Debug.spritefont
+
 #begin Models/boss.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -158,7 +166,6 @@
 /processorParam:Version=3.8.6.0
 /build:Models/ChaseIdle.png
 
-
 #begin Models/enemy.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -171,6 +178,19 @@
 /processorParam:TextureFormat=Color
 /processorParam:Version=3.8.6.0
 /build:Models/enemy.png
+
+#begin Models/Gameover.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.0
+/build:Models/Gameover.png
 
 #begin Models/ground.png
 /importer:TextureImporter
@@ -205,82 +225,6 @@
 /processorParam:Version=3.8.6.0
 /build:Models/ground.x
 
-#begin Models/enemy.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Models/enemy.png
-
-#begin Models/Splat.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Models/Splat.png
-
-#begin Models/Gameover.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Models/Gameover.png
-
-#begin Models/boss.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Models/boss.png
-
-#begin Models/shooterAttack.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Models/shooterAttack.png
-
-#begin Models/ChaseAttack.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Models/ChaseAttack.png
-
-#begin Models/ChaseChase.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Models/ChaseChase.png
-
-#begin Models/ChaseIdle.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Models/ChaseIdle.png
-
-
-#begin Textures/LeftHandBase.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Textures/LeftHandBase.png
-
-#begin Textures/LeftHandBlue.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Textures/LeftHandBlue.png
-
-#begin Textures/LeftHandRed.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Textures/LeftHandRed.png
-
-#begin Textures/LeftHandPurple.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Textures/LeftHandPurple.png
-
-#begin Textures/Gunidle540.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Textures/Gunidle540.png
-
-#begin Textures/boot.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Textures/boot.png
-
-#begin Textures/GunFire.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/build:Textures/GunFire.png
-
 #begin Models/house.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
@@ -300,6 +244,26 @@
 /processorParam:TextureFormat=Compressed
 /processorParam:Version=3.8.6.0
 /build:Models/house.fbx
+
+#begin Models/level1.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=True
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=0.01
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/processorParam:Version=3.8.6.0
+/build:Models/level1.fbx
 
 #begin Models/player.fbx
 /importer:FbxImporter
@@ -413,6 +377,19 @@
 /processorParam:Version=3.8.6.0
 /build:Textures/boot.png
 
+#begin Textures/Button.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.0
+/build:Textures/Button.png
+
 #begin Textures/cottage_base_color.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -426,22 +403,6 @@
 /processorParam:Version=3.8.6.0
 /build:Textures/cottage_base_color.png
 
-#begin Models/test.fbx
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:Scale=0.1
-/processorParam:ResizeTexturesToPowerOfTwo=True
-/build:Models/test.fbx
-#begin Models/level1.fbx
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:Scale=0.01
-/processorParam:ResizeTexturesToPowerOfTwo=True
-/build:Models/level1.fbx
-#begin Fonts/Debug.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/build:Fonts/Debug.spritefont
 #begin Textures/GunFire.png
 /importer:TextureImporter
 /processor:TextureProcessor

@@ -51,8 +51,14 @@ public class Game1 : Game {
     private GameState state = GameState.MainMenu;
     private KeyboardState previousKeyboardState;
 
+    private readonly string[] menuLabels = { "Start Game", "Options", "Exit Game"};
+    private MouseState menuPrevMouse;
+
     private GraphicsDeviceManager graphics;
     private GameObject ground;
+
+    private bool PressedOnce(Keys key) =>
+    currentKeyboardState.IsKeyDown(key) && previousKeyboardState.IsKeyUp(key);
 
     //Song & Sounds
 
@@ -94,10 +100,20 @@ public class Game1 : Game {
 
     public int score = 0;
 
-    private readonly string[] menuTitles = {"Start Game", "Options", "Exit Game"};
-    private MouseState menuPrevMouse;
+    private Rectangle GetButtonRect (int i)
+    {
+        int w = GraphicsDevice.Viewport.Width;
+        int h = GraphicsDevice.Viewport.Height;
 
+        int bw = (int)(400*w / 1920f);
+        int bh = (int)(100 * h / 1080f);
+        int gap = (int)(30 * h / 1080f);
 
+        int totalHeight = 3*bh + 2 * gap;
+        int x = (w - bw) /2;
+        int y = (h - totalHeight) / 2 + i * (bh + gap);
+        return new Rectangle(x,y,bw,bh);
+    }
 
     //MY STUFF
     private GameObject test;
@@ -169,6 +185,7 @@ public class Game1 : Game {
 
         gameCamera = new Camera();
         player = new Player();
+
         screenCenterX = GraphicsDevice.Viewport.Width/2;
         screenCenterY = GraphicsDevice.Viewport.Height/2;
         Mouse.SetPosition(screenCenterX, screenCenterY);
@@ -230,9 +247,13 @@ public class Game1 : Game {
         liquids = Content.Load<SoundEffect>("Audio/LiquidsMixing");
         liquidsInstance = liquids.CreateInstance();
 
+        Enemy.LoadSounds(Content);
+
         player.SpineCrushSound = spineCrushInstance;
         player.LiquidsSound = liquidsInstance;
         player.PlayerDeathSound = playerDeathInstance;
+
+        
 
         _grayscaleEffect = Content.Load<Effect>("Effects/FlashShader");
         _pixelate = Content.Load<Effect>("Effects/MainShader");
@@ -242,6 +263,7 @@ public class Game1 : Game {
 
         textures.pixel = Content.Load<Texture2D>("Models/White");
         debugFont = Content.Load<SpriteFont>("Fonts/Debug"); // DELETE LATER
+        textures.button = Content.Load<Texture2D>("Textures/Button");
 
         player.Model = Content.Load<Model>("Models/player");
         player.CalculateBoundingSphere();
@@ -333,10 +355,43 @@ public class Game1 : Game {
 
     private void UpdateMainMenu()
     {
-        if(currentKeyboardState.IsKeyDown(Keys.P))
+        IsMouseVisible = true;
+
+        MouseState mouse = Mouse.GetState();
+        bool clicked = mouse.LeftButton == ButtonState.Pressed && menuPrevMouse.LeftButton == ButtonState.Released;
+
+        if (clicked)
         {
-            state = GameState.Playing;
+            for (int i = 0; i < menuLabels.Length; i++)
+            {
+                if (!GetButtonRect(i).Contains(mouse.Position)) continue;
+
+                switch (i)
+                {
+                    case 0: StartGame();break;
+                    case 1: state = GameState.Options;break;
+                    case 2: Exit(); break;
+                }
+            }
         }
+        menuPrevMouse = mouse;
+    }
+
+    private void StartGame()
+    {
+        restartGame();
+        state = GameState.Playing;
+        IsMouseVisible = false;
+
+        Mouse.SetPosition(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height /2);
+        previousMouseState = Mouse. GetState();
+        blockshoot = true;
+    }
+
+    private void UpdateOptions()
+    {
+        if (PressedOnce(Keys.Escape))
+            state = GameState.MainMenu;
     }
 
     private void UpdatePause()
@@ -729,7 +784,33 @@ public class Game1 : Game {
 
     private void DrawMainMenu()
     {
-        
+        GraphicsDevice.Clear(Color.Black);
+        Point mouse = Mouse.GetState().Position;
+
+        spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+
+        for (int i = 0; i < menuLabels.Length; i++)
+        {
+            Rectangle rect = GetButtonRect(i);
+            bool hover = rect.Contains(mouse);
+
+            spriteBatch.Draw(textures.button, rect, hover ? Color.White : Color.Gray);
+
+            Vector2 size = debugFont.MeasureString(menuLabels[i]);
+            Vector2 pos = new Vector2(rect.X + (rect.Width - size.X) / 2,
+                                        rect.Y + (rect.Height - size.Y) / 2);
+            spriteBatch.DrawString(debugFont,menuLabels[i], pos, hover ? Color.Yellow : Color.White);
+        }
+
+        spriteBatch.End();
+    }
+
+    private void DrawOptions()
+    {
+        GraphicsDevice.Clear(Color.Black);
+        spriteBatch.Begin();
+        spriteBatch.DrawString(debugFont, "Options (Esc to go back)", new Vector2(100,100) , Color.White);
+        spriteBatch.End();
     }
 
     private void DrawPauseMenu()
