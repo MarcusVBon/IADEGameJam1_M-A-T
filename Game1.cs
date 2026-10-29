@@ -5,10 +5,12 @@ using System.Runtime.Serialization;
 using System.Security;
 using System.Threading;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SharpDX.Direct2D1.Effects;
 using SharpDX.XAudio2;
+using Microsoft.Xna.Framework.Media;
 
 namespace _3dgame;
 
@@ -42,10 +44,51 @@ public class Game1 : Game {
     private GraphicsDeviceManager graphics;
     private GameObject ground;
 
+    //Song & Sounds
+
+    SoundEffect introSong;
+    SoundEffectInstance introSongInstance;
+    SoundEffect noIntroSong;
+    SoundEffectInstance noIntroSongInstance;
+    SoundEffect spineCrush;
+    SoundEffectInstance spineCrushInstance;
+    SoundEffect playerHit;
+    SoundEffectInstance playerHitInstance;
+    SoundEffect playerDeath;
+    SoundEffectInstance playerDeathInstance;
+    SoundEffect reloading;
+    SoundEffectInstance reloadingInstance;
+    SoundEffect shooting;
+    SoundEffectInstance shootingInstance;
+    SoundEffect liquids;
+    SoundEffectInstance liquidsInstance;
+
+    // The grayscale shader effect.
+    private Effect _grayscaleEffect;
+
+    private Effect _pixelate;
+
+    // The amount of saturation to provide the grayscale shader effect.
+    private float _saturation = 0.0f;
+    private float _contrast = 10.0f;
+    private float _brightness = 1.0f;
+
+    private float _pixelation = 8.0f;
+
+    // The speed of the fade to grayscale effect.
+    private const float FADE_SPEED = 0.02f;
+
+    private RenderTarget2D sceneTarget;
+
+    private RenderTarget2D pixelTarget;
+
+
+
     //MY STUFF
     private GameObject test;
 
     private float shootCooldown ;
+    private int untilReload;
     private float kickCooldown ;
     private const float FireDelay = 0.5f;     // seconds between shots
     private const float KickDelay = 0.5f;     // seconds between shots
@@ -62,7 +105,7 @@ public class Game1 : Game {
     private readonly Matrix levelMatrix = Matrix.CreateTranslation(30, 0, 100);
     private Camera gameCamera;
     private Player player;
-    public readonly List<BoundingBox> colliders = new List<BoundingBox>();
+    private readonly List<BoundingBox> colliders = new List<BoundingBox>();
     private KeyboardState currentKeyboardState = new KeyboardState();
     private MouseState currentMouseState = new MouseState();
     private MouseState previousMouseState = new MouseState();
@@ -75,19 +118,14 @@ public class Game1 : Game {
     private double totalMouseIdleTime = 0  ;
     private SpriteBatch spriteBatch;
 
-    public List<BoundingBox> GetColliders()
-    {
-        return colliders ;
-    }
-
 
     public Game1() {
         graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         graphics.SynchronizeWithVerticalRetrace = true;
 
-        graphics.PreferredBackBufferHeight = (int) (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height);
-        graphics.PreferredBackBufferWidth = (int) (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width);
+        graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+        graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
         graphics.ToggleFullScreen();
 
         graphics.ApplyChanges();
@@ -109,8 +147,6 @@ public class Game1 : Game {
 
         gameCamera = new Camera();
         player = new Player();
-        player.healthTimer = player.maxHealthTimer ;
-
         screenCenterX = GraphicsDevice.Viewport.Width/2;
         screenCenterY = GraphicsDevice.Viewport.Height/2;
         Mouse.SetPosition(screenCenterX, screenCenterY);
@@ -155,6 +191,33 @@ public class Game1 : Game {
         ChangeRasterizerState(FillMode.Solid);
         ground.Model = Content.Load<Model>("Models/ground");
 
+        introSong = Content.Load<SoundEffect>("Audio/SparrowIntro");
+        introSongInstance = introSong.CreateInstance();
+        noIntroSong = Content.Load<SoundEffect>("Audio/SparrowNoIntro");
+        noIntroSongInstance = noIntroSong.CreateInstance();
+        playerDeath = Content.Load<SoundEffect>("Audio/PlayerDeath");
+        playerDeathInstance = playerDeath.CreateInstance();
+        playerHit = Content.Load<SoundEffect>("Audio/PlayerGetsHit");
+        playerHitInstance = playerHit.CreateInstance();
+        reloading = Content.Load<SoundEffect>("Audio/Reloading");
+        reloadingInstance = reloading.CreateInstance();
+        shooting = Content.Load<SoundEffect>("Audio/Shooting");
+        shootingInstance = shooting.CreateInstance();
+        spineCrush = Content.Load<SoundEffect>("Audio/SpineCrush");
+        spineCrushInstance = spineCrush.CreateInstance();
+        liquids = Content.Load<SoundEffect>("Audio/LiquidsMixing");
+        liquidsInstance = liquids.CreateInstance();
+
+        player.SpineCrushSound = spineCrushInstance;
+        player.LiquidsSound = liquidsInstance;
+        player.PlayerDeathSound = playerDeathInstance;
+
+        introSongInstance.Play();
+
+        _grayscaleEffect = Content.Load<Effect>("Effects/FlashShader");
+        _pixelate = Content.Load<Effect>("Effects/MainShader");
+        
+
         test.Model = Content.Load<Model>("Models/test");
 
         textures.pixel = Content.Load<Texture2D>("Models/White");
@@ -164,6 +227,15 @@ public class Game1 : Game {
         colliders.AddRange(ModelCollision.Build(corridor.Model, levelMatrix, perMesh: true));
         player.Model = Content.Load<Model>("Models/player");
         player.CalculateBoundingSphere();
+
+        sceneTarget = new RenderTarget2D(GraphicsDevice,
+        GraphicsDevice.PresentationParameters.BackBufferWidth,
+        GraphicsDevice.PresentationParameters.BackBufferHeight,
+        false, SurfaceFormat.Color, DepthFormat.Depth24);
+        pixelTarget = new RenderTarget2D(GraphicsDevice,
+        GraphicsDevice.PresentationParameters.BackBufferWidth,
+        GraphicsDevice.PresentationParameters.BackBufferHeight,
+        false, SurfaceFormat.Color, DepthFormat.None);
     }
 
     public void renderGameOverScreen()
@@ -192,6 +264,14 @@ public class Game1 : Game {
             base.Update(gameTime);
             return;
         }
+
+        //MUSIC LOOPING
+
+        if(introSongInstance.State != SoundState.Playing && noIntroSongInstance.State != SoundState.Playing)
+        {
+            noIntroSongInstance.Play();
+        }
+        
 
         
         currentKeyboardState = Keyboard.GetState();
@@ -256,7 +336,7 @@ public class Game1 : Game {
 
         Shoot() ;
 
-        player.Update((double)gameTime.ElapsedGameTime.TotalSeconds, currentKeyboardState, cameraYaw, colliders);
+        player.Update((double) gameTime.ElapsedGameTime.TotalSeconds, currentKeyboardState, cameraYaw, colliders);
 
         
         foreach (Enemy enemy in enemyList)
@@ -305,7 +385,7 @@ public class Game1 : Game {
         logTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
         if (logTimer >= 3) {
-            //Console.WriteLine("posX: " + player.Position.X + " posY: " + player.Position.Y + " posZ: " + player.Position.Z);
+            Console.WriteLine("posX: " + player.Position.X + " posY: " + player.Position.Y + " posZ: " + player.Position.Z);
             logTimer = 0;
         }
         
@@ -326,8 +406,9 @@ public class Game1 : Game {
         Console.WriteLine("GUN COOLDOWN : " + shootCooldown + " KICK COOLDOWN: " + kickCooldown) ;
         if (Mouse.GetState().LeftButton == ButtonState.Pressed && shootCooldown == 0 && !blockshoot)
         {
+            
             blockshoot = true ;
-            Console.WriteLine("shoooottt") ;
+            shooting.Play();
             shootCooldown = FireDelay;
 
             float cp = MathF.Cos(cameraPitch);
@@ -338,10 +419,6 @@ public class Game1 : Game {
 
             foreach (Enemy enemy in enemyList)
             {
-                if (Vector3.Distance(player.Position, enemy.Position) > 75)
-                    continue ;
-                
-
                 float? distance = enemy.rayIntersect(ray);
                 if (distance.HasValue && distance.Value < closestDistance)
                 {
@@ -370,7 +447,6 @@ public class Game1 : Game {
         } else if (Mouse.GetState().RightButton == ButtonState.Pressed && kickCooldown == 0 && !blockKick)
         {
             blockKick = true ;
-            Console.WriteLine("KILLLLLLLLLLLLL") ;
             kickCooldown = FireDelay;
             float cp = MathF.Cos(cameraPitch);
             var ray = new Ray(player.Position, new Vector3(-MathF.Sin(cameraYaw) * cp, MathF.Sin(cameraPitch), -MathF.Cos(cameraYaw) * cp));
@@ -401,9 +477,11 @@ public class Game1 : Game {
             }
             
             if (closest == null|| closestDistanceCollider < closestDistance)
+                //ADD WOOSH SOUND WHEN MISSING ENEMY
                 return ;
 
             closest.enemyDead = true;
+            playerHit.Play();
             closest.texture = textures.bloodSplat;
             player.switchHandState(2) ;
         }
@@ -527,26 +605,58 @@ public class Game1 : Game {
             return ; 
         }
 
-        GraphicsDevice.Clear(Color.WhiteSmoke);
+    //Draw the 3D scene into the render target
+    GraphicsDevice.SetRenderTarget(sceneTarget);
+    GraphicsDevice.Clear(Color.WhiteSmoke);
 
-        GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-        GraphicsDevice.BlendState = BlendState.Opaque;
-        GraphicsDevice.RasterizerState = RasterizerState.CullNone;
-        GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
+    GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+    GraphicsDevice.BlendState = BlendState.Opaque;
+    GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+    GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
+
+    DrawTerrain(ground.Model);
+    DrawTextures(test.Model, testWorld);
+    DrawTextures(corridor.Model, levelMatrix);
+
+    foreach (Enemy enemy in enemyList)
+        enemy.Draw(GraphicsDevice, gameCamera.ViewMatrix, gameCamera.ProjectionMatrix, player.Position);
+
+    //Draw that image to the screen through the shader
+    GraphicsDevice.SetRenderTarget(pixelTarget);
+    GraphicsDevice.Clear(Color.Black);
+
+    _pixelate.Parameters["Pixelation"].SetValue(_pixelation);
+    _pixelate.Parameters["ScreenSize"].SetValue(new Vector2(sceneTarget.Width, sceneTarget.Height));
+
+    spriteBatch.Begin(samplerState: SamplerState.PointClamp, effect: _pixelate);
+    spriteBatch.Draw(sceneTarget, GraphicsDevice.Viewport.Bounds, Color.White);
+    spriteBatch.End();
 
 
-        DrawTerrain(ground.Model);
+    GraphicsDevice.SetRenderTarget(null);
+    GraphicsDevice.Clear(Color.Black);
 
-        DrawTextures(test.Model, testWorld);
-        DrawTextures(corridor.Model, levelMatrix);
-
-        foreach (Enemy enemy in enemyList)
-            enemy.Draw(GraphicsDevice, gameCamera.ViewMatrix, gameCamera.ProjectionMatrix, player.Position);
-
-        DrawHud(player);
-
-        base.Draw(gameTime);
+    if(shootCooldown > 0.25f)
+    {
+    _grayscaleEffect.Parameters["Saturation"].SetValue(_saturation);
+    _grayscaleEffect.Parameters["Contrast"].SetValue(_contrast);
+    _grayscaleEffect.Parameters["Brightness"].SetValue(_brightness);
+    spriteBatch.Begin(samplerState: SamplerState.PointClamp, effect: _grayscaleEffect);
     }
+
+    else
+    {
+         spriteBatch.Begin(samplerState: SamplerState.PointClamp);   
+    }
+    spriteBatch.Draw(pixelTarget, GraphicsDevice.Viewport.Bounds, Color.White);
+    spriteBatch.End();
+    
+
+    //HUD with no shader
+    DrawHud(player);
+
+    base.Draw(gameTime);
+}
 
     private RasterizerState ChangeRasterizerState(FillMode fillmode, CullMode cullMode = CullMode.None) {
         RasterizerState rasterizerState = new RasterizerState() { 

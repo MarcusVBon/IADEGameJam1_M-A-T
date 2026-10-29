@@ -1,11 +1,13 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 using System;
 using System.Collections.Generic;
 using System.Net.Mime;
 
 namespace _3dgame {
     public class Player : GameObject {
+
         public float ForwardDirection { get; set; }
         private bool jumpStarted = false;
         private float jumpStartY;
@@ -20,6 +22,11 @@ namespace _3dgame {
         public readonly double healthRegen = 5 ;
         public double healthTimer = 15;
         public int handState = 0 ;
+        public SoundEffectInstance SpineCrushSound { get; set; }
+        public SoundEffectInstance LiquidsSound {get; set; }
+        public SoundEffectInstance PlayerDeathSound {get; set; }
+
+        public bool isPlayerDying = false;
 
         public bool playerDead = false ;
 
@@ -43,6 +50,16 @@ namespace _3dgame {
                 {
                     healthTimer =  maxHealthTimer ;
                 }
+            }
+
+            if(newState == 1)
+            {
+                LiquidsSound.Play();
+            }
+
+            if(newState == 2)
+            {
+                SpineCrushSound.Play();
             }
 
             if (newState == 1 && handState == 2 || newState == 2 && handState == 1)
@@ -92,6 +109,13 @@ namespace _3dgame {
                     playerDead = true ;
                 }
 
+                if(isPlayerDying == false)
+                {
+                    PlayerDeathSound.Play();
+                    isPlayerDying = true;
+                }
+                healthTimer = 0 ;
+                Position = new Vector3 (900, 0, 900) ;
             }
 
             Vector3 futurePosition = Position;
