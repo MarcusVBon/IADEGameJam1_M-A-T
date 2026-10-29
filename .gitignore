@@ -70,3 +70,7 @@ obj/Debug/net9.0-windows/test.pdb
 obj/Debug/net9.0-windows/test.pdb
 obj/Debug/net9.0-windows/test.dll
 
+bin/Debug/net9.0-windows/test.dll
+bin/Debug/net9.0-windows/test.exe
+bin/Debug/net9.0-windows/test.pdb
+/bin/Debug/net9.0-windows
