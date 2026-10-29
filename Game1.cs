@@ -289,6 +289,7 @@ public class Game1 : Game {
     private void LoadLevel() {        //LEVEL INITIALISED HERE
         levelContent.Unload();
         enemyList.Clear();
+        state = GameState.Playing;
 
         switch(currentLevel)
         {
@@ -325,6 +326,7 @@ public class Game1 : Game {
 
     public void renderGameOverScreen()
     {
+        Console.WriteLine("RENDER!") ;
         int w = graphics.GraphicsDevice.Viewport.Width;
         int h = graphics.GraphicsDevice.Viewport.Height;
 
@@ -401,10 +403,19 @@ public class Game1 : Game {
 
     private void UpdateGameOver()
     {
+        Console.WriteLine("UPDATE!") ;
+        currentKeyboardState = Keyboard.GetState();
+        if (currentKeyboardState.IsKeyDown(Keys.Space))
+        {
+            Console.WriteLine("RESTART!") ;
+            LoadLevel() ;
+            player.ResetToStart();
+        }
         
     }
     protected void UpdatePlaying(GameTime gameTime) {
         introSongInstance.Play();
+        currentKeyboardState = Keyboard.GetState();
         
         if (player.playerDead)
         {
@@ -413,8 +424,10 @@ public class Game1 : Game {
                 Exit();
             if (currentKeyboardState.IsKeyDown(Keys.Space))
             {
+                renderGameOverScreen() ;
                 Console.WriteLine("RESTART!") ;
-                restartGame() ;
+                player.ResetToStart();
+                LoadLevel() ;
             }
             return ;
         }
@@ -726,6 +739,9 @@ public class Game1 : Game {
 
     private void DrawHud(Player player)
     {
+        if (player.playerDead)
+            return ;
+
         int w = graphics.GraphicsDevice.Viewport.Width;
         int h = graphics.GraphicsDevice.Viewport.Height;
 

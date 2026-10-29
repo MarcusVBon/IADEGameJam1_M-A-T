@@ -38,6 +38,7 @@ namespace _3dgame {
             handCrunchTimer = -1 ;
             handState = 0 ;
             playerDead = false ;
+            isPlayerDying = false ;
         }
 
         public void ResetToStart() {
