@@ -306,7 +306,7 @@ public class Game1 : Game {
         {
         case 1:
             level.Model = levelContent.Load<Model>("Models/level1");
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(0f, 0f, -92f), 9f, 11f, true, true));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(0f, 0f, -92f), 9f, 11f, true, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(88f, 0f, -92f), 9f, 11f, true, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(88f, 0f, -180f), 9f, 11f, false, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-68f, 0f, -180f), 9f, 11f, true, false));
