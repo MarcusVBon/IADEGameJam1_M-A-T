@@ -118,7 +118,7 @@ public class Enemy : GameObject
 
         // check if enemy can start attacking the player
         if ((chaser && !startAttack && Vector3.Distance(Position, player.Position) < 8) //<-range 
-            || (!chaser && !startAttack && Vector3.Distance(Position, player.Position) < 9 * 3 && canSeePlayer(player, colliders)))
+            || (!chaser && !startAttack && Vector3.Distance(Position, player.Position) < 100 && canSeePlayer(player, colliders)))
         {
             startAttack = true ;
             if (chaser)
@@ -136,9 +136,9 @@ public class Enemy : GameObject
 
             //Console.WriteLine("ATTACK TIMER: " + attackTimer) ;
                                     //ATATCK DELAY ->
-            if (attackTimer >= attackStartup * (!chaser ? 1.75 : 1))
+            if (attackTimer >= attackStartup * (!chaser ? 1 : 0.3))// ATTACK speed shootwwer/chase
             {
-                if (Vector3.Distance(Position, player.Position) < 9 * (!chaser ? 3 : 1) && (chaser || canSeePlayer(player, colliders)))
+                if (Vector3.Distance(Position, player.Position) < (!chaser ? 100 : 9)  && (chaser || canSeePlayer(player, colliders)))
                 {
                     player.healthTimer -= attackDmg ;
                     shootingInstance.Play();
@@ -162,7 +162,7 @@ public class Enemy : GameObject
             durationTimer += dt ;
             //Console.WriteLine("durationTimer: " + attackTimer +"/" + attackStartup* (!chaser ? 1.5 : 1)) ;
 
-            if (durationTimer >= attackStartup * 1.15)
+            if (durationTimer >= attackStartup * 0.1)//CHASER ATTACKw
             {
                 startAttack = false ;
                 attackTimer = 0 ;
