@@ -14,6 +14,7 @@ public class Enemy : GameObject
     private  float Width;
     private  float height;
     public bool enemyDead = false;
+    public float deathTimer = 1.5f;
     public float attackTimer = 00.0f;
     public float durationTimer = 00.0f;
     private const float attackStartup = 0.75f;
