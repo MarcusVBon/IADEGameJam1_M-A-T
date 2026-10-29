@@ -12,10 +12,19 @@ namespace _3dgame {
         private float movementDirection = 0;
         private bool reachedApex = false;
         private bool reachedBottom = true;
-        private Vector3 startPosition = new Vector3(30, GameConstants.HeightOffset, 125);
+        private Vector3 startPosition = new Vector3(0, GameConstants.HeightOffset, 0);
         public Player() : base() {
             ForwardDirection = 0.0f;
             Position = startPosition;
+        }
+
+        public void ResetToStart() {
+            Position = startPosition;
+            jumpStarted = false;
+            reachedApex = false;
+            reachedBottom = true;
+            movementDirection = 0;
+            BoundingSphere = new BoundingSphere(Position, 1f);
         }
 
         public void Update(KeyboardState keyboardState, float cameraYaw, IReadOnlyList<BoundingBox> colliders) {
@@ -47,7 +56,7 @@ namespace _3dgame {
 
             Vector2 horizontal = new Vector2(movement.X, movement.Z);
 
-            if (horizontal != Vector2.Zero) {
+            if (horizontal != Vector2.Zero){
                 horizontal.Normalize();
             }
 

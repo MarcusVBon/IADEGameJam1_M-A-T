@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>c:/Users/dicet/OneDrive/Desktop/futureproofin/Programing/GitHubb/HP/HolyPolarityRepo/HP/IADEGameJam1_M-A-T/Content/Models/metal2.png</SourceFile>
+  <SourceTime>2026-10-29T00:13:46.276273+00:00</SourceTime>
+  <DestFile>c:/Users/dicet/OneDrive/Desktop/futureproofin/Programing/GitHubb/HP/HolyPolarityRepo/HP/IADEGameJam1_M-A-T/Content/bin/Windows/Content/Models/metal2_0.xnb</DestFile>
+  <DestTime>2026-10-29T01:14:53.4082991+00:00</DestTime>
+  <Importer>TextureImporter</Importer>
+  <ImporterTime>2026-10-08T12:48:48+01:00</ImporterTime>
+  <Processor>TextureProcessor</Processor>
+  <ProcessorTime>2026-10-08T12:48:48+01:00</ProcessorTime>
+  <Parameters>
+    <Key>ColorKeyColor</Key>
+    <Value>0,0,0,0</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ColorKeyEnabled</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>GenerateMipmaps</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>ResizeToPowerOfTwo</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>MakeSquare</Key>
+    <Value>False</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Compressed</Value>
+  </Parameters>
+  <Parameters>
+    <Key>Version</Key>
+    <Value>3.8.6.0</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>

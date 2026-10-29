@@ -4918,19 +4918,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\marcu\\.nuget\\packages\\": {}
+    "C:\\Users\\dicet\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\marcu\\Downloads\\3dgame-main (1)\\3dgame-main\\ColitionTest\\test.csproj",
+      "projectUniqueName": "c:\\Users\\dicet\\OneDrive\\Desktop\\futureproofin\\Programing\\GitHubb\\HP\\HolyPolarityRepo\\HP\\IADEGameJam1_M-A-T\\test.csproj",
       "projectName": "test",
-      "projectPath": "C:\\Users\\marcu\\Downloads\\3dgame-main (1)\\3dgame-main\\ColitionTest\\test.csproj",
-      "packagesPath": "C:\\Users\\marcu\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\marcu\\Downloads\\3dgame-main (1)\\3dgame-main\\ColitionTest\\obj\\",
+      "projectPath": "c:\\Users\\dicet\\OneDrive\\Desktop\\futureproofin\\Programing\\GitHubb\\HP\\HolyPolarityRepo\\HP\\IADEGameJam1_M-A-T\\test.csproj",
+      "packagesPath": "C:\\Users\\dicet\\.nuget\\packages\\",
+      "outputPath": "c:\\Users\\dicet\\OneDrive\\Desktop\\futureproofin\\Programing\\GitHubb\\HP\\HolyPolarityRepo\\HP\\IADEGameJam1_M-A-T\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\marcu\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\dicet\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0-windows"

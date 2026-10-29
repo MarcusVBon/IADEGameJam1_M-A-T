@@ -143,8 +143,13 @@
 /processorParam:Scale=0.1
 /processorParam:ResizeTexturesToPowerOfTwo=True
 /build:Models/test.fbx
-#begin Models/corridor.fbx
+#begin Models/level1.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:Scale=0.01
-/build:Models/corridor.fbx
+/processorParam:ResizeTexturesToPowerOfTwo=True
+/build:Models/level1.fbx
+#begin Fonts/Debug.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/build:Fonts/Debug.spritefont
