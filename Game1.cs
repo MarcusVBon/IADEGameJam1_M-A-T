@@ -44,11 +44,16 @@ public class GameTextures
     public Texture2D handPurple;
     public Texture2D GameOver;
     public Texture2D bossKill;
+
+    // TUTORIAL & EXPO
+    public Texture2D tutorial;
+    public Texture2D expo;
+
 }
 
 public class Game1 : Game {
 
-    enum GameState {MainMenu, Options, Playing, Paused, GameOver, BossKilled}
+    enum GameState {MainMenu, Options, Playing, Paused, GameOver, BossKilled, tutorialExpo}
     private GameState state = GameState.MainMenu;
     private KeyboardState previousKeyboardState;
 
@@ -153,6 +158,7 @@ public class Game1 : Game {
     private float cameraPitch;
     private double logTimer = 0d;
     private double totalMouseIdleTime = 0  ;
+    private int tutorialPage = 0  ;
     private SpriteBatch spriteBatch;
     private SpriteFont debugFont; // DELETE LATER
 
@@ -205,6 +211,8 @@ public class Game1 : Game {
         
         textures.GameOver = Content.Load<Texture2D>("Models/Gameover");
         textures.bossKill = Content.Load<Texture2D>("Models/win");
+        textures.tutorial = Content.Load<Texture2D>("Models/Gameover");
+        textures.expo = Content.Load<Texture2D>("Models/win");
 
 
         textures.gunUI = Content.Load<Texture2D>("Textures/GunIdle540") ;
@@ -298,7 +306,7 @@ public class Game1 : Game {
         {
         case 1:
             level.Model = levelContent.Load<Model>("Models/level1");
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(0f, 0f, -92f), 9f, 11f, true, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(0f, 0f, -92f), 9f, 11f, true, true));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(88f, 0f, -92f), 9f, 11f, true, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(88f, 0f, -180f), 9f, 11f, false, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-68f, 0f, -180f), 9f, 11f, true, false));
@@ -335,7 +343,7 @@ public class Game1 : Game {
             break;
         case 5:
             level.Model = levelContent.Load<Model>("Models/bossLevel");
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(0f, 0f, -206f), 9f, 11f, true, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(0f, 0f, -206f), 9f, 11f, true, true));
 
             break;
         default:
@@ -381,7 +389,8 @@ public class Game1 : Game {
         // NonPremultiplied matches PNGs loaded with Texture2D.FromStream (soft edges look right).
         spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied, SamplerState.PointClamp,
                             DepthStencilState.None, RasterizerState.CullNone);
-        spriteBatch.Draw(textures.bossKill, new Rectangle(0, 0, w, h), Color.Purple);
+
+        spriteBatch.Draw(textures.bossKill, new Rectangle(0, 0, w, h), Color.White);
 
         spriteBatch.End();
     }
@@ -398,6 +407,7 @@ public class Game1 : Game {
             case GameState.Paused: UpdatePause(); break;
             case GameState.GameOver: UpdateGameOver(); break;
             case GameState.BossKilled: UpdateKilledBoss(); break;
+            case GameState.tutorialExpo: UpdateTutorialExpo(); break;
         }
 
         previousKeyboardState = currentKeyboardState;
@@ -419,7 +429,7 @@ public class Game1 : Game {
 
                 switch (i)
                 {
-                    case 0: StartGame();break;
+                    case 0: state = GameState.tutorialExpo; tutorialPage = 0 ; break; //startGame();break;
                     case 1: state = GameState.Options;break;
                     case 2: Exit(); break;
                 }
@@ -431,12 +441,56 @@ public class Game1 : Game {
     private void StartGame()
     {
         restartGame();
+        currentLevel = 0 ;
+        LoadLevel() ;
+        player.ResetToStart() ;
         state = GameState.Playing;
         IsMouseVisible = false;
 
         Mouse.SetPosition(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height /2);
         previousMouseState = Mouse. GetState();
         blockshoot = true;
+    }
+
+    private void UpdateTutorialExpo()
+    {
+        if (currentKeyboardState.IsKeyUp(Keys.Space)) 
+        {
+            blockshoot = false ;
+        } 
+
+        Console.WriteLine("UPDATE!") ;
+        currentKeyboardState = Keyboard.GetState();
+        if (currentKeyboardState.IsKeyDown(Keys.Space) && tutorialPage == 0 && !blockshoot)
+        {
+            tutorialPage = 1 ;
+            blockshoot = true ;
+        } else if (currentKeyboardState.IsKeyDown(Keys.Space) && tutorialPage == 1)
+        {
+            StartGame() ;
+        }
+    }
+
+    public void renderTutorialExpo()
+    {
+        Console.WriteLine("RENDER!") ;
+        int w = graphics.GraphicsDevice.Viewport.Width;
+        int h = graphics.GraphicsDevice.Viewport.Height;
+
+        spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied, SamplerState.PointClamp,
+                            DepthStencilState.None, RasterizerState.CullNone);
+
+        if (tutorialPage == 0 )
+        {
+            spriteBatch.Draw(textures.expo, new Rectangle(0, 0, w, h), Color.Purple);
+        } else
+        {
+            spriteBatch.Draw(textures.tutorial, new Rectangle(0, 0, w, h), Color.Purple);
+        }
+
+        // NonPremultiplied matches PNGs loaded with Texture2D.FromStream (soft edges look right).
+
+        spriteBatch.End();
     }
 
     private void UpdateOptions()
@@ -457,10 +511,14 @@ public class Game1 : Game {
         if (currentKeyboardState.IsKeyDown(Keys.Space))
         {
             Console.WriteLine("RESTART!") ;
+            currentLevel -= 1 ;
+            if (currentLevel < 0)
+            {
+                currentLevel = 0 ;
+            }
             LoadLevel() ;
             player.ResetToStart();
         }
-        
     }
 
     private void UpdateKilledBoss()
@@ -486,6 +544,11 @@ public class Game1 : Game {
             {
                 //renderGameOverScreen() ;
                 Console.WriteLine("RESTART!") ;
+                currentLevel -= 1 ;
+                if (currentLevel < 0)
+                {
+                    currentLevel = 0 ;
+                }
                 player.ResetToStart();
                 LoadLevel() ;
             }
@@ -690,6 +753,7 @@ public class Game1 : Game {
             if (closest.billionare)
             {
                 state = GameState.BossKilled ;
+                Console.WriteLine("STATE" + state) ;
             }
 
             player.switchHandState(1) ;
@@ -730,6 +794,11 @@ public class Game1 : Game {
                 return ;
 
             closest.enemyDead = true;
+            if (closest.billionare)
+            {
+                state = GameState.BossKilled ;
+                Console.WriteLine("STATE" + state) ;
+            }
             playerHit.Play();
             closest.texture = textures.bloodSplat;
             player.switchHandState(2) ;
@@ -920,6 +989,10 @@ public class Game1 : Game {
             case GameState.BossKilled:
             GraphicsDevice.Clear(Color.Black);
             renderKilledBossScreen();
+            break;
+            case GameState.tutorialExpo:
+            GraphicsDevice.Clear(Color.Black);
+            renderTutorialExpo();
             break;
         }
         base.Draw(gameTime);

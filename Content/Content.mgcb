@@ -203,7 +203,7 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /processorParam:Version=3.8.6.0
-/build:Models/v.png
+/build:Models/win.png
 
 #begin Models/ground.png
 /importer:TextureImporter
