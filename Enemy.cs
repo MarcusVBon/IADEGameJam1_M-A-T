@@ -117,7 +117,7 @@ public class Enemy : GameObject
             return ;
 
         // check if enemy can start attacking the player
-        if ((chaser && !startAttack && Vector3.Distance(Position, player.Position) < 8) 
+        if ((chaser && !startAttack && Vector3.Distance(Position, player.Position) < 8)//<-range 
             || (!chaser && !startAttack && Vector3.Distance(Position, player.Position) < 9 * 3 && canSeePlayer(player, colliders)))
         {
             startAttack = true ;
@@ -135,7 +135,7 @@ public class Enemy : GameObject
             attackTimer += dt ;
 
             //Console.WriteLine("ATTACK TIMER: " + attackTimer) ;
-
+                                    //ATATCK DELAY ->
             if (attackTimer >= attackStartup * (!chaser ? 1.75 : 1))
             {
                 if (Vector3.Distance(Position, player.Position) < 9 * (!chaser ? 3 : 1) && (chaser || canSeePlayer(player, colliders)))
