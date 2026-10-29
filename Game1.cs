@@ -12,19 +12,19 @@ using Microsoft.Xna.Framework.Input;
 using SharpDX.Direct2D1.Effects;
 using SharpDX.XAudio2;
 using Microsoft.Xna.Framework.Media;
+using System.Drawing.Text;
 
 namespace _3dgame;
 
 public class GameTextures
 {
 
-    enum GameState {MainMenu, Playing, Paused, GameOver}
-    private GameState state = GameState.MainMenu;
-    private KeyboardState previousKryboardState;
-
     public Texture2D enemyTexture1 ;
     public Texture2D enemyShoot ;
     public Texture2D enemyBash ;
+
+    public Texture2D button;
+    public Texture2D logo;
 
     public Texture2D enemyChaseIdle ;
     public Texture2D enemyChase ;
@@ -46,8 +46,19 @@ public class GameTextures
 }
 
 public class Game1 : Game {
+
+    enum GameState {MainMenu, Options, Playing, Paused, GameOver, BossKilled}
+    private GameState state = GameState.MainMenu;
+    private KeyboardState previousKeyboardState;
+
+    private readonly string[] menuLabels = { "Start Game", "Options", "Exit Game"};
+    private MouseState menuPrevMouse;
+
     private GraphicsDeviceManager graphics;
     private GameObject ground;
+
+    private bool PressedOnce(Keys key) =>
+    currentKeyboardState.IsKeyDown(key) && previousKeyboardState.IsKeyUp(key);
 
     //Song & Sounds
 
@@ -89,7 +100,20 @@ public class Game1 : Game {
 
     public int score = 0;
 
+    private Rectangle GetButtonRect (int i)
+    {
+        int w = GraphicsDevice.Viewport.Width;
+        int h = GraphicsDevice.Viewport.Height;
 
+        int bw = (int)(400*w / 1920f);
+        int bh = (int)(100 * h / 1080f);
+        int gap = (int)(30 * h / 1080f);
+
+        int totalHeight = 3*bh + 2 * gap;
+        int x = (w - bw) /2;
+        int y = (h - totalHeight) / 2 + i * (bh + gap);
+        return new Rectangle(x,y,bw,bh);
+    }
 
     //MY STUFF
     private GameObject test;
@@ -161,6 +185,7 @@ public class Game1 : Game {
 
         gameCamera = new Camera();
         player = new Player();
+
         screenCenterX = GraphicsDevice.Viewport.Width/2;
         screenCenterY = GraphicsDevice.Viewport.Height/2;
         Mouse.SetPosition(screenCenterX, screenCenterY);
@@ -222,11 +247,13 @@ public class Game1 : Game {
         liquids = Content.Load<SoundEffect>("Audio/LiquidsMixing");
         liquidsInstance = liquids.CreateInstance();
 
+        Enemy.LoadSounds(Content);
+
         player.SpineCrushSound = spineCrushInstance;
         player.LiquidsSound = liquidsInstance;
         player.PlayerDeathSound = playerDeathInstance;
 
-        introSongInstance.Play();
+        
 
         _grayscaleEffect = Content.Load<Effect>("Effects/FlashShader");
         _pixelate = Content.Load<Effect>("Effects/MainShader");
@@ -236,6 +263,7 @@ public class Game1 : Game {
 
         textures.pixel = Content.Load<Texture2D>("Models/White");
         debugFont = Content.Load<SpriteFont>("Fonts/Debug"); // DELETE LATER
+        textures.button = Content.Load<Texture2D>("Textures/Button");
 
         player.Model = Content.Load<Model>("Models/player");
         player.CalculateBoundingSphere();
@@ -332,6 +360,7 @@ public class Game1 : Game {
 
     public void renderGameOverScreen()
     {
+        Console.WriteLine("RENDER!") ;
         int w = graphics.GraphicsDevice.Viewport.Width;
         int h = graphics.GraphicsDevice.Viewport.Height;
 
@@ -343,7 +372,109 @@ public class Game1 : Game {
         spriteBatch.End();
     }
 
-    protected override void Update(GameTime gameTime) {
+    public void renderKilledBossScreen(){
+        int w = graphics.GraphicsDevice.Viewport.Width;
+        int h = graphics.GraphicsDevice.Viewport.Height;
+
+        // NonPremultiplied matches PNGs loaded with Texture2D.FromStream (soft edges look right).
+        spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied, SamplerState.PointClamp,
+                            DepthStencilState.None, RasterizerState.CullNone);
+        spriteBatch.Draw(textures.GameOver, new Rectangle(0, 0, w, h), Color.Purple);
+
+        spriteBatch.End();
+    }
+
+    protected override void Update(GameTime gameTime)
+    {
+        if (!IsActive) {base.Update(gameTime); return; }
+        currentKeyboardState = Keyboard.GetState();
+
+        switch (state)
+        {
+            case GameState.MainMenu: UpdateMainMenu(); break;
+            case GameState.Playing: UpdatePlaying(gameTime); break;
+            case GameState.Paused: UpdatePause(); break;
+            case GameState.GameOver: UpdateGameOver(); break;
+            case GameState.BossKilled: UpdateKilledBoss(); break;
+        }
+
+        previousKeyboardState = currentKeyboardState;
+        base.Update(gameTime);
+    }
+
+    private void UpdateMainMenu()
+    {
+        IsMouseVisible = true;
+
+        MouseState mouse = Mouse.GetState();
+        bool clicked = mouse.LeftButton == ButtonState.Pressed && menuPrevMouse.LeftButton == ButtonState.Released;
+
+        if (clicked)
+        {
+            for (int i = 0; i < menuLabels.Length; i++)
+            {
+                if (!GetButtonRect(i).Contains(mouse.Position)) continue;
+
+                switch (i)
+                {
+                    case 0: StartGame();break;
+                    case 1: state = GameState.Options;break;
+                    case 2: Exit(); break;
+                }
+            }
+        }
+        menuPrevMouse = mouse;
+    }
+
+    private void StartGame()
+    {
+        restartGame();
+        state = GameState.Playing;
+        IsMouseVisible = false;
+
+        Mouse.SetPosition(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height /2);
+        previousMouseState = Mouse. GetState();
+        blockshoot = true;
+    }
+
+    private void UpdateOptions()
+    {
+        if (PressedOnce(Keys.Escape))
+            state = GameState.MainMenu;
+    }
+
+    private void UpdatePause()
+    {
+        
+    }
+
+    private void UpdateGameOver()
+    {
+        Console.WriteLine("UPDATE!") ;
+        currentKeyboardState = Keyboard.GetState();
+        if (currentKeyboardState.IsKeyDown(Keys.Space))
+        {
+            Console.WriteLine("RESTART!") ;
+            LoadLevel() ;
+            player.ResetToStart();
+        }
+        
+    }
+
+    private void UpdateKilledBoss()
+    {
+        Console.WriteLine("UPDATE!") ;
+        currentKeyboardState = Keyboard.GetState();
+        if (currentKeyboardState.IsKeyDown(Keys.Space))
+        {
+            state = GameState.MainMenu ;
+        }    
+    }
+
+    protected void UpdatePlaying(GameTime gameTime) {
+        introSongInstance.Play();
+        currentKeyboardState = Keyboard.GetState();
+        
         if (player.playerDead)
         {
             currentKeyboardState = Keyboard.GetState();
@@ -351,8 +482,10 @@ public class Game1 : Game {
                 Exit();
             if (currentKeyboardState.IsKeyDown(Keys.Space))
             {
+                //renderGameOverScreen() ;
                 Console.WriteLine("RESTART!") ;
-                restartGame() ;
+                player.ResetToStart();
+                LoadLevel() ;
             }
             return ;
         }
@@ -552,6 +685,11 @@ public class Game1 : Game {
             closest.enemyDead = true;
             closest.texture = textures.bloodSplat;
 
+            if (closest.billionare)
+            {
+                state = GameState.BossKilled ;
+            }
+
             player.switchHandState(1) ;
         } else if (Mouse.GetState().RightButton == ButtonState.Pressed && kickCooldown == 0 && !blockKick)
         {
@@ -664,6 +802,9 @@ public class Game1 : Game {
 
     private void DrawHud(Player player)
     {
+        if (player.playerDead)
+            return ;
+
         int w = graphics.GraphicsDevice.Viewport.Width;
         int h = graphics.GraphicsDevice.Viewport.Height;
 
@@ -719,8 +860,69 @@ public class Game1 : Game {
 
         spriteBatch.End();
     }
-    
-    protected override void Draw(GameTime gameTime) {
+
+    private void DrawMainMenu()
+    {
+        GraphicsDevice.Clear(Color.Black);
+        Point mouse = Mouse.GetState().Position;
+
+        spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+
+        for (int i = 0; i < menuLabels.Length; i++)
+        {
+            Rectangle rect = GetButtonRect(i);
+            bool hover = rect.Contains(mouse);
+
+            spriteBatch.Draw(textures.button, rect, hover ? Color.White : Color.Gray);
+
+            Vector2 size = debugFont.MeasureString(menuLabels[i]);
+            Vector2 pos = new Vector2(rect.X + (rect.Width - size.X) / 2,
+                                        rect.Y + (rect.Height - size.Y) / 2);
+            spriteBatch.DrawString(debugFont,menuLabels[i], pos, hover ? Color.Yellow : Color.White);
+        }
+
+        spriteBatch.End();
+    }
+
+    private void DrawOptions()
+    {
+        GraphicsDevice.Clear(Color.Black);
+        spriteBatch.Begin();
+        spriteBatch.DrawString(debugFont, "Options (Esc to go back)", new Vector2(100,100) , Color.White);
+        spriteBatch.End();
+    }
+
+    private void DrawPauseMenu()
+    {
+        
+    }
+
+    protected override void Draw(GameTime gameTime)
+    {
+        switch (state)
+        {
+            case GameState.MainMenu:
+            GraphicsDevice.Clear(Color.Black);
+            DrawMainMenu();
+            break;
+            case GameState.Playing:
+            DrawScene(gameTime); DrawHud(player);
+            break;
+            case GameState.Paused:
+            DrawScene(gameTime); DrawPauseMenu();
+            break;
+            case GameState.GameOver:
+            GraphicsDevice.Clear(Color.Black);
+            renderGameOverScreen();
+            break;
+            case GameState.BossKilled:
+            GraphicsDevice.Clear(Color.Black);
+            renderKilledBossScreen();
+            break;
+        }
+        base.Draw(gameTime);
+    }
+    protected void DrawScene(GameTime gameTime) {
         if (player.playerDead)
         {
             GraphicsDevice.Clear(Color.Black);

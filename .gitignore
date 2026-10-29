@@ -66,11 +66,11 @@ artifacts/
 bin/bin/
 obj/
 Content/obj
-obj/Debug/net9.0-windows/test.pdb
-obj/Debug/net9.0-windows/test.pdb
-obj/Debug/net9.0-windows/test.dll
+obj/Debug/net9.0-windows/
+
 
 bin/Debug/net9.0-windows/test.dll
 bin/Debug/net9.0-windows/test.exe
 bin/Debug/net9.0-windows/test.pdb
 /bin/Debug/net9.0-windows
+bin/Debug/net9.0-windows/Content/Models/level1.xnb

@@ -1,7 +1,9 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework.Content;
 
 namespace _3dgame;
 
@@ -24,11 +26,24 @@ public class Enemy : GameObject
     public bool chaser = true ;
     public bool billionare = false ;
 
+    private static SoundEffect playerDeath;
+    private static SoundEffectInstance playerDeathInstance;
+    private static SoundEffect shooting;
+    private static SoundEffectInstance shootingInstance;
+
     private Matrix lastWorldMatrix ;
     private Matrix lastViewMatrix ;
     private Matrix lastProjectionMatrix ;
 
     public readonly float attackDmg = 5 ;
+
+    public static void LoadSounds(ContentManager content)
+    {
+        shooting = content.Load<SoundEffect>("Audio/Shooting");
+        shootingInstance = shooting.CreateInstance();
+        playerDeath = content.Load<SoundEffect>("Audio/PlayerDeath");
+        playerDeathInstance = playerDeath.CreateInstance();
+    }
 
     
     public Enemy(GraphicsDevice device, GameTextures textures, Vector3 position, float nWidth, float nHeight = 2f, bool nChaser = true, bool nBillionare = false, bool nEnemyDead = false)
@@ -126,6 +141,8 @@ public class Enemy : GameObject
                 if (Vector3.Distance(Position, player.Position) < 9 * (!chaser ? 3 : 1) && (chaser || canSeePlayer(player, colliders)))
                 {
                     player.healthTimer -= attackDmg ;
+                    shootingInstance.Play();
+                    playerDeath.Play();
                 } 
                 if (!chaser)
                 { 
