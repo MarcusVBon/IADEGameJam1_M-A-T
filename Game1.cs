@@ -14,6 +14,10 @@ namespace _3dgame;
 public class GameTextures
 {
 
+    enum GameState {MainMenu, Playing, Paused, GameOver}
+    private GameState state = GameState.MainMenu;
+    private KeyboardState previousKryboardState;
+
     public Texture2D enemyTexture1 ;
     public Texture2D enemyShoot ;
     public Texture2D enemyBash ;
@@ -77,6 +81,8 @@ public class Game1 : Game {
     private RenderTarget2D sceneTarget;
 
     private RenderTarget2D pixelTarget;
+
+    public int score = 0;
 
 
 
@@ -238,6 +244,7 @@ public class Game1 : Game {
         {
             noIntroSongInstance.Play();
         }
+        Console.WriteLine("Score:" + player.score);
         
 
         
