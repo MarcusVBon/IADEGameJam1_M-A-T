@@ -19,8 +19,8 @@ public class Enemy : GameObject
     public float deathTimer = 1.5f;
     public float attackTimer = 00.0f;
     public float durationTimer = 00.0f;
-    private const float attackStartup = 0.75f;
-    private const float attackDuration = 0.5f;
+    private const float attackStartup = 0.3f;
+    private const float attackDuration = 0.3f;
     public bool startAttack = true;
     public bool isAttacking = true;
     public bool chaser = true ;
@@ -117,8 +117,8 @@ public class Enemy : GameObject
             return ;
 
         // check if enemy can start attacking the player
-        if ((chaser && !startAttack && Vector3.Distance(Position, player.Position) < 8) 
-            || (!chaser && !startAttack && Vector3.Distance(Position, player.Position) < 9 * 3 && canSeePlayer(player, colliders)))
+        if ((chaser && !startAttack && Vector3.Distance(Position, player.Position) < 8) //<-range 
+            || (!chaser && !startAttack && Vector3.Distance(Position, player.Position) < 350 && canSeePlayer(player, colliders)))
         {
             startAttack = true ;
             if (chaser)
@@ -135,10 +135,10 @@ public class Enemy : GameObject
             attackTimer += dt ;
 
             //Console.WriteLine("ATTACK TIMER: " + attackTimer) ;
-
-            if (attackTimer >= attackStartup * (!chaser ? 1.75 : 1))
+                                    //ATATCK DELAY ->
+            if (attackTimer >= attackStartup * (!chaser ? 1.75 : 0.3))// ATTACK speed shootwwer/chase
             {
-                if (Vector3.Distance(Position, player.Position) < 9 * (!chaser ? 3 : 1) && (chaser || canSeePlayer(player, colliders)))
+                if (Vector3.Distance(Position, player.Position) < (!chaser ? 350 : 9)  && (chaser || canSeePlayer(player, colliders)))
                 {
                     player.healthTimer -= attackDmg ;
                     shootingInstance.Play();
@@ -162,7 +162,7 @@ public class Enemy : GameObject
             durationTimer += dt ;
             //Console.WriteLine("durationTimer: " + attackTimer +"/" + attackStartup* (!chaser ? 1.5 : 1)) ;
 
-            if (durationTimer >= attackStartup * 1.15)
+            if (durationTimer >= attackStartup * 0.1)//CHASER ATTACKw
             {
                 startAttack = false ;
                 attackTimer = 0 ;

@@ -17,7 +17,7 @@ namespace _3dgame {
         private bool reachedBottom = true;
         private Vector3 startPosition = new Vector3(0, GameConstants.HeightOffset, 0);
         public readonly double maxHealthTimer = 20 ;
-        public readonly double crunchTime = 0.75 ;
+        public readonly double crunchTime = 0.5 ;
         public double handCrunchTimer = -1 ;
         public readonly double healthRegen = 5 ;
         public double healthTimer = 15;
@@ -38,6 +38,7 @@ namespace _3dgame {
             handCrunchTimer = -1 ;
             handState = 0 ;
             playerDead = false ;
+            isPlayerDying = false ;
         }
 
         public void ResetToStart() {

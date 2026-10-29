@@ -9,9 +9,9 @@ namespace _3dgame {
         // player movement constants
         
         public const float acceleration = 0.5f;
-        public const float maxAcceleration =1.25f;
-        public const float Velocity = 0.5f;
-        public const float maxVelocity = 1.25f;
+        public const float maxAcceleration = 1f;
+        public const float Velocity = 1f;
+        public const float maxVelocity = 2.5f;
         public const int MaxRange = 990;
         public const float HeightOffset = 2;
         public const float JumpHeight = 5;
