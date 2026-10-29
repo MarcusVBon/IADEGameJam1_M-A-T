@@ -43,6 +43,7 @@ public class GameTextures
     public Texture2D handBlue;
     public Texture2D handPurple;
     public Texture2D GameOver;
+    public int tutorialPage;
 }
 
 public class Game1 : Game {
@@ -465,6 +466,47 @@ public class Game1 : Game {
         Mouse.SetPosition(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height /2);
         previousMouseState = Mouse. GetState();
         blockshoot = true;
+    }
+
+    private void UpdateTutorialExpo()
+    {
+        if (currentKeyboardState.IsKeyUp(Keys.Space)) 
+        {
+            blockshoot = false ;
+        } 
+
+        Console.WriteLine("UPDATE!") ;
+        currentKeyboardState = Keyboard.GetState();
+        if (currentKeyboardState.IsKeyDown(Keys.Space) && tutorialPage == 0 && !blockshoot)
+        {
+            tutorialPage = 1 ;
+            blockshoot = true ;
+        } else if (currentKeyboardState.IsKeyDown(Keys.Space) && tutorialPage == 1 && !blockshoot)
+        {
+            StartGame() ;
+        }
+    }
+
+    public void renderTutorialExpo()
+    {
+        Console.WriteLine("RENDER!") ;
+        int w = graphics.GraphicsDevice.Viewport.Width;
+        int h = graphics.GraphicsDevice.Viewport.Height;
+
+        spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied, SamplerState.PointClamp,
+                            DepthStencilState.None, RasterizerState.CullNone);
+
+        if (tutorialPage == 0 )
+        {
+            spriteBatch.Draw(textures.expo, new Rectangle(0, 0, w, h), Color.Purple);
+        } else
+        {
+            spriteBatch.Draw(textures.tutorial, new Rectangle(0, 0, w, h), Color.Purple);
+        }
+
+        // NonPremultiplied matches PNGs loaded with Texture2D.FromStream (soft edges look right).
+
+        spriteBatch.End();
     }
 
     private void UpdateOptions()
