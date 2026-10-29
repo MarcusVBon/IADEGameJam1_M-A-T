@@ -306,7 +306,7 @@ public class Game1 : Game {
         {
         case 1:
             level.Model = levelContent.Load<Model>("Models/level1");
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(0f, 0f, -92f), 9f, 11f, true, true));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(0f, 0f, -92f), 9f, 11f, true, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(88f, 0f, -92f), 9f, 11f, true, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(88f, 0f, -180f), 9f, 11f, false, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-68f, 0f, -180f), 9f, 11f, true, false));
@@ -317,17 +317,17 @@ public class Game1 : Game {
             level.Model = levelContent.Load<Model>("Models/level2");
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(40f, 0f, -90f), 9f, 11f, true, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-40f, 0f, -90f), 9f, 11f, true, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-40f, 0f, -172f), 9f, 11f, true, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(40f, 0f, -172f), 9f, 11f, true, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-40f, 0f, -172f), 9f, 11f, false, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(40f, 0f, -172f), 9f, 11f, false, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-32f, 0f, -230f), 9f, 11f, true, false));
 
             break;
         case 3:
             level.Model = levelContent.Load<Model>("Models/level3");
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-38f, 0f, -176f), 9f, 11f, true, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-38f, 0f, -176f), 9f, 11f, false, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(36f, 0f, -176f), 9f, 11f, true, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(94f, 0f, -152f), 9f, 11f, true, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(94f, 0f, -82f), 9f, 11f, true, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(94f, 0f, -152f), 9f, 11f, false, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(94f, 0f, -82f), 9f, 11f, false, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(194f, 0f, -50f), 9f, 11f, true, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(100f, 0f, -30f), 9f, 11f, true, false));
 
@@ -335,9 +335,9 @@ public class Game1 : Game {
         case 4:
             level.Model = levelContent.Load<Model>("Models/level4");
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(0f, 0f, -204f), 9f, 11f, true, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-88f, 0f, -204f), 9f, 11f, true, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-88f, 0f, -204f), 9f, 11f, false, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-88f, 0f, -116f), 9f, 11f, true, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(68f, 0f, -116f), 9f, 11f, true, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(68f, 0f, -116f), 9f, 11f, false, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(68f, 0f, -44f), 9f, 11f, true, false));
 
             break;
@@ -345,29 +345,29 @@ public class Game1 : Game {
             level.Model = levelContent.Load<Model>("Models/Level5");
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(76f, 0f, -72f), 9f, 11f, true, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-78f, 0f, -72f), 9f, 11f, true, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-80f, 0f, -120f), 9f, 11f, true, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(80f, 0f, -120f), 9f, 11f, true, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-80f, 0f, -120f), 9f, 11f, false, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(80f, 0f, -120f), 9f, 11f, false, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(0f, 0f, -170f), 9f, 11f, true, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-70f, 0f, -262f), 9f, 11f, true, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-150f, 0f, -210f), 9f, 11f, true, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-150f, 0f, -210f), 9f, 11f, false, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-20f, 0f, -210f), 9f, 11f, true, false));
 
             break;
         case 6:
             level.Model = levelContent.Load<Model>("Models/level6");
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(178f, 0f, -110f), 9f, 11f, true, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(178f, 0f, -110f), 9f, 11f, false, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(100f, 0f, -200f), 9f, 11f, true, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(80f, 0f, -120f), 9f, 11f, true, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(186f, 0f, -234f), 9f, 11f, true, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(60f, 0f, -236f), 9f, 11f, true, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(80f, 0f, -120f), 9f, 11f, false, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(186f, 0f, -234f), 9f, 11f, false, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(60f, 0f, -236f), 9f, 11f, false, false));
 
             break;
         case 7:
             level.Model = levelContent.Load<Model>("Models/level7");
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(20f, 0f, -120f), 9f, 11f, true, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-80f, 0f, -160f), 9f, 11f, true, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-80f, 0f, -160f), 9f, 11f, false, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(0f, 0f, -160f), 9f, 11f, true, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(80f, 0f, -160f), 9f, 11f, true, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(80f, 0f, -160f), 9f, 11f, false, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(0f, 0f, -200f), 9f, 11f, true, false));
 
             break;
