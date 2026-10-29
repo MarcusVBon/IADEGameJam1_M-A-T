@@ -676,7 +676,7 @@ public class Game1 : Game {
                 continue ;
 
             //Console.WriteLine("Distance: " + Vector3.Distance(enemy.Position, player.Position)) ;
-            if (enemy.chaser && !enemy.startAttack && Vector3.Distance(enemy.Position, player.Position) < 70 && Vector3.Distance(enemy.Position, player.Position) > 7)
+            if (enemy.chaser && !enemy.startAttack && Vector3.Distance(enemy.Position, player.Position) < 250 && Vector3.Distance(enemy.Position, player.Position) > 7 && enemy.canSeePlayer(player, colliders))
             {
                 Vector3 futurePosition = enemy.Position;
 
@@ -684,12 +684,12 @@ public class Game1 : Game {
 
                 movementDir.Normalize() ;
                                                                         //SPEED->
-                Vector3 futureX = enemy.Position + new Vector3(movementDir.X * 0.45f, 0, 0);
+                Vector3 futureX = enemy.Position + new Vector3(movementDir.X * 1f, 0, 0);
                 if (enemy.ValidateMovement(futureX, colliders)) {
                     futurePosition.X = futureX.X;
                 }
 
-                Vector3 futureZ = futurePosition + new Vector3(0, 0, movementDir.Z * 0.45f);
+                Vector3 futureZ = futurePosition + new Vector3(0, 0, movementDir.Z * 1f);
                 if (enemy.ValidateMovement(futureZ, colliders)) {
                     futurePosition.Z = futureZ.Z;
                 }

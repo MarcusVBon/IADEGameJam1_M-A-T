@@ -11,7 +11,7 @@ namespace _3dgame {
         public const float acceleration = 0.5f;
         public const float maxAcceleration = 1f;
         public const float Velocity = 1f;
-        public const float maxVelocity = 2f;
+        public const float maxVelocity = 2.5f;
         public const int MaxRange = 990;
         public const float HeightOffset = 2;
         public const float JumpHeight = 5;

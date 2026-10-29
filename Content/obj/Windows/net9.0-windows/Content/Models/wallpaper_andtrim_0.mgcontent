@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>c:/Users/dicet/OneDrive/Desktop/futureproofin/Programing/GitHubb/HP/HolyPolarityRepo/HP/IADEGameJam1_M-A-T/Content/Models/wallpaper_andtrim.png</SourceFile>
-  <SourceTime>2026-10-29T00:45:08.3710559+00:00</SourceTime>
-  <DestFile>c:/Users/dicet/OneDrive/Desktop/futureproofin/Programing/GitHubb/HP/HolyPolarityRepo/HP/IADEGameJam1_M-A-T/Content/bin/Windows/Content/Models/wallpaper_andtrim_0.xnb</DestFile>
-  <DestTime>2026-10-29T11:11:32.5742499+00:00</DestTime>
+  <SourceFile>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Models/wallpaper_andtrim.png</SourceFile>
+  <SourceTime>2026-10-29T02:20:40.194652+00:00</SourceTime>
+  <DestFile>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/bin/Windows/Content/Models/wallpaper_andtrim_0.xnb</DestFile>
+  <DestTime>2026-10-29T12:29:24.6989107+00:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2026-10-08T12:48:48+01:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
