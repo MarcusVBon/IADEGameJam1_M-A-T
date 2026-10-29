@@ -626,6 +626,8 @@ public class Game1 : Game {
             {
                 //renderGameOverScreen() ;
                 Console.WriteLine("RESTART!") ;
+                cameraYaw = 0f ;
+                cameraPitch = 0f ;
                 currentLevel -= 0 ;
                 if (currentLevel <= 0)
                 {
