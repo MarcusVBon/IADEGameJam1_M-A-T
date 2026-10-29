@@ -220,6 +220,39 @@
 /processorParam:Version=3.8.6.0
 /build:Models/Gameover.png
 
+#begin Models/tutorial.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.0
+/build:Models/tutorial.png
+
+#begin Models/dust.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:Scale=0.01
+/processorParam:ResizeTexturesToPowerOfTwo=True
+/build:Models/dust.fbx
+
+#begin Models/exposition.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.0
+/build:Models/exposition.png
+
 #begin Models/win.png
 /importer:TextureImporter
 /processor:TextureProcessor

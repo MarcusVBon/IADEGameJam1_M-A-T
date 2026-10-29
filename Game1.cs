@@ -232,8 +232,8 @@ public class Game1 : Game {
         
         textures.GameOver = Content.Load<Texture2D>("Models/Gameover");
         textures.bossKill = Content.Load<Texture2D>("Models/win");
-        textures.tutorial = Content.Load<Texture2D>("Models/Gameover");
-        textures.expo = Content.Load<Texture2D>("Models/win");
+        textures.tutorial = Content.Load<Texture2D>("Models/tutorial");
+        textures.expo = Content.Load<Texture2D>("Models/exposition");
 
 
         textures.gunUI = Content.Load<Texture2D>("Textures/GunIdle540") ;
@@ -326,7 +326,7 @@ public class Game1 : Game {
         levelContent.Unload();
         enemyList.Clear();
         player.healthTimer = player.maxHealthTimer;
-
+        Console.WriteLine("CURRENT LEVEL: " + currentLevel) ;
 
         switch(currentLevel)
         {
@@ -403,9 +403,13 @@ public class Game1 : Game {
 
             break;
         default:
-            currentLevel = 1;
-            LoadLevel();
-            return;
+            Console.Write("SKIPED LEVEL, " + currentMouseState) ;
+            level.Model = levelContent.Load<Model>("Models/level7");
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(6f, 0f, -160f), 9f, 11f, true, false));   // Enemy.001
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-30f, 0f, -170f), 9f, 11f, false, false)); // Enemy.002
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-56f, 0f, -228f), 9f, 11f, true, false));  // Enemy.003
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(32f, 0f, -126f), 9f, 11f, false, false));  // Enemy.005
+            break;
         }
 
         colliders.Clear();
@@ -546,10 +550,10 @@ public class Game1 : Game {
 
         if (tutorialPage == 0 )
         {
-            spriteBatch.Draw(textures.expo, new Rectangle(0, 0, w, h), Color.Purple);
+            spriteBatch.Draw(textures.expo, new Rectangle(0, 0, w, h), Color.White);
         } else
         {
-            spriteBatch.Draw(textures.tutorial, new Rectangle(0, 0, w, h), Color.Purple);
+            spriteBatch.Draw(textures.tutorial, new Rectangle(0, 0, w, h), Color.White);
         }
 
         // NonPremultiplied matches PNGs loaded with Texture2D.FromStream (soft edges look right).
@@ -576,7 +580,7 @@ public class Game1 : Game {
         {
             Console.WriteLine("RESTART!") ;
             currentLevel -= 1 ;
-            if (currentLevel < 0)
+            if (currentLevel <= 0)
             {
                 currentLevel = 0 ;
             }
@@ -599,6 +603,8 @@ public class Game1 : Game {
         mainMenuSongInstance.Stop();
         noIntroSongInstance.Play();
 
+        currentKeyboardState = Keyboard.GetState();
+
         if (elevatorStep != ElevatorStep.None)
         {
             previousMouseState = Mouse.GetState();   // stops the camera from jumping when play resumes
@@ -614,10 +620,10 @@ public class Game1 : Game {
             {
                 //renderGameOverScreen() ;
                 Console.WriteLine("RESTART!") ;
-                currentLevel -= 1 ;
-                if (currentLevel < 0)
+                currentLevel -= 0 ;
+                if (currentLevel <= 0)
                 {
-                    currentLevel = 0 ;
+                    currentLevel = 1 ;
                 }
                 player.ResetToStart();
                 LoadLevel() ;
@@ -869,7 +875,6 @@ private void UpdateTransition(GameTime gameTime)
         Console.WriteLine("GUN COOLDOWN : " + shootCooldown + " KICK COOLDOWN: " + kickCooldown) ;
         if (Mouse.GetState().LeftButton == ButtonState.Pressed && shootCooldown == 0 && !blockshoot)
         {
-            
             blockshoot = true ;
             shooting.Play();
             shootCooldown = FireDelay;
