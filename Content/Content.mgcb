@@ -54,6 +54,11 @@
 /processor:TextureProcessor
 /build:Models/Splat.png
 
+#begin Models/Gameover.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Models/Gameover.png
+
 #begin Models/boss.png
 /importer:TextureImporter
 /processor:TextureProcessor

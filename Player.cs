@@ -10,6 +10,7 @@ namespace _3dgame {
         private bool jumpStarted = false;
         private float jumpStartY;
         private float movementDirection = 0;
+        private Vector3 currentVelocity ;
         private bool reachedApex = false;
         private bool reachedBottom = true;
         private Vector3 startPosition = new Vector3(30, GameConstants.HeightOffset, 125);
@@ -20,12 +21,15 @@ namespace _3dgame {
         public double healthTimer = 15;
         public int handState = 0 ;
 
+        public bool playerDead = false ;
+
         public Player() : base() {
             ForwardDirection = 0.0f;
             Position = startPosition;
             healthTimer = maxHealthTimer ;
             handCrunchTimer = -1 ;
             handState = 0 ;
+            playerDead = false ;
         }
 
         public void switchHandState(int newState)
@@ -73,8 +77,21 @@ namespace _3dgame {
 
             if (healthTimer < 0)
             {
-                healthTimer = 0 ;
-                Position = new Vector3 (900, 0, 900) ;
+                if(handState == 4)
+                {
+                    handCrunchTimer = -1 ;
+                    handState = 0 ;
+                    healthTimer += healthRegen ;
+                    if (maxHealthTimer < healthTimer)
+                    {
+                        healthTimer =  maxHealthTimer ;
+                    }
+                } else
+                {
+                    healthTimer = 0 ;
+                    playerDead = true ;
+                }
+
             }
 
             Vector3 futurePosition = Position;
@@ -107,6 +124,21 @@ namespace _3dgame {
 
             if (horizontal != Vector2.Zero) {
                 horizontal.Normalize();
+                currentVelocity.X += GameConstants.acceleration * movement.X;
+                currentVelocity.Z += GameConstants.acceleration * movement.X;
+            } else
+            {
+                currentVelocity.X -= GameConstants.acceleration * movement.X;
+                currentVelocity.Z-= GameConstants.acceleration * movement.X;
+            }
+
+            if (currentVelocity.X * movement.X > GameConstants.maxVelocity * movement.X )
+            {
+                currentVelocity.X = movement.X * GameConstants.maxVelocity ;
+            }
+            if (currentVelocity.Z * movement.Z > GameConstants.maxVelocity * movement.Z )
+            {
+                currentVelocity.Z = movement.Z * GameConstants.maxVelocity ;
             }
 
             movement.X = horizontal.X;

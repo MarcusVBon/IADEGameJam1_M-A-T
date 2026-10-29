@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Runtime.Serialization;
+using System.Security;
 using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SharpDX.Direct2D1.Effects;
+using SharpDX.XAudio2;
 
 namespace _3dgame;
 
@@ -33,6 +35,7 @@ public class GameTextures
     public Texture2D handRed;
     public Texture2D handBlue;
     public Texture2D handPurple;
+    public Texture2D GameOver;
 }
 
 public class Game1 : Game {
@@ -91,6 +94,11 @@ public class Game1 : Game {
         IsMouseVisible = false;
     }
 
+    public void restartGame()
+    { 
+       
+    }
+
     protected override void Initialize() {
         ground = new GameObject();
 
@@ -117,6 +125,9 @@ public class Game1 : Game {
 
         textures.billinare = Content.Load<Texture2D>("Models/boss");
         textures.bloodSplat = Content.Load<Texture2D>("Models/Splat");
+
+        
+        textures.GameOver = Content.Load<Texture2D>("Models/Gameover");
 
 
         textures.gunUI = Content.Load<Texture2D>("Textures/GunIdle540") ;
@@ -155,7 +166,28 @@ public class Game1 : Game {
         player.CalculateBoundingSphere();
     }
 
+    public void renderGameOverScreen()
+    {
+        int w = graphics.GraphicsDevice.Viewport.Width;
+        int h = graphics.GraphicsDevice.Viewport.Height;
+
+        // NonPremultiplied matches PNGs loaded with Texture2D.FromStream (soft edges look right).
+        spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied, SamplerState.PointClamp,
+                            DepthStencilState.None, RasterizerState.CullNone);
+        spriteBatch.Draw(textures.GameOver, new Rectangle(0, 0, w, h), Color.Purple);
+
+        spriteBatch.End();
+    }
+
     protected override void Update(GameTime gameTime) {
+        if (player.playerDead)
+        {
+            if (currentKeyboardState.IsKeyDown(Keys.Space))
+                Console.WriteLine("RESTART!") ;
+                restartGame() ;
+            return ;
+        }
+
         if (!IsActive) {
             base.Update(gameTime);
             return;
@@ -240,8 +272,6 @@ public class Game1 : Game {
                 Vector3 movementDir = player.Position - enemy.Position ;
 
                 movementDir.Normalize() ;
-
-                futurePosition.Y += movementDir.Y * 0.45f ;
 
                 Vector3 futureX = enemy.Position + new Vector3(movementDir.X * 0.45f, 0, 0);
                 if (enemy.ValidateMovement(futureX, colliders)) {
@@ -491,6 +521,11 @@ public class Game1 : Game {
     }
     
     protected override void Draw(GameTime gameTime) {
+        if (player.playerDead)
+        {
+            renderGameOverScreen() ;
+            return ; 
+        }
 
         GraphicsDevice.Clear(Color.WhiteSmoke);
 
