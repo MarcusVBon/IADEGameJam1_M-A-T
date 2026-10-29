@@ -142,6 +142,26 @@
 /processorParam:Version=3.8.6.0
 /build:Fonts/Debug.spritefont
 
+#begin Models/boss.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=True
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=0.01
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/processorParam:Version=3.8.6.0
+/build:Models/boss.fbx;Models/bossLevel.fbx
+
 #begin Models/boss.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -220,19 +240,6 @@
 /processorParam:Version=3.8.6.0
 /build:Models/Gameover.png
 
-#begin Models/win.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/processorParam:Version=3.8.6.0
-/build:Models/win.png
-
 #begin Models/ground.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -305,6 +312,126 @@
 /processorParam:TextureFormat=Compressed
 /processorParam:Version=3.8.6.0
 /build:Models/level1.fbx
+
+#begin Models/level2.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=True
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=0.01
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/processorParam:Version=3.8.6.0
+/build:Models/level2.fbx
+
+#begin Models/level3.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=True
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=0.01
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/processorParam:Version=3.8.6.0
+/build:Models/level3.fbx
+
+#begin Models/level4.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=True
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=0.01
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/processorParam:Version=3.8.6.0
+/build:Models/level4.fbx
+
+#begin Models/Level5.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=True
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=0.01
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/processorParam:Version=3.8.6.0
+/build:Models/Level5.fbx
+
+#begin Models/level6.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=True
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=0.01
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/processorParam:Version=3.8.6.0
+/build:Models/level6.fbx
+
+#begin Models/level7.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=True
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=0.01
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/processorParam:Version=3.8.6.0
+/build:Models/level7.fbx
 
 #begin Models/player.fbx
 /importer:FbxImporter
@@ -405,6 +532,32 @@
 /processorParam:Version=3.8.6.0
 /build:Models/White.png
 
+#begin Models/win.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.0
+/build:Models/win.png
+
+#begin Textures/Background.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.0
+/build:Textures/Background.png
+
 #begin Textures/boot.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -444,64 +597,6 @@
 /processorParam:Version=3.8.6.0
 /build:Textures/cottage_base_color.png
 
-#begin Models/test.fbx
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:Scale=0.1
-/processorParam:ResizeTexturesToPowerOfTwo=True
-/build:Models/test.fbx
-#begin Models/level1.fbx
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:Scale=0.01
-/processorParam:ResizeTexturesToPowerOfTwo=True
-/build:Models/level1.fbx
-#begin Models/level2.fbx
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:Scale=0.01
-/processorParam:ResizeTexturesToPowerOfTwo=True
-/build:Models/level2.fbx
-#begin Models/level3.fbx
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:Scale=0.01
-/processorParam:ResizeTexturesToPowerOfTwo=True
-/build:Models/level3.fbx
-#begin Models/level4.fbx
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:Scale=0.01
-/processorParam:ResizeTexturesToPowerOfTwo=True
-/build:Models/level4.fbx
-#begin Models/Level5.fbx
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:Scale=0.01
-/processorParam:ResizeTexturesToPowerOfTwo=True
-/build:Models/Level5.fbx
-#begin Models/level6.fbx
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:Scale=0.01
-/processorParam:ResizeTexturesToPowerOfTwo=True
-/build:Models/level6.fbx
-#begin Models/level7.fbx
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:Scale=0.01
-/processorParam:ResizeTexturesToPowerOfTwo=True
-/build:Models/level7.fbx
-#begin Models/boss.fbx
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:Scale=0.01
-/processorParam:ResizeTexturesToPowerOfTwo=True
-/build:Models/boss.fbx;Models/bossLevel.fbx
-#begin Fonts/Debug.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/build:Fonts/Debug.spritefont
 #begin Textures/GunFire.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -579,4 +674,17 @@
 /processorParam:TextureFormat=Color
 /processorParam:Version=3.8.6.0
 /build:Textures/LeftHandRed.png
+
+#begin Textures/mainMenuBackground.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/processorParam:Version=3.8.6.0
+/build:Textures/mainMenuBackground.png
 

@@ -50,6 +50,9 @@ public class GameTextures
     public Texture2D tutorial;
     public Texture2D expo;
 
+    public Texture2D mainMenuBackground;
+    public Texture2D mainMenuLogo;
+
 }
 
 public class Game1 : Game {
@@ -58,7 +61,7 @@ public class Game1 : Game {
     private GameState state = GameState.MainMenu;
     private KeyboardState previousKeyboardState;
 
-    private readonly string[] menuLabels = { "Start Game", "Options", "Exit Game"};
+    private readonly string[] menuLabels = { "Start Game", "Exit Game"};
     private MouseState menuPrevMouse;
 
     private GraphicsDeviceManager graphics;
@@ -128,13 +131,13 @@ public class Game1 : Game {
         int w = GraphicsDevice.Viewport.Width;
         int h = GraphicsDevice.Viewport.Height;
 
-        int bw = (int)(400*w / 1920f);
-        int bh = (int)(100 * h / 1080f);
+        int bw = (int)(600*w / 1920f);
+        int bh = (int)(180 * h / 1080f);
         int gap = (int)(30 * h / 1080f);
 
         int totalHeight = 3*bh + 2 * gap;
         int x = (w - bw) /2;
-        int y = (h - totalHeight) / 2 + i * (bh + gap);
+        int y = ((h - totalHeight) / 2 + i * (bh + gap))+300;
         return new Rectangle(x,y,bw,bh);
     }
 
@@ -221,6 +224,9 @@ public class Game1 : Game {
 
         textures.enemyTexture1 = Content.Load<Texture2D>("Models/enemy");
         textures.enemyShoot = Content.Load<Texture2D>("Models/ShooterAttack");
+
+        textures.mainMenuBackground = Content.Load<Texture2D>("Textures/mainMenuBackground");
+        textures.mainMenuLogo = Content.Load<Texture2D>("Textures/Background");
 
         textures.enemyChaseAttack = Content.Load<Texture2D>("Models/ChaseAttack");
         textures.enemyChase = Content.Load<Texture2D>("Models/ChaseChase");
@@ -492,7 +498,7 @@ public class Game1 : Game {
                 switch (i)
                 {
                     case 0: state = GameState.tutorialExpo; tutorialPage = 0 ; break; //startGame();break;
-                    case 2: Exit(); break;
+                    case 1: Exit(); break;
                 }
             }
         }
@@ -1117,10 +1123,17 @@ private void DrawTransition()
 
     private void DrawMainMenu()
     {
+        int w = graphics.GraphicsDevice.Viewport.Width;
+        int h = graphics.GraphicsDevice.Viewport.Height;
+        
         GraphicsDevice.Clear(Color.Black);
         Point mouse = Mouse.GetState().Position;
 
         spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+
+        Rectangle backgroundRect = new Rectangle(0, 0, w, h) ;
+
+        spriteBatch.Draw(textures.mainMenuBackground, backgroundRect, Color.White);
 
         for (int i = 0; i < menuLabels.Length; i++)
         {
