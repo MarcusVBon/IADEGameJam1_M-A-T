@@ -43,12 +43,17 @@ public class GameTextures
     public Texture2D handBlue;
     public Texture2D handPurple;
     public Texture2D GameOver;
-    public int tutorialPage;
+    public Texture2D bossKill;
+
+    // TUTORIAL & EXPO
+    public Texture2D tutorial;
+    public Texture2D expo;
+
 }
 
 public class Game1 : Game {
 
-    enum GameState {MainMenu, Options, Playing, Paused, GameOver, BossKilled}
+    enum GameState {MainMenu, Options, Playing, Paused, GameOver, BossKilled, tutorialExpo}
     private GameState state = GameState.MainMenu;
     private KeyboardState previousKeyboardState;
 
@@ -153,6 +158,7 @@ public class Game1 : Game {
     private float cameraPitch;
     private double logTimer = 0d;
     private double totalMouseIdleTime = 0  ;
+    private int tutorialPage = 0  ;
     private SpriteBatch spriteBatch;
     private SpriteFont debugFont; // DELETE LATER
 
@@ -204,6 +210,9 @@ public class Game1 : Game {
 
         
         textures.GameOver = Content.Load<Texture2D>("Models/Gameover");
+        textures.bossKill = Content.Load<Texture2D>("Models/win");
+        textures.tutorial = Content.Load<Texture2D>("Models/Gameover");
+        textures.expo = Content.Load<Texture2D>("Models/win");
 
 
         textures.gunUI = Content.Load<Texture2D>("Textures/GunIdle540") ;
@@ -297,7 +306,7 @@ public class Game1 : Game {
         {
         case 1:
             level.Model = levelContent.Load<Model>("Models/level1");
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(0f, 0f, -92f), 9f, 11f, true, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(0f, 0f, -92f), 9f, 11f, true, true));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(88f, 0f, -92f), 9f, 11f, true, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(88f, 0f, -180f), 9f, 11f, false, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-68f, 0f, -180f), 9f, 11f, true, false));
@@ -308,17 +317,17 @@ public class Game1 : Game {
             level.Model = levelContent.Load<Model>("Models/level2");
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(40f, 0f, -90f), 9f, 11f, true, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-40f, 0f, -90f), 9f, 11f, true, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-40f, 0f, -172f), 9f, 11f, false, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(40f, 0f, -172f), 9f, 11f, false, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-40f, 0f, -172f), 9f, 11f, true, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(40f, 0f, -172f), 9f, 11f, true, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-32f, 0f, -230f), 9f, 11f, true, false));
 
             break;
         case 3:
             level.Model = levelContent.Load<Model>("Models/level3");
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-38f, 0f, -176f), 9f, 11f, false, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-38f, 0f, -176f), 9f, 11f, true, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(36f, 0f, -176f), 9f, 11f, true, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(94f, 0f, -152f), 9f, 11f, false, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(94f, 0f, -82f), 9f, 11f, false, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(94f, 0f, -152f), 9f, 11f, true, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(94f, 0f, -82f), 9f, 11f, true, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(194f, 0f, -50f), 9f, 11f, true, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(100f, 0f, -30f), 9f, 11f, true, false));
 
@@ -326,9 +335,9 @@ public class Game1 : Game {
         case 4:
             level.Model = levelContent.Load<Model>("Models/level4");
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(0f, 0f, -204f), 9f, 11f, true, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-88f, 0f, -204f), 9f, 11f, false, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-88f, 0f, -204f), 9f, 11f, true, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-88f, 0f, -116f), 9f, 11f, true, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(68f, 0f, -116f), 9f, 11f, false, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(68f, 0f, -116f), 9f, 11f, true, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(68f, 0f, -44f), 9f, 11f, true, false));
 
             break;
@@ -336,29 +345,29 @@ public class Game1 : Game {
             level.Model = levelContent.Load<Model>("Models/Level5");
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(76f, 0f, -72f), 9f, 11f, true, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-78f, 0f, -72f), 9f, 11f, true, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-80f, 0f, -120f), 9f, 11f, false, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(80f, 0f, -120f), 9f, 11f, false, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-80f, 0f, -120f), 9f, 11f, true, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(80f, 0f, -120f), 9f, 11f, true, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(0f, 0f, -170f), 9f, 11f, true, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-70f, 0f, -262f), 9f, 11f, true, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-150f, 0f, -210f), 9f, 11f, false, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-150f, 0f, -210f), 9f, 11f, true, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-20f, 0f, -210f), 9f, 11f, true, false));
 
             break;
         case 6:
             level.Model = levelContent.Load<Model>("Models/level6");
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(178f, 0f, -110f), 9f, 11f, false, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(178f, 0f, -110f), 9f, 11f, true, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(100f, 0f, -200f), 9f, 11f, true, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(80f, 0f, -120f), 9f, 11f, false, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(186f, 0f, -234f), 9f, 11f, false, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(60f, 0f, -236f), 9f, 11f, false, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(80f, 0f, -120f), 9f, 11f, true, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(186f, 0f, -234f), 9f, 11f, true, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(60f, 0f, -236f), 9f, 11f, true, false));
 
             break;
         case 7:
             level.Model = levelContent.Load<Model>("Models/level7");
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(20f, 0f, -120f), 9f, 11f, true, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-80f, 0f, -160f), 9f, 11f, false, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(-80f, 0f, -160f), 9f, 11f, true, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(0f, 0f, -160f), 9f, 11f, true, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(80f, 0f, -160f), 9f, 11f, false, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(80f, 0f, -160f), 9f, 11f, true, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(0f, 0f, -200f), 9f, 11f, true, false));
 
             break;
@@ -410,7 +419,8 @@ public class Game1 : Game {
         // NonPremultiplied matches PNGs loaded with Texture2D.FromStream (soft edges look right).
         spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied, SamplerState.PointClamp,
                             DepthStencilState.None, RasterizerState.CullNone);
-        spriteBatch.Draw(textures.GameOver, new Rectangle(0, 0, w, h), Color.Purple);
+
+        spriteBatch.Draw(textures.bossKill, new Rectangle(0, 0, w, h), Color.White);
 
         spriteBatch.End();
     }
@@ -427,6 +437,7 @@ public class Game1 : Game {
             case GameState.Paused: UpdatePause(); break;
             case GameState.GameOver: UpdateGameOver(); break;
             case GameState.BossKilled: UpdateKilledBoss(); break;
+            case GameState.tutorialExpo: UpdateTutorialExpo(); break;
         }
 
         previousKeyboardState = currentKeyboardState;
@@ -448,7 +459,7 @@ public class Game1 : Game {
 
                 switch (i)
                 {
-                    case 0: StartGame();break;
+                    case 0: state = GameState.tutorialExpo; tutorialPage = 0 ; break; //startGame();break;
                     case 1: state = GameState.Options;break;
                     case 2: Exit(); break;
                 }
@@ -460,6 +471,9 @@ public class Game1 : Game {
     private void StartGame()
     {
         restartGame();
+        currentLevel = 0 ;
+        LoadLevel() ;
+        player.ResetToStart() ;
         state = GameState.Playing;
         IsMouseVisible = false;
 
@@ -527,10 +541,14 @@ public class Game1 : Game {
         if (currentKeyboardState.IsKeyDown(Keys.Space))
         {
             Console.WriteLine("RESTART!") ;
+            currentLevel -= 1 ;
+            if (currentLevel < 0)
+            {
+                currentLevel = 0 ;
+            }
             LoadLevel() ;
             player.ResetToStart();
         }
-        
     }
 
     private void UpdateKilledBoss()
@@ -556,6 +574,11 @@ public class Game1 : Game {
             {
                 //renderGameOverScreen() ;
                 Console.WriteLine("RESTART!") ;
+                currentLevel -= 1 ;
+                if (currentLevel < 0)
+                {
+                    currentLevel = 0 ;
+                }
                 player.ResetToStart();
                 LoadLevel() ;
             }
@@ -652,8 +675,8 @@ public class Game1 : Game {
             if (enemy.billionare)
                 continue ;
 
-            //Console.WriteLine("Distance: " + Vector3.Distance(enemy.Position, player.Position)) ;                                             //CHASER RANGE
-            if (enemy.chaser && !enemy.startAttack && Vector3.Distance(enemy.Position, player.Position) < 200 && Vector3.Distance(enemy.Position, player.Position) > 7 && enemy.canSeePlayer(player, colliders))
+            //Console.WriteLine("Distance: " + Vector3.Distance(enemy.Position, player.Position)) ;
+            if (enemy.chaser && !enemy.startAttack && Vector3.Distance(enemy.Position, player.Position) < 70 && Vector3.Distance(enemy.Position, player.Position) > 7)
             {
                 Vector3 futurePosition = enemy.Position;
 
@@ -661,7 +684,7 @@ public class Game1 : Game {
 
                 movementDir.Normalize() ;
                                                                         //SPEED->
-                Vector3 futureX = enemy.Position + new Vector3(movementDir.X * 1f, 0, 0);
+                Vector3 futureX = enemy.Position + new Vector3(movementDir.X * 0.45f, 0, 0);
                 if (enemy.ValidateMovement(futureX, colliders)) {
                     futurePosition.X = futureX.X;
                 }
@@ -760,6 +783,7 @@ public class Game1 : Game {
             if (closest.billionare)
             {
                 state = GameState.BossKilled ;
+                Console.WriteLine("STATE" + state) ;
             }
 
             player.switchHandState(1) ;
@@ -800,6 +824,11 @@ public class Game1 : Game {
                 return ;
 
             closest.enemyDead = true;
+            if (closest.billionare)
+            {
+                state = GameState.BossKilled ;
+                Console.WriteLine("STATE" + state) ;
+            }
             playerHit.Play();
             closest.texture = textures.bloodSplat;
             player.switchHandState(2) ;
@@ -893,9 +922,9 @@ public class Game1 : Game {
         spriteBatch.Draw(textures.pixel, new Rectangle(cx - thick / 2, cy - gap - len, thick, len), Color.White);
         spriteBatch.Draw(textures.pixel, new Rectangle(cx - thick / 2, cy + gap, thick, len), Color.White);
 
-        string zText = "Z: " + player.Position.Z.ToString("0.0") + " / " + GameConstants.LevelEndZ; // DELETE LATER
-        spriteBatch.DrawString(debugFont, zText, new Vector2(21, 21), Color.Black); // DELETE LATER (shadow)
-        spriteBatch.DrawString(debugFont, zText, new Vector2(20, 20), Color.Yellow); // DELETE LATER
+        //string zText = "Z: " + player.Position.Z.ToString("0.0") + " / " + GameConstants.LevelEndZ; // DELETE LATER
+        //spriteBatch.DrawString(debugFont, zText, new Vector2(21, 21), Color.Black); // DELETE LATER (shadow)
+        //spriteBatch.DrawString(debugFont, zText, new Vector2(20, 20), Color.Yellow); // DELETE LATER
         // PURPLE BARRRRRRRRRRRRRRRRRRRR
         
         cx = w/ 40 ;
@@ -908,7 +937,7 @@ public class Game1 : Game {
 
         // gun
 
-        Rectangle gunRect = new Rectangle(w - (w/1920 * 1250), h - (h/1080 * 1000), w/1920 * 1250, h/1080 * 1000) ;
+        Rectangle gunRect = new Rectangle(w - (w/1920 * 1700), h - (h/1080 * 1350), w/1920 * 1700, h/1080 * 1350) ;
 
         spriteBatch.Draw(shootCooldown < 0.3 ? textures.gunUI : textures.gunShootUI, gunRect, Color.White) ;
 
@@ -990,6 +1019,10 @@ public class Game1 : Game {
             case GameState.BossKilled:
             GraphicsDevice.Clear(Color.Black);
             renderKilledBossScreen();
+            break;
+            case GameState.tutorialExpo:
+            GraphicsDevice.Clear(Color.Black);
+            renderTutorialExpo();
             break;
         }
         base.Draw(gameTime);
