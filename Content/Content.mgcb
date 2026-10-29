@@ -13,6 +13,27 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Audio/ElevatorDing.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/processorParam:Version=3.8.6.0
+/build:Audio/ElevatorDing.wav
+
+#begin Audio/ElevatorDoor.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/processorParam:Version=3.8.6.0
+/build:Audio/ElevatorDoor.wav
+
+#begin Audio/ElevatorTransition.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/processorParam:Version=3.8.6.0
+/build:Audio/ElevatorTransition.wav
+
 #begin Audio/LiquidsMixing.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -61,6 +82,13 @@
 /processorParam:Quality=Best
 /processorParam:Version=3.8.6.0
 /build:Audio/SparrowIntro.wav
+
+#begin Audio/SparrowMenu.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/processorParam:Version=3.8.6.0
+/build:Audio/SparrowMenu.wav
 
 #begin Audio/SparrowNoIntro.wav
 /importer:WavImporter
