@@ -133,11 +133,11 @@ public class Game1 : Game {
 
         int bw = (int)(600*w / 1920f);
         int bh = (int)(180 * h / 1080f);
-        int gap = (int)(30 * h / 1080f);
+        int gap = (int)(400 * w / 1080f);
 
         int totalHeight = 3*bh + 2 * gap;
-        int x = (w - bw) /2;
-        int y = ((h - totalHeight) / 2 + i * (bh + gap))+300;
+        int x = (w /2 - bw) + (i * gap);
+        int y = bh + 670;
         return new Rectangle(x,y,bw,bh);
     }
 
@@ -1130,6 +1130,9 @@ private void DrawTransition()
     {
         int w = graphics.GraphicsDevice.Viewport.Width;
         int h = graphics.GraphicsDevice.Viewport.Height;
+
+        int wl = 1200;
+        int hl = 1010;
         
         GraphicsDevice.Clear(Color.Black);
         Point mouse = Mouse.GetState().Position;
@@ -1140,6 +1143,11 @@ private void DrawTransition()
 
         spriteBatch.Draw(textures.mainMenuBackground, backgroundRect, Color.White);
 
+        Rectangle logoRect = new Rectangle((w/2)-(wl/2),(h/2)-(hl/2)-200, wl, hl) ;
+        
+        spriteBatch.Draw(textures.mainMenuLogo, logoRect, Color.White);
+
+
         for (int i = 0; i < menuLabels.Length; i++)
         {
             Rectangle rect = GetButtonRect(i);
@@ -1148,7 +1156,7 @@ private void DrawTransition()
             spriteBatch.Draw(textures.button, rect, hover ? Color.White : Color.Gray);
 
             Vector2 size = debugFont.MeasureString(menuLabels[i]);
-            Vector2 pos = new Vector2(rect.X + (rect.Width - size.X) / 2,
+            Vector2 pos = new Vector2((rect.X + (rect.Width - size.X) / 2)-15,
                                         rect.Y + (rect.Height - size.Y) / 2);
             spriteBatch.DrawString(debugFont,menuLabels[i], pos, hover ? Color.Yellow : Color.White);
         }
