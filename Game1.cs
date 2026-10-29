@@ -43,11 +43,17 @@ public class GameTextures
     public Texture2D handBlue;
     public Texture2D handPurple;
     public Texture2D GameOver;
+    public Texture2D bossKill;
+
+    // TUTORIAL & EXPO
+    public Texture2D tutorial;
+    public Texture2D expo;
+
 }
 
 public class Game1 : Game {
 
-    enum GameState {MainMenu, Options, Playing, Paused, GameOver, BossKilled}
+    enum GameState {MainMenu, Options, Playing, Paused, GameOver, BossKilled, tutorialExpo}
     private GameState state = GameState.MainMenu;
     private KeyboardState previousKeyboardState;
 
@@ -152,6 +158,7 @@ public class Game1 : Game {
     private float cameraPitch;
     private double logTimer = 0d;
     private double totalMouseIdleTime = 0  ;
+    private int tutorialPage = 0  ;
     private SpriteBatch spriteBatch;
     private SpriteFont debugFont; // DELETE LATER
 
@@ -203,6 +210,9 @@ public class Game1 : Game {
 
         
         textures.GameOver = Content.Load<Texture2D>("Models/Gameover");
+        textures.bossKill = Content.Load<Texture2D>("Models/win");
+        textures.tutorial = Content.Load<Texture2D>("Models/Gameover");
+        textures.expo = Content.Load<Texture2D>("Models/win");
 
 
         textures.gunUI = Content.Load<Texture2D>("Textures/GunIdle540") ;
@@ -409,7 +419,8 @@ public class Game1 : Game {
         // NonPremultiplied matches PNGs loaded with Texture2D.FromStream (soft edges look right).
         spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied, SamplerState.PointClamp,
                             DepthStencilState.None, RasterizerState.CullNone);
-        spriteBatch.Draw(textures.GameOver, new Rectangle(0, 0, w, h), Color.Purple);
+
+        spriteBatch.Draw(textures.bossKill, new Rectangle(0, 0, w, h), Color.White);
 
         spriteBatch.End();
     }
@@ -426,6 +437,7 @@ public class Game1 : Game {
             case GameState.Paused: UpdatePause(); break;
             case GameState.GameOver: UpdateGameOver(); break;
             case GameState.BossKilled: UpdateKilledBoss(); break;
+            case GameState.tutorialExpo: UpdateTutorialExpo(); break;
         }
 
         previousKeyboardState = currentKeyboardState;
@@ -447,7 +459,7 @@ public class Game1 : Game {
 
                 switch (i)
                 {
-                    case 0: StartGame();break;
+                    case 0: state = GameState.tutorialExpo; tutorialPage = 0 ; break; //startGame();break;
                     case 1: state = GameState.Options;break;
                     case 2: Exit(); break;
                 }
@@ -459,12 +471,56 @@ public class Game1 : Game {
     private void StartGame()
     {
         restartGame();
+        currentLevel = 0 ;
+        LoadLevel() ;
+        player.ResetToStart() ;
         state = GameState.Playing;
         IsMouseVisible = false;
 
         Mouse.SetPosition(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height /2);
         previousMouseState = Mouse. GetState();
         blockshoot = true;
+    }
+
+    private void UpdateTutorialExpo()
+    {
+        if (currentKeyboardState.IsKeyUp(Keys.Space)) 
+        {
+            blockshoot = false ;
+        } 
+
+        Console.WriteLine("UPDATE!") ;
+        currentKeyboardState = Keyboard.GetState();
+        if (currentKeyboardState.IsKeyDown(Keys.Space) && tutorialPage == 0 && !blockshoot)
+        {
+            tutorialPage = 1 ;
+            blockshoot = true ;
+        } else if (currentKeyboardState.IsKeyDown(Keys.Space) && tutorialPage == 1)
+        {
+            StartGame() ;
+        }
+    }
+
+    public void renderTutorialExpo()
+    {
+        Console.WriteLine("RENDER!") ;
+        int w = graphics.GraphicsDevice.Viewport.Width;
+        int h = graphics.GraphicsDevice.Viewport.Height;
+
+        spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied, SamplerState.PointClamp,
+                            DepthStencilState.None, RasterizerState.CullNone);
+
+        if (tutorialPage == 0 )
+        {
+            spriteBatch.Draw(textures.expo, new Rectangle(0, 0, w, h), Color.Purple);
+        } else
+        {
+            spriteBatch.Draw(textures.tutorial, new Rectangle(0, 0, w, h), Color.Purple);
+        }
+
+        // NonPremultiplied matches PNGs loaded with Texture2D.FromStream (soft edges look right).
+
+        spriteBatch.End();
     }
 
     private void UpdateOptions()
@@ -485,10 +541,14 @@ public class Game1 : Game {
         if (currentKeyboardState.IsKeyDown(Keys.Space))
         {
             Console.WriteLine("RESTART!") ;
+            currentLevel -= 1 ;
+            if (currentLevel < 0)
+            {
+                currentLevel = 0 ;
+            }
             LoadLevel() ;
             player.ResetToStart();
         }
-        
     }
 
     private void UpdateKilledBoss()
@@ -514,6 +574,11 @@ public class Game1 : Game {
             {
                 //renderGameOverScreen() ;
                 Console.WriteLine("RESTART!") ;
+                currentLevel -= 1 ;
+                if (currentLevel < 0)
+                {
+                    currentLevel = 0 ;
+                }
                 player.ResetToStart();
                 LoadLevel() ;
             }
@@ -718,6 +783,7 @@ public class Game1 : Game {
             if (closest.billionare)
             {
                 state = GameState.BossKilled ;
+                Console.WriteLine("STATE" + state) ;
             }
 
             player.switchHandState(1) ;
@@ -758,6 +824,11 @@ public class Game1 : Game {
                 return ;
 
             closest.enemyDead = true;
+            if (closest.billionare)
+            {
+                state = GameState.BossKilled ;
+                Console.WriteLine("STATE" + state) ;
+            }
             playerHit.Play();
             closest.texture = textures.bloodSplat;
             player.switchHandState(2) ;
@@ -851,9 +922,9 @@ public class Game1 : Game {
         spriteBatch.Draw(textures.pixel, new Rectangle(cx - thick / 2, cy - gap - len, thick, len), Color.White);
         spriteBatch.Draw(textures.pixel, new Rectangle(cx - thick / 2, cy + gap, thick, len), Color.White);
 
-        string zText = "Z: " + player.Position.Z.ToString("0.0") + " / " + GameConstants.LevelEndZ; // DELETE LATER
-        spriteBatch.DrawString(debugFont, zText, new Vector2(21, 21), Color.Black); // DELETE LATER (shadow)
-        spriteBatch.DrawString(debugFont, zText, new Vector2(20, 20), Color.Yellow); // DELETE LATER
+        //string zText = "Z: " + player.Position.Z.ToString("0.0") + " / " + GameConstants.LevelEndZ; // DELETE LATER
+        //spriteBatch.DrawString(debugFont, zText, new Vector2(21, 21), Color.Black); // DELETE LATER (shadow)
+        //spriteBatch.DrawString(debugFont, zText, new Vector2(20, 20), Color.Yellow); // DELETE LATER
         // PURPLE BARRRRRRRRRRRRRRRRRRRR
         
         cx = w/ 40 ;
@@ -866,7 +937,7 @@ public class Game1 : Game {
 
         // gun
 
-        Rectangle gunRect = new Rectangle(w - (w/1920 * 1250), h - (h/1080 * 1000), w/1920 * 1250, h/1080 * 1000) ;
+        Rectangle gunRect = new Rectangle(w - (w/1920 * 1700), h - (h/1080 * 1350), w/1920 * 1700, h/1080 * 1350) ;
 
         spriteBatch.Draw(shootCooldown < 0.3 ? textures.gunUI : textures.gunShootUI, gunRect, Color.White) ;
 
@@ -948,6 +1019,10 @@ public class Game1 : Game {
             case GameState.BossKilled:
             GraphicsDevice.Clear(Color.Black);
             renderKilledBossScreen();
+            break;
+            case GameState.tutorialExpo:
+            GraphicsDevice.Clear(Color.Black);
+            renderTutorialExpo();
             break;
         }
         base.Draw(gameTime);
