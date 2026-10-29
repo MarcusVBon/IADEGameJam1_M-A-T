@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/Fonts/Debug.spritefont</SourceFile>
-  <SourceTime>2026-10-29T02:20:40.1739053+00:00</SourceTime>
-  <DestFile>C:/Users/marcu/Downloads/3dgame-main (1)/3dgame-main/ColitionTest/Content/bin/Windows/Content/Fonts/Debug.xnb</DestFile>
-  <DestTime>2026-10-29T03:04:10.9878733+00:00</DestTime>
+  <SourceFile>c:/Users/dicet/OneDrive/Desktop/futureproofin/Programing/GitHubb/HP/HolyPolarityRepo/HP/IADEGameJam1_M-A-T/Content/Fonts/Debug.spritefont</SourceFile>
+  <SourceTime>2026-10-27T21:38:57.4378809+00:00</SourceTime>
+  <DestFile>c:/Users/dicet/OneDrive/Desktop/futureproofin/Programing/GitHubb/HP/HolyPolarityRepo/HP/IADEGameJam1_M-A-T/Content/bin/Windows/Content/Fonts/Debug.xnb</DestFile>
+  <DestTime>2026-10-29T10:28:12.6001865+00:00</DestTime>
   <Importer>FontDescriptionImporter</Importer>
   <ImporterTime>2026-10-08T12:48:48+01:00</ImporterTime>
   <Processor>FontDescriptionProcessor</Processor>

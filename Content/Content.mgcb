@@ -452,6 +452,18 @@
 /processorParam:Scale=0.01
 /processorParam:ResizeTexturesToPowerOfTwo=True
 /build:Models/Level5.fbx
+#begin Models/level6.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:Scale=0.01
+/processorParam:ResizeTexturesToPowerOfTwo=True
+/build:Models/level6.fbx
+#begin Models/level7.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:Scale=0.01
+/processorParam:ResizeTexturesToPowerOfTwo=True
+/build:Models/level7.fbx
 #begin Models/boss.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
