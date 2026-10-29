@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/dicet/OneDrive/Desktop/futureproofin/Programing/GitHubb/HP/HolyPolarityRepo/HP/IADEGameJam1_M-A-T/Content/Models/metal_hotel_steel.png</SourceFile>
-  <SourceTime>2026-10-29T00:02:28.2011435+00:00</SourceTime>
-  <DestFile>C:/Users/dicet/OneDrive/Desktop/futureproofin/Programing/GitHubb/HP/HolyPolarityRepo/HP/IADEGameJam1_M-A-T/Content/bin/Windows/Content/Models/metal_hotel_steel_0.xnb</DestFile>
-  <DestTime>2026-10-29T02:09:10.7217106+00:00</DestTime>
+  <SourceFile>C:/Users/Tiago/AI Steering/IADEGameJam1_M-A-T/Content/Models/metal_hotel_steel.png</SourceFile>
+  <SourceTime>2026-10-29T02:19:26.0766861+00:00</SourceTime>
+  <DestFile>C:/Users/Tiago/AI Steering/IADEGameJam1_M-A-T/Content/bin/Windows/Content/Models/metal_hotel_steel_0.xnb</DestFile>
+  <DestTime>2026-10-29T02:20:01.8570115+00:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2026-10-08T12:48:48+01:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

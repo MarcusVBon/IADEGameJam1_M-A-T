@@ -18,13 +18,12 @@ namespace _3dgame;
 public class GameTextures
 {
 
-    enum GameState {MainMenu, Playing, Paused, GameOver}
-    private GameState state = GameState.MainMenu;
-    private KeyboardState previousKryboardState;
-
     public Texture2D enemyTexture1 ;
     public Texture2D enemyShoot ;
     public Texture2D enemyBash ;
+
+    public Texture2D button;
+    public Texture2D logo;
 
     public Texture2D enemyChaseIdle ;
     public Texture2D enemyChase ;
@@ -46,6 +45,11 @@ public class GameTextures
 }
 
 public class Game1 : Game {
+
+    enum GameState {MainMenu, Options, Playing, Paused, GameOver}
+    private GameState state = GameState.MainMenu;
+    private KeyboardState previousKeyboardState;
+
     private GraphicsDeviceManager graphics;
     private GameObject ground;
 
@@ -226,8 +230,6 @@ public class Game1 : Game {
         player.LiquidsSound = liquidsInstance;
         player.PlayerDeathSound = playerDeathInstance;
 
-        introSongInstance.Play();
-
         _grayscaleEffect = Content.Load<Effect>("Effects/FlashShader");
         _pixelate = Content.Load<Effect>("Effects/MainShader");
         
@@ -304,7 +306,43 @@ public class Game1 : Game {
         spriteBatch.End();
     }
 
-    protected override void Update(GameTime gameTime) {
+    protected override void Update(GameTime gameTime)
+    {
+        if (!IsActive) {base.Update(gameTime); return; }
+        currentKeyboardState = Keyboard.GetState();
+
+        switch (state)
+        {
+            case GameState.MainMenu: UpdateMainMenu(); break;
+            case GameState.Playing: UpdatePlaying(gameTime); break;
+            case GameState.Paused: UpdatePause(); break;
+            case GameState.GameOver: UpdateGameOver(); break;
+        }
+
+        previousKeyboardState = currentKeyboardState;
+        base.Update(gameTime);
+    }
+
+    private void UpdateMainMenu()
+    {
+        if(currentKeyboardState.IsKeyDown(Keys.P))
+        {
+            state = GameState.Playing;
+        }
+    }
+
+    private void UpdatePause()
+    {
+        
+    }
+
+    private void UpdateGameOver()
+    {
+        
+    }
+    protected void UpdatePlaying(GameTime gameTime) {
+        introSongInstance.Play();
+        
         if (player.playerDead)
         {
             currentKeyboardState = Keyboard.GetState();
@@ -670,8 +708,39 @@ public class Game1 : Game {
 
         spriteBatch.End();
     }
-    
-    protected override void Draw(GameTime gameTime) {
+
+    private void DrawMainMenu()
+    {
+        
+    }
+
+    private void DrawPauseMenu()
+    {
+        
+    }
+
+    protected override void Draw(GameTime gameTime)
+    {
+        switch (state)
+        {
+            case GameState.MainMenu:
+            GraphicsDevice.Clear(Color.Black);
+            DrawMainMenu();
+            break;
+            case GameState.Playing:
+            DrawScene(gameTime); DrawHud(player);
+            break;
+            case GameState.Paused:
+            DrawScene(gameTime); DrawPauseMenu();
+            break;
+            case GameState.GameOver:
+            GraphicsDevice.Clear(Color.Black);
+            renderGameOverScreen();
+            break;
+        }
+        base.Draw(gameTime);
+    }
+    protected void DrawScene(GameTime gameTime) {
         if (player.playerDead)
         {
             GraphicsDevice.Clear(Color.Black);
