@@ -15,7 +15,7 @@ namespace _3dgame {
         private Vector3 currentVelocity ;
         private bool reachedApex = false;
         private bool reachedBottom = true;
-        private Vector3 startPosition = new Vector3(30, GameConstants.HeightOffset, 125);
+        private Vector3 startPosition = new Vector3(0, GameConstants.HeightOffset, 0);
         public readonly double maxHealthTimer = 20 ;
         public readonly double crunchTime = 0.75 ;
         public double handCrunchTimer = -1 ;
@@ -38,6 +38,15 @@ namespace _3dgame {
             handCrunchTimer = -1 ;
             handState = 0 ;
             playerDead = false ;
+        }
+
+        public void ResetToStart() {
+            Position = startPosition;
+            jumpStarted = false;
+            reachedApex = false;
+            reachedBottom = true;
+            movementDirection = 0;
+            BoundingSphere = new BoundingSphere(Position, 1f);
         }
 
         public void switchHandState(int newState)
@@ -149,7 +158,7 @@ namespace _3dgame {
 
             Vector2 horizontal = new Vector2(movement.X, movement.Z);
 
-            if (horizontal != Vector2.Zero) {
+            if (horizontal != Vector2.Zero){
                 horizontal.Normalize();
                 currentVelocity.X += GameConstants.acceleration * movement.X;
                 currentVelocity.Z += GameConstants.acceleration * movement.X;

@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.Security;
 using System.Threading;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -102,13 +103,18 @@ public class Game1 : Game {
     private bool blockKick = false ;
     
     private readonly Matrix testWorld = Matrix.CreateScale(25f) * Matrix.CreateTranslation(60, 2.5f, 100);
-    private GameObject corridor;
-    // corridor runs along Z, entrance 5 units in front of the player's start (30, 2, 125)
+    // the current room, picked in order by currentLevel -> LoadLevel()
+    private GameObject level;
+    private int currentLevel = 1;
+    // content manager for the cur level
+    private ContentManager levelContent;
+    private readonly Random random = new Random();
 
     public GameTextures textures = new GameTextures() ;
     private List<Enemy> enemyList = new();
 
-    private readonly Matrix levelMatrix = Matrix.CreateTranslation(30, 0, 100);
+    // WHERE THE LEVEL SPAWNS
+    private readonly Matrix levelMatrix = Matrix.CreateTranslation(0, 0, 0);
     private Camera gameCamera;
     private Player player;
     private readonly List<BoundingBox> colliders = new List<BoundingBox>();
@@ -123,6 +129,7 @@ public class Game1 : Game {
     private double logTimer = 0d;
     private double totalMouseIdleTime = 0  ;
     private SpriteBatch spriteBatch;
+    private SpriteFont debugFont; // DELETE LATER
 
 
     public Game1() {
@@ -147,9 +154,10 @@ public class Game1 : Game {
         ground = new GameObject();
 
         spriteBatch = new SpriteBatch(GraphicsDevice);
-
+    
         test = new GameObject();
-        corridor = new GameObject();
+        level = new GameObject();
+        levelContent = new ContentManager(Services, Content.RootDirectory);
 
         gameCamera = new Camera();
         player = new Player();
@@ -227,12 +235,12 @@ public class Game1 : Game {
         test.Model = Content.Load<Model>("Models/test");
 
         textures.pixel = Content.Load<Texture2D>("Models/White");
+        debugFont = Content.Load<SpriteFont>("Fonts/Debug"); // DELETE LATER
 
-        colliders.AddRange(ModelCollision.Build(test.Model, testWorld));
-        corridor.Model = Content.Load<Model>("Models/corridor");
-        colliders.AddRange(ModelCollision.Build(corridor.Model, levelMatrix, perMesh: true));
         player.Model = Content.Load<Model>("Models/player");
         player.CalculateBoundingSphere();
+
+        LoadLevel();
 
         sceneTarget = new RenderTarget2D(GraphicsDevice,
         GraphicsDevice.PresentationParameters.BackBufferWidth,
@@ -242,6 +250,45 @@ public class Game1 : Game {
         GraphicsDevice.PresentationParameters.BackBufferWidth,
         GraphicsDevice.PresentationParameters.BackBufferHeight,
         false, SurfaceFormat.Color, DepthFormat.None);
+    }
+
+//good practice bellow, not sure what it does LMAOOOO
+    protected override void UnloadContent() {
+        levelContent.Unload();
+        base.UnloadContent();
+    }
+
+    private void LoadLevel() {        //LEVEL INITIALISED HERE
+        levelContent.Unload();
+        enemyList.Clear();
+
+        switch(currentLevel)
+        {
+        case 1:
+            level.Model = levelContent.Load<Model>("Models/level1");
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(20f, 0f, 20f), 9f, 11f));
+
+            break;
+        default:
+            currentLevel = 1;
+            LoadLevel();
+            return;
+        }
+
+        colliders.Clear();
+        colliders.AddRange(ModelCollision.Build(test.Model, testWorld));
+        colliders.AddRange(ModelCollision.Build(level.Model, levelMatrix, perMesh: true));
+
+
+    }
+
+    private void CompleteLevel() {
+        Console.WriteLine("YOU DID IT");
+        currentLevel++;
+        LoadLevel();
+        player.ResetToStart();
+        cameraYaw = 0f;
+        cameraPitch = 0f;
     }
 
     public void renderGameOverScreen()
@@ -260,9 +307,14 @@ public class Game1 : Game {
     protected override void Update(GameTime gameTime) {
         if (player.playerDead)
         {
+            currentKeyboardState = Keyboard.GetState();
+            if (currentKeyboardState.IsKeyDown(Keys.Escape))
+                Exit();
             if (currentKeyboardState.IsKeyDown(Keys.Space))
+            {
                 Console.WriteLine("RESTART!") ;
                 restartGame() ;
+            }
             return ;
         }
 
@@ -380,8 +432,9 @@ public class Game1 : Game {
             enemy.Update((float)gameTime.ElapsedGameTime.TotalSeconds, player, colliders, textures) ;
         }
 
-        gameCamera.Update(cameraYaw, cameraPitch, player.Position, graphics.GraphicsDevice.Viewport.AspectRatio);
-
+        if (player.Position.Z <= GameConstants.LevelEndZ) {
+            CompleteLevel();
+        }
 
         gameCamera.Update(cameraYaw, cameraPitch, player.Position, graphics.GraphicsDevice.Viewport.AspectRatio);
 
@@ -497,7 +550,12 @@ public class Game1 : Game {
     private void DrawTerrain(Model model) {
         foreach (ModelMesh mesh in model.Meshes) {
             foreach (BasicEffect effect in mesh.Effects) {
+                //effect.EnableDefaultLighting();
+
                 effect.EnableDefaultLighting();
+                effect.PreferPerPixelLighting = true;
+                effect.SpecularColor = Vector3.Zero;
+
                 effect.PreferPerPixelLighting = true;
                 effect.World = Matrix.Identity;
 
@@ -513,7 +571,12 @@ public class Game1 : Game {
         foreach (ModelMesh mesh in model.Meshes) {
             if (ModelCollision.IsCollider(mesh)) continue;   // col_ meshes are collision-only
             foreach (BasicEffect effect in mesh.Effects) {
+                //effect.EnableDefaultLighting();
+
                 effect.EnableDefaultLighting();
+                effect.PreferPerPixelLighting = true;
+                effect.SpecularColor = Vector3.Zero;
+
                 effect.PreferPerPixelLighting = true;
                 effect.TextureEnabled = true;
                 effect.World = world;
@@ -568,6 +631,9 @@ public class Game1 : Game {
         spriteBatch.Draw(textures.pixel, new Rectangle(cx - thick / 2, cy - gap - len, thick, len), Color.White);
         spriteBatch.Draw(textures.pixel, new Rectangle(cx - thick / 2, cy + gap, thick, len), Color.White);
 
+        string zText = "Z: " + player.Position.Z.ToString("0.0") + " / " + GameConstants.LevelEndZ; // DELETE LATER
+        spriteBatch.DrawString(debugFont, zText, new Vector2(21, 21), Color.Black); // DELETE LATER (shadow)
+        spriteBatch.DrawString(debugFont, zText, new Vector2(20, 20), Color.Yellow); // DELETE LATER
         // PURPLE BARRRRRRRRRRRRRRRRRRRR
         
         cx = w/ 40 ;
@@ -608,8 +674,9 @@ public class Game1 : Game {
     protected override void Draw(GameTime gameTime) {
         if (player.playerDead)
         {
+            GraphicsDevice.Clear(Color.Black);
             renderGameOverScreen() ;
-            return ; 
+            return ;
         }
 
     //Draw the 3D scene into the render target
@@ -621,9 +688,9 @@ public class Game1 : Game {
     GraphicsDevice.RasterizerState = RasterizerState.CullNone;
     GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
 
-    DrawTerrain(ground.Model);
+    DrawTerrain(ground.Model);   // GROUND IS RENDERED HERE
     DrawTextures(test.Model, testWorld);
-    DrawTextures(corridor.Model, levelMatrix);
+    DrawTextures(level.Model, levelMatrix);
 
     foreach (Enemy enemy in enemyList)
         enemy.Draw(GraphicsDevice, gameCamera.ViewMatrix, gameCamera.ProjectionMatrix, player.Position);

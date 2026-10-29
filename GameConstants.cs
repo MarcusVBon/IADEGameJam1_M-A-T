@@ -14,6 +14,8 @@ namespace _3dgame {
         public const float maxVelocity = 1.25f;
         public const int MaxRange = 990;
         public const float HeightOffset = 2;
-        public const float JumpHeight = 13;
+        public const float JumpHeight = 5;
+        // LEVEL RELATED SHIII
+        public const float LevelEndZ = -290; // at this Z you win!!!! WWWW 
     }
 }
