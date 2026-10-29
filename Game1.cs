@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Input;
 using SharpDX.Direct2D1.Effects;
 using SharpDX.XAudio2;
 using Microsoft.Xna.Framework.Media;
+using System.Drawing.Text;
 
 namespace _3dgame;
 
@@ -92,6 +93,9 @@ public class Game1 : Game {
     private RenderTarget2D pixelTarget;
 
     public int score = 0;
+
+    private readonly string[] menuTitles = {"Start Game", "Options", "Exit Game"};
+    private MouseState menuPrevMouse;
 
 
 
