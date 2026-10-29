@@ -266,7 +266,7 @@ public class Game1 : Game {
         {
         case 1:
             level.Model = levelContent.Load<Model>("Models/level1");
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(20f, 0f, 20f), 9f, 11f));
+            //enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(20f, 0f, 20f), 9f, 11f));
 
             break;
         default:
@@ -400,7 +400,12 @@ public class Game1 : Game {
         
         foreach (Enemy enemy in enemyList)
         {
-            if (enemy.enemyDead || enemy.billionare)
+            if (enemy.enemyDead)
+            {
+                enemy.deathTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds ;
+                continue ;
+            }
+            if (enemy.billionare)
                 continue ;
 
             //Console.WriteLine("Distance: " + Vector3.Distance(enemy.Position, player.Position)) ;
@@ -431,6 +436,8 @@ public class Game1 : Game {
 
             enemy.Update((float)gameTime.ElapsedGameTime.TotalSeconds, player, colliders, textures) ;
         }
+
+        enemyList.RemoveAll(enemy => enemy.enemyDead && enemy.deathTimer <= 0) ;
 
         if (player.Position.Z <= GameConstants.LevelEndZ) {
             CompleteLevel();
@@ -479,6 +486,9 @@ public class Game1 : Game {
 
             foreach (Enemy enemy in enemyList)
             {
+                if (enemy.enemyDead)
+                    continue ;
+
                 float? distance = enemy.rayIntersect(ray);
                 if (distance.HasValue && distance.Value < closestDistance)
                 {
@@ -516,7 +526,7 @@ public class Game1 : Game {
 
             foreach (Enemy enemy in enemyList)
             {
-                if (Vector3.Distance(player.Position, enemy.Position) > 12)
+                if (enemy.enemyDead || Vector3.Distance(player.Position, enemy.Position) > 12)
                     continue ;
                 
 
