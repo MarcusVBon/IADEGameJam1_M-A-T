@@ -47,6 +47,10 @@ namespace _3dgame {
             reachedBottom = true;
             movementDirection = 0;
             BoundingSphere = new BoundingSphere(Position, 1f);
+            healthTimer = maxHealthTimer ;
+            handCrunchTimer = -1 ;
+            handState = 0 ;
+            playerDead = false ;
         }
 
         public void switchHandState(int newState)
