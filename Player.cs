@@ -25,6 +25,7 @@ namespace _3dgame {
         public SoundEffectInstance SpineCrushSound { get; set; }
         public SoundEffectInstance LiquidsSound {get; set; }
         public SoundEffectInstance PlayerDeathSound {get; set; }
+        public int score = 0;
 
         public bool isPlayerDying = false;
 
@@ -55,11 +56,13 @@ namespace _3dgame {
             if(newState == 1)
             {
                 LiquidsSound.Play();
+                score += 5;
             }
 
             if(newState == 2)
             {
                 SpineCrushSound.Play();
+                score += 5;
             }
 
             if (newState == 1 && handState == 2 || newState == 2 && handState == 1)
