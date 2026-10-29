@@ -47,7 +47,7 @@ public class GameTextures
 
 public class Game1 : Game {
 
-    enum GameState {MainMenu, Options, Playing, Paused, GameOver}
+    enum GameState {MainMenu, Options, Playing, Paused, GameOver, BossKilled}
     private GameState state = GameState.MainMenu;
     private KeyboardState previousKeyboardState;
 
@@ -338,6 +338,18 @@ public class Game1 : Game {
         spriteBatch.End();
     }
 
+    public void renderKilledBossScreen(){
+        int w = graphics.GraphicsDevice.Viewport.Width;
+        int h = graphics.GraphicsDevice.Viewport.Height;
+
+        // NonPremultiplied matches PNGs loaded with Texture2D.FromStream (soft edges look right).
+        spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied, SamplerState.PointClamp,
+                            DepthStencilState.None, RasterizerState.CullNone);
+        spriteBatch.Draw(textures.GameOver, new Rectangle(0, 0, w, h), Color.Purple);
+
+        spriteBatch.End();
+    }
+
     protected override void Update(GameTime gameTime)
     {
         if (!IsActive) {base.Update(gameTime); return; }
@@ -349,6 +361,7 @@ public class Game1 : Game {
             case GameState.Playing: UpdatePlaying(gameTime); break;
             case GameState.Paused: UpdatePause(); break;
             case GameState.GameOver: UpdateGameOver(); break;
+            case GameState.BossKilled: UpdateKilledBoss(); break;
         }
 
         previousKeyboardState = currentKeyboardState;
@@ -413,6 +426,17 @@ public class Game1 : Game {
         }
         
     }
+
+    private void UpdateKilledBoss()
+    {
+        Console.WriteLine("UPDATE!") ;
+        currentKeyboardState = Keyboard.GetState();
+        if (currentKeyboardState.IsKeyDown(Keys.Space))
+        {
+            state = GameState.MainMenu ;
+        }    
+    }
+
     protected void UpdatePlaying(GameTime gameTime) {
         introSongInstance.Play();
         currentKeyboardState = Keyboard.GetState();
@@ -424,7 +448,7 @@ public class Game1 : Game {
                 Exit();
             if (currentKeyboardState.IsKeyDown(Keys.Space))
             {
-                renderGameOverScreen() ;
+                //renderGameOverScreen() ;
                 Console.WriteLine("RESTART!") ;
                 player.ResetToStart();
                 LoadLevel() ;
@@ -626,6 +650,11 @@ public class Game1 : Game {
                 return ;
             closest.enemyDead = true;
             closest.texture = textures.bloodSplat;
+
+            if (closest.billionare)
+            {
+                state = GameState.BossKilled ;
+            }
 
             player.switchHandState(1) ;
         } else if (Mouse.GetState().RightButton == ButtonState.Pressed && kickCooldown == 0 && !blockKick)
@@ -851,6 +880,10 @@ public class Game1 : Game {
             case GameState.GameOver:
             GraphicsDevice.Clear(Color.Black);
             renderGameOverScreen();
+            break;
+            case GameState.BossKilled:
+            GraphicsDevice.Clear(Color.Black);
+            renderKilledBossScreen();
             break;
         }
         base.Draw(gameTime);
