@@ -43,6 +43,7 @@ public class GameTextures
     public Texture2D handBlue;
     public Texture2D handPurple;
     public Texture2D GameOver;
+    public Texture2D bossKill;
 }
 
 public class Game1 : Game {
@@ -203,6 +204,7 @@ public class Game1 : Game {
 
         
         textures.GameOver = Content.Load<Texture2D>("Models/Gameover");
+        textures.bossKill = Content.Load<Texture2D>("Models/win");
 
 
         textures.gunUI = Content.Load<Texture2D>("Textures/GunIdle540") ;
@@ -345,7 +347,7 @@ public class Game1 : Game {
         // NonPremultiplied matches PNGs loaded with Texture2D.FromStream (soft edges look right).
         spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.NonPremultiplied, SamplerState.PointClamp,
                             DepthStencilState.None, RasterizerState.CullNone);
-        spriteBatch.Draw(textures.GameOver, new Rectangle(0, 0, w, h), Color.Purple);
+        spriteBatch.Draw(textures.bossKill, new Rectangle(0, 0, w, h), Color.Purple);
 
         spriteBatch.End();
     }
@@ -787,9 +789,9 @@ public class Game1 : Game {
         spriteBatch.Draw(textures.pixel, new Rectangle(cx - thick / 2, cy - gap - len, thick, len), Color.White);
         spriteBatch.Draw(textures.pixel, new Rectangle(cx - thick / 2, cy + gap, thick, len), Color.White);
 
-        string zText = "Z: " + player.Position.Z.ToString("0.0") + " / " + GameConstants.LevelEndZ; // DELETE LATER
-        spriteBatch.DrawString(debugFont, zText, new Vector2(21, 21), Color.Black); // DELETE LATER (shadow)
-        spriteBatch.DrawString(debugFont, zText, new Vector2(20, 20), Color.Yellow); // DELETE LATER
+        //string zText = "Z: " + player.Position.Z.ToString("0.0") + " / " + GameConstants.LevelEndZ; // DELETE LATER
+        //spriteBatch.DrawString(debugFont, zText, new Vector2(21, 21), Color.Black); // DELETE LATER (shadow)
+        //spriteBatch.DrawString(debugFont, zText, new Vector2(20, 20), Color.Yellow); // DELETE LATER
         // PURPLE BARRRRRRRRRRRRRRRRRRRR
         
         cx = w/ 40 ;
@@ -802,7 +804,7 @@ public class Game1 : Game {
 
         // gun
 
-        Rectangle gunRect = new Rectangle(w - (w/1920 * 1250), h - (h/1080 * 1000), w/1920 * 1250, h/1080 * 1000) ;
+        Rectangle gunRect = new Rectangle(w - (w/1920 * 1700), h - (h/1080 * 1350), w/1920 * 1700, h/1080 * 1350) ;
 
         spriteBatch.Draw(shootCooldown < 0.3 ? textures.gunUI : textures.gunShootUI, gunRect, Color.White) ;
 
