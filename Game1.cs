@@ -176,6 +176,7 @@ public class Game1 : Game {
     private int screenCenterY;
     private float cameraYaw;
     private float cameraPitch;
+    private bool skipMouseDelta = true;
     private double logTimer = 0d;
     private double totalMouseIdleTime = 0  ;
     private int tutorialPage = 0  ;
@@ -296,7 +297,8 @@ public class Game1 : Game {
         player.LiquidsSound = liquidsInstance;
         player.PlayerDeathSound = playerDeathInstance;
 
-        
+        mainMenuSongInstance.IsLooped = true;
+        noIntroSongInstance.IsLooped = true;        
 
         _grayscaleEffect = Content.Load<Effect>("Effects/FlashShader");
         _pixelate = Content.Load<Effect>("Effects/MainShader");
@@ -333,6 +335,7 @@ public class Game1 : Game {
         enemyList.Clear();
         player.healthTimer = player.maxHealthTimer;
         Console.WriteLine("CURRENT LEVEL: " + currentLevel) ;
+
 
         switch(currentLevel)
         {
@@ -391,7 +394,7 @@ public class Game1 : Game {
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(100f, 0f, -200f), 9f, 11f, true, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(80f, 0f, -120f), 9f, 11f, false, false));
             enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(186f, 0f, -234f), 9f, 11f, false, false));
-            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(60f, 0f, -236f), 9f, 11f, true, false));
+            enemyList.Add(new Enemy(GraphicsDevice, textures, new Vector3(60f, 0f, -236f), 9f, 11f, false, false));
 
             break;
         case 7:
@@ -466,7 +469,7 @@ public class Game1 : Game {
         UpdateTransition(gameTime);
         UpdateElevator();
 
-        if (!IsActive) { base.Update(gameTime); return; }
+        if (!IsActive) { skipMouseDelta = true; base.Update(gameTime); return; }
         currentKeyboardState = Keyboard.GetState();
 
         switch (state)
@@ -485,8 +488,9 @@ public class Game1 : Game {
 
     private void UpdateMainMenu()
     {
-        mainMenuSongInstance.Play();
-        mainMenuSongInstance.IsLooped = true;
+        noIntroSongInstance.Stop();
+        if (elevatorStep == ElevatorStep.None && mainMenuSongInstance.State != SoundState.Playing)
+            mainMenuSongInstance.Play();
 
         IsMouseVisible = true;
 
@@ -524,6 +528,7 @@ public class Game1 : Game {
         Mouse.SetPosition(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height /2);
         previousMouseState = Mouse. GetState();
         blockshoot = true;
+        skipMouseDelta = true;
     }
 
     private void UpdateTutorialExpo()
@@ -606,14 +611,12 @@ public class Game1 : Game {
     }
 
     protected void UpdatePlaying(GameTime gameTime) {
-        mainMenuSongInstance.Stop();
-        noIntroSongInstance.Play();
 
         currentKeyboardState = Keyboard.GetState();
 
         if (elevatorStep != ElevatorStep.None)
         {
-            previousMouseState = Mouse.GetState();   // stops the camera from jumping when play resumes
+            skipMouseDelta = true;
             return;
         }
         
@@ -626,8 +629,8 @@ public class Game1 : Game {
             {
                 //renderGameOverScreen() ;
                 Console.WriteLine("RESTART!") ;
-                cameraYaw = 0f ;
-                cameraPitch = 0f ;
+                cameraYaw = 0f;
+                cameraPitch = 0f;
                 currentLevel -= 0 ;
                 if (currentLevel <= 0)
                 {
@@ -655,51 +658,28 @@ public class Game1 : Game {
         
         currentKeyboardState = Keyboard.GetState();
 
-        // MOUSE & CAMERA INTERACTIONS 
-
-        currentMouseState = Mouse.GetState();
-
-        float maxPitchNegative = MathHelper.ToRadians(-85f);
-        float maxPitchPositive = MathHelper.ToRadians(85f);
-
-        if (currentMouseState != previousMouseState)
-        {
-            float deltaX = currentMouseState.X - previousMouseState.X;
-            float deltaY = currentMouseState.Y - previousMouseState.Y;
-            
-            cameraYaw -= deltaX * GameConstants.sensitivity;
-            float pitchDelta = -deltaY * GameConstants.sensitivity;
-            float newPitch = cameraPitch + pitchDelta;
-
-            if (!((cameraPitch >= maxPitchPositive && pitchDelta > 0f) || (cameraPitch <= maxPitchNegative && pitchDelta < 0f))) {
-                cameraPitch = newPitch;
-            }
-            
-            cameraPitch = MathHelper.Clamp(cameraPitch, maxPitchNegative, maxPitchPositive);   
+        // MOUSE & CAMERA INTERACTIONS
         
-            totalMouseIdleTime = 0 ; 
-            previousMouseState = currentMouseState;
+        int cx = GraphicsDevice.Viewport.Width / 2;
+        int cy = GraphicsDevice.Viewport.Height / 2;
 
-            
-            // check if mouse is near/at border, if yes, move it to senter
-            if (currentMouseState.X >= graphics.GraphicsDevice.Viewport.Width - (50* 1920/graphics.GraphicsDevice.Viewport.Width) || 
-                currentMouseState.Y >= graphics.GraphicsDevice.Viewport.Height - (35 * 1080/graphics.GraphicsDevice.Viewport.Height) || 
-                currentMouseState.X == 0 || currentMouseState.Y == 0)
-            {
-                Mouse.SetPosition(graphics.GraphicsDevice.Viewport.Width / 2, graphics.GraphicsDevice.Viewport.Height / 2);
-                previousMouseState = Mouse.GetState();  
-            }
-
-        } else
+        if (skipMouseDelta)
         {
-            previousMouseState = currentMouseState;
-            
-            totalMouseIdleTime += (float)gameTime.ElapsedGameTime.TotalSeconds ;
-            if (totalMouseIdleTime >= 0.7 && Mouse.GetState().X != graphics.GraphicsDevice.Viewport.Width / 2 && Mouse.GetState().Y != graphics.GraphicsDevice.Viewport.Height / 2)
+            Mouse.SetPosition(cx, cy);      // first frame after start/alt-tab: just recenter, no camera jump
+            skipMouseDelta = false;
+        }
+        else
+        {
+            currentMouseState = Mouse.GetState();
+            float dx = currentMouseState.X - cx;
+            float dy = currentMouseState.Y - cy;
+
+            if (dx != 0 || dy != 0)
             {
-                totalMouseIdleTime = 0 ; 
-                Mouse.SetPosition(graphics.GraphicsDevice.Viewport.Width / 2, graphics.GraphicsDevice.Viewport.Height / 2);
-                previousMouseState = Mouse.GetState();
+                cameraYaw -= dx * GameConstants.sensitivity;
+                cameraPitch = MathHelper.Clamp(cameraPitch - dy * GameConstants.sensitivity,
+                                            MathHelper.ToRadians(-85f), MathHelper.ToRadians(85f));
+                Mouse.SetPosition(cx, cy);
             }
         }
 
@@ -714,6 +694,7 @@ public class Game1 : Game {
             kickCooldown = 0 ;
 
         Shoot() ;
+        if (state != GameState.Playing) return;
 
         player.Update((double) gameTime.ElapsedGameTime.TotalSeconds, currentKeyboardState, cameraYaw, colliders);
 
@@ -809,6 +790,20 @@ private void StartTransition(Action whenClosed)
 private void GoToMainMenu()
 {
     state = GameState.MainMenu;
+    IsMouseVisible = true;
+}
+
+private void StopAllMusic()
+{
+    introSongInstance.Stop();
+    noIntroSongInstance.Stop();
+    mainMenuSongInstance.Stop();
+}
+
+private void WinGame()
+{
+    StopAllMusic();
+    state = GameState.BossKilled;
     IsMouseVisible = true;
 }
 
@@ -924,8 +919,7 @@ private void UpdateTransition(GameTime gameTime)
 
             if (closest.billionare)
             {
-                state = GameState.BossKilled ;
-                Console.WriteLine("STATE" + state) ;
+                WinGame();
             }
 
             player.switchHandState(1) ;
@@ -968,8 +962,7 @@ private void UpdateTransition(GameTime gameTime)
             closest.enemyDead = true;
             if (closest.billionare)
             {
-                state = GameState.BossKilled ;
-                Console.WriteLine("STATE" + state) ;
+                WinGame();
             }
             playerHit.Play();
             closest.texture = textures.bloodSplat;
