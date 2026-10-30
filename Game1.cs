@@ -63,6 +63,7 @@ public class Game1 : Game {
 
     private readonly string[] menuLabels = { "Start Game", "Exit Game"};
     private MouseState menuPrevMouse;
+    private MouseState pausePrevMouse;
 
     private GraphicsDeviceManager graphics;
     private GameObject ground;
@@ -141,6 +142,22 @@ public class Game1 : Game {
         return new Rectangle(x,y,bw,bh);
     }
 
+    private Rectangle GetConfirmButtonRect(int i)
+    {
+        int w = GraphicsDevice.Viewport.Width;
+        int h = GraphicsDevice.Viewport.Height;
+
+        int bw = (int)(600 * w / 1920f);
+        int bh = (int)(180 * h / 1080f);
+        int gap = (int)(60 * w / 1920f);
+
+        int totalWidth = 2 * bw + gap;
+        int x = (w - totalWidth) / 2 + i * (bw + gap);
+        int y = h / 2 + 80;
+
+        return new Rectangle(x, y, bw, bh);
+    }
+
     private double stepAccumulator;
     private const double LogicStep = 1.0 / 60.0;
 
@@ -190,6 +207,7 @@ public class Game1 : Game {
     public Game1() {
         graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
+        Window.Title = "2 Birds 1 Gun";
         graphics.SynchronizeWithVerticalRetrace = true;
         IsFixedTimeStep = false;
 
@@ -453,6 +471,10 @@ public class Game1 : Game {
                             DepthStencilState.None, RasterizerState.CullNone);
         spriteBatch.Draw(textures.GameOver, new Rectangle(0, 0, w, h), Color.Purple);
 
+        string message = "Press ESC to return to main menu. Press SPACE to respawn";
+        Vector2 size = debugFont.MeasureString(message);
+        spriteBatch.DrawString(debugFont, message, new Vector2((w - size.X) / 2f, h - 80), Color.White);
+
         spriteBatch.End();
     }
 
@@ -465,6 +487,10 @@ public class Game1 : Game {
                             DepthStencilState.None, RasterizerState.CullNone);
 
         spriteBatch.Draw(textures.bossKill, new Rectangle(0, 0, w, h), Color.White);
+
+        string message = "Press ESC or SPACE to return to main menu";
+        Vector2 size = debugFont.MeasureString(message);
+        spriteBatch.DrawString(debugFont, message, new Vector2((w - size.X) / 2f, h - 80), Color.White);
 
         spriteBatch.End();
     }
@@ -631,7 +657,41 @@ private void ApplyMouseLook()
 
     private void UpdatePause()
     {
-        
+        MouseState mouse = Mouse.GetState();
+
+        bool clicked =
+            mouse.LeftButton == ButtonState.Pressed &&
+            pausePrevMouse.LeftButton == ButtonState.Released;
+
+        if (clicked)
+        {
+            //Return to the main menu.
+            if (GetConfirmButtonRect(0).Contains(mouse.Position))
+            {
+                StartTransition(() => GoToMainMenu());
+            }
+
+            //Resume gameplay.
+            else if (GetConfirmButtonRect(1).Contains(mouse.Position))
+            {
+                state = GameState.Playing;
+                noIntroSongInstance.Resume();
+
+                // Prevent the click on "No" from firing the gun
+                blockshoot = true;
+                blockKick = true;
+
+                IsMouseVisible = false;
+                skipMouseDelta = true;
+
+                int cx = Window.ClientBounds.Width / 2;
+                int cy = Window.ClientBounds.Height / 2;
+                Mouse.SetPosition(cx, cy);
+                previousMouseState = Mouse.GetState();
+            }
+        }
+
+        pausePrevMouse = mouse;
     }
 
     private void UpdateGameOver()
@@ -689,6 +749,20 @@ private void ApplyMouseLook()
                 }
                 player.ResetToStart();
                 LoadLevel() ;
+
+                gameCamera.Update(
+                    cameraYaw,
+                    cameraPitch,
+                    player.Position,
+                    GraphicsDevice.Viewport.AspectRatio
+                );
+
+                int cx = Window.ClientBounds.Width / 2;
+                int cy = Window.ClientBounds.Height / 2;
+
+                Mouse.SetPosition(cx, cy);
+                previousMouseState = Mouse.GetState();
+                skipMouseDelta = true;
             }
             return ;
         }
@@ -772,8 +846,19 @@ private void ApplyMouseLook()
 
         gameCamera.Update(cameraYaw, cameraPitch, player.Position, graphics.GraphicsDevice.Viewport.AspectRatio);
 
-        if (currentKeyboardState.IsKeyDown(Keys.Escape))
-        StartTransition(() => GoToMainMenu());
+        if (PressedOnce(Keys.Escape))
+        {
+            state = GameState.Paused;
+
+            noIntroSongInstance.Pause();
+
+            IsMouseVisible = true;
+            skipMouseDelta = true;
+
+            pausePrevMouse = Mouse.GetState();
+
+            return;
+        }
 
         logTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -854,14 +939,21 @@ private void UpdateElevator()
             break;
 
         case ElevatorStep.Ding:
-            // wait until the ding is finished
-            if (elevatorDingInstance.State != SoundState.Playing)
+        // wait until the ding is finished
+        if (elevatorDingInstance.State != SoundState.Playing)
+        {
+            // Start music as the doors open, except on level 1
+            if (currentLevel > 1)
             {
-                elevatorDoorInstance.Play();       // door sound again
-                OpenScreen();                      // bars open at the same time
-                elevatorStep = ElevatorStep.Opening;
+                noIntroSongInstance.Stop();
+                noIntroSongInstance.Play();
             }
-            break;
+
+            elevatorDoorInstance.Play();
+            OpenScreen();
+            elevatorStep = ElevatorStep.Opening;
+        }
+        break;
 
         case ElevatorStep.Opening:
             if (transition == TransitionPhase.None)
@@ -962,7 +1054,7 @@ private void UpdateTransition(GameTime gameTime)
 
             foreach (Enemy enemy in enemyList)
             {
-                if (enemy.enemyDead || Vector3.Distance(player.Position, enemy.Position) > 12)
+                if (enemy.enemyDead || Vector3.Distance(player.Position, enemy.Position) > 15)
                     continue ;
                 
 
@@ -1196,7 +1288,64 @@ private void DrawTransition()
 
     private void DrawPauseMenu()
     {
-        
+        int w = GraphicsDevice.Viewport.Width;
+        int h = GraphicsDevice.Viewport.Height;
+
+        Point mouse = Mouse.GetState().Position;
+
+        spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+
+        // Darken the gameplay scene behind the confirmation menu.
+        spriteBatch.Draw(
+            textures.pixel,
+            new Rectangle(0, 0, w, h),
+            new Color(0, 0, 0, 180)
+        );
+
+        // Confirmation text.
+        string prompt = "Quit to main menu?";
+        Vector2 promptSize = debugFont.MeasureString(prompt);
+
+        spriteBatch.DrawString(
+            debugFont,
+            prompt,
+            new Vector2(
+                (w - promptSize.X) / 2,
+                h / 2 - 100
+            ),
+            Color.White
+        );
+
+        string[] labels = { "Yes", "No" };
+
+        for (int i = 0; i < labels.Length; i++)
+        {
+            Rectangle rect = GetConfirmButtonRect(i);
+            bool hover = rect.Contains(mouse);
+
+            // Reuse the same button texture and hover colours as the main menu.
+            spriteBatch.Draw(
+                textures.button,
+                rect,
+                hover ? Color.White : Color.Gray
+            );
+
+            Vector2 textSize = debugFont.MeasureString(labels[i]);
+
+            Vector2 textPosition = new Vector2(
+                rect.X + (rect.Width - textSize.X) / 2,
+                rect.Y + (rect.Height - textSize.Y) / 2
+            );
+
+            spriteBatch.DrawString(
+                debugFont,
+                labels[i],
+                textPosition,
+                hover ? Color.Yellow : Color.White
+            );
+        }
+
+        spriteBatch.End();
     }
 
     protected override void Draw(GameTime gameTime)
