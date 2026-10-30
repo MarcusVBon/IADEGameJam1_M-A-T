@@ -141,6 +141,9 @@ public class Game1 : Game {
         return new Rectangle(x,y,bw,bh);
     }
 
+    private double stepAccumulator;
+    private const double LogicStep = 1.0 / 60.0;
+
     //MY STUFF
     private GameObject test;
 
@@ -188,6 +191,7 @@ public class Game1 : Game {
         graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         graphics.SynchronizeWithVerticalRetrace = true;
+        IsFixedTimeStep = false;
 
         graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
         graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
@@ -466,26 +470,72 @@ public class Game1 : Game {
     }
 
     protected override void Update(GameTime gameTime)
+{
+    // game logic keeps running at 60 steps per second
+    stepAccumulator += Math.Min(gameTime.ElapsedGameTime.TotalSeconds, 0.25);
+    var step = new GameTime(gameTime.TotalGameTime, TimeSpan.FromSeconds(LogicStep));
+
+    while (stepAccumulator >= LogicStep)
     {
-        UpdateTransition(gameTime);
-        UpdateElevator();
-
-        if (!IsActive) { skipMouseDelta = true; base.Update(gameTime); return; }
-        currentKeyboardState = Keyboard.GetState();
-
-        switch (state)
-        {
-            case GameState.MainMenu: UpdateMainMenu(); break;
-            case GameState.Playing: UpdatePlaying(gameTime); break;
-            case GameState.Paused: UpdatePause(); break;
-            case GameState.GameOver: UpdateGameOver(); break;
-            case GameState.BossKilled: UpdateKilledBoss(); break;
-            case GameState.tutorialExpo: UpdateTutorialExpo(); break;
-        }
-
-        previousKeyboardState = currentKeyboardState;
-        base.Update(gameTime);
+        stepAccumulator -= LogicStep;
+        FixedUpdate(step);
     }
+
+    // camera look runs every displayed frame, so it stays smooth at any refresh rate
+    if (state == GameState.Playing && IsActive && elevatorStep == ElevatorStep.None && !player.playerDead)
+    {
+        ApplyMouseLook();
+        gameCamera.Update(cameraYaw, cameraPitch, player.Position, GraphicsDevice.Viewport.AspectRatio);
+    }
+}
+
+private void FixedUpdate(GameTime gameTime)
+{
+    UpdateTransition(gameTime);
+    UpdateElevator();
+
+    if (!IsActive) { skipMouseDelta = true; base.Update(gameTime); return; }
+    currentKeyboardState = Keyboard.GetState();
+
+    switch (state)
+    {
+        case GameState.MainMenu: UpdateMainMenu(); break;
+        case GameState.Playing: UpdatePlaying(gameTime); break;
+        case GameState.Paused: UpdatePause(); break;
+        case GameState.GameOver: UpdateGameOver(); break;
+        case GameState.BossKilled: UpdateKilledBoss(); break;
+        case GameState.tutorialExpo: UpdateTutorialExpo(); break;
+    }
+
+    previousKeyboardState = currentKeyboardState;
+    base.Update(gameTime);
+}
+
+private void ApplyMouseLook()
+{
+    // Mouse coordinates are relative to the window, so use its size for the centre
+    int cx = Window.ClientBounds.Width / 2;
+    int cy = Window.ClientBounds.Height / 2;
+
+    if (skipMouseDelta)
+    {
+        Mouse.SetPosition(cx, cy);      // first frame after start/alt-tab/elevator: recentre, no camera jump
+        skipMouseDelta = false;
+        return;
+    }
+
+    MouseState m = Mouse.GetState();
+    float dx = m.X - cx;
+    float dy = m.Y - cy;
+
+    if (dx != 0 || dy != 0)
+    {
+        cameraYaw -= dx * GameConstants.sensitivity;
+        cameraPitch = MathHelper.Clamp(cameraPitch - dy * GameConstants.sensitivity,
+                                       MathHelper.ToRadians(-85f), MathHelper.ToRadians(85f));
+        Mouse.SetPosition(cx, cy);
+    }
+}
 
     private void UpdateMainMenu()
     {
@@ -659,31 +709,7 @@ public class Game1 : Game {
         
         currentKeyboardState = Keyboard.GetState();
 
-        // MOUSE & CAMERA INTERACTIONS
         
-        int cx = GraphicsDevice.Viewport.Width / 2;
-        int cy = GraphicsDevice.Viewport.Height / 2;
-
-        if (skipMouseDelta)
-        {
-            Mouse.SetPosition(cx, cy);      // first frame after start/alt-tab: just recenter, no camera jump
-            skipMouseDelta = false;
-        }
-        else
-        {
-            currentMouseState = Mouse.GetState();
-            float dx = currentMouseState.X - cx;
-            float dy = currentMouseState.Y - cy;
-
-            if (dx != 0 || dy != 0)
-            {
-                cameraYaw -= dx * GameConstants.sensitivity;
-                cameraPitch = MathHelper.Clamp(cameraPitch - dy * GameConstants.sensitivity,
-                                            MathHelper.ToRadians(-85f), MathHelper.ToRadians(85f));
-                Mouse.SetPosition(cx, cy);
-            }
-        }
-
         
         // Gun
         shootCooldown -= (float) gameTime.ElapsedGameTime.TotalSeconds ;
