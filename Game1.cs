@@ -429,13 +429,14 @@ public class Game1 : Game {
     }
 
     private void CompleteLevel() {
-        Console.WriteLine("YOU DID IT");
-        currentLevel++;
-        LoadLevel();
-        player.ResetToStart();
-        cameraYaw = 0f;
-        cameraPitch = 0f;
-    }
+    Console.WriteLine("YOU DID IT");
+    currentLevel++;
+    LoadLevel();
+    player.ResetToStart();
+    cameraYaw = 0f;
+    cameraPitch = 0f;
+    gameCamera.Update(cameraYaw, cameraPitch, player.Position, GraphicsDevice.Viewport.AspectRatio);
+}
 
     public void renderGameOverScreen()
     {
